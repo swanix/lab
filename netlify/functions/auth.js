@@ -1,5 +1,3 @@
-const { ManagementClient } = require('auth0');
-
 exports.handler = async (event, context) => {
   const headers = {
     'Access-Control-Allow-Origin': '*',
