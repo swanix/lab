@@ -5,114 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Acceso denegado - Solo cuentas de Google permitidas">
   <title>Acceso Denegado - Diagrama Interactivo</title>
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    .forbidden-container {
-      background: white;
-      padding: 3rem;
-      border-radius: 12px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-      text-align: center;
-      max-width: 500px;
-      width: 90%;
-    }
-    
-    .logo {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-    }
-    
-    .title {
-      font-size: 1.8rem;
-      font-weight: bold;
-      color: #e74c3c;
-      margin-bottom: 1rem;
-    }
-    
-    .subtitle {
-      color: #666;
-      margin-bottom: 2rem;
-      line-height: 1.6;
-    }
-    
-    .error-details {
-      background: #f8f9fa;
-      padding: 1.5rem;
-      border-radius: 8px;
-      margin-bottom: 2rem;
-      text-align: left;
-    }
-    
-    .error-details h3 {
-      color: #e74c3c;
-      margin-top: 0;
-      margin-bottom: 1rem;
-    }
-    
-    .error-details p {
-      color: #666;
-      margin: 0.5rem 0;
-      line-height: 1.5;
-    }
-    
-    .back-button {
-      background: #3498db;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 6px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-      text-decoration: none;
-      display: inline-block;
-    }
-    
-    .back-button:hover {
-      background: #2980b9;
-    }
-    
-    .try-again-button {
-      background: #e74c3c;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 6px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-      margin-left: 1rem;
-    }
-    
-    .try-again-button:hover {
-      background: #c0392b;
-    }
-    
-    .contact-info {
-      margin-top: 2rem;
-      padding: 1rem;
-      background: #ecf0f1;
-      border-radius: 6px;
-      font-size: 14px;
-      color: #666;
-    }
-  </style>
+  <link rel="stylesheet" href="/assets/app.css">
 </head>
-<body>
+<body class="forbidden-page">
   <div class="forbidden-container">
-    <div class="logo">🚫</div>
-    <h1 class="title">Acceso Denegado</h1>
-    <p class="subtitle">
+    <div class="logo">•</div>
+    <h1>Acceso Denegado</h1>
+    <p>
       Tu cuenta no está autorizada para acceder a esta aplicación.
     </p>
     
@@ -123,12 +22,12 @@
       <p>• Esta aplicación está restringida a usuarios específicos</p>
     </div>
     
-    <div>
+    <div class="button-group">
       <a href="/login" class="back-button">← Volver al Login</a>
       <button class="try-again-button" onclick="tryAgain()">Intentar con otra cuenta</button>
     </div>
     
-    <div class="contact-info">
+    <div class="security-note">
       <strong>¿Necesitas acceso?</strong><br>
       Contacta al administrador del sistema para solicitar autorización.
     </div>

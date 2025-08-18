@@ -193,111 +193,11 @@ exports.handler = async (event, context) => {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Configurando sesión...</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-        }
-        
-        .container {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
-            text-align: center;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            max-width: 400px;
-            width: 90%;
-        }
-        
-        .logo {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            animation: pulse 2s infinite;
-        }
-        
-        h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 30px;
-            color: white;
-        }
-        
-        .progress-container {
-            margin: 30px 0;
-        }
-        
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 3px;
-            overflow: hidden;
-            margin: 20px 0;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #fff, #f0f0f0);
-            border-radius: 3px;
-            animation: progress 2s ease-in-out;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-        }
-        
-        .status {
-            font-size: 0.9rem;
-            opacity: 0.9;
-            margin-top: 20px;
-        }
-        
-        .user-info {
-            margin-top: 20px;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            font-size: 0.85rem;
-        }
-        
-        .user-email {
-            font-weight: 600;
-            color: #fff;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-        
-        @keyframes progress {
-            0% { width: 0%; }
-            100% { width: 100%; }
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .container {
-            animation: fadeIn 0.5s ease-out;
-        }
-    </style>
+    <link rel="stylesheet" href="/assets/app.css">
 </head>
-<body>
-    <div class="container">
-        <div class="logo">🚀</div>
+<body class="callback-page">
+    <div class="callback-container">
+        <div class="logo">•</div>
         <h2>Configurando tu sesión</h2>
         
         <div class="progress-container">
