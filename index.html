@@ -86,7 +86,8 @@
         logoutContainer.style.display = 'block';
         
         logoutBtn.addEventListener('click', () => {
-          window.location.href = '/login.html';
+          // Cerrar sesión usando la función de Netlify
+          window.location.href = '/api/logout';
         });
       }
     }
