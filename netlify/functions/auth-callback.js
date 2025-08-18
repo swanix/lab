@@ -291,9 +291,21 @@ exports.handler = async (event, context) => {
         localStorage.setItem('session_token', sessionToken);
         localStorage.setItem('session_expires', '${session.expires_at}');
         
-        // Redirigir al diagrama
+        // Redirigir al diagrama o a la URL guardada
         setTimeout(() => {
-            window.location.href = '${process.env.AUTH0_BASE_URL}/index.html';
+            // Verificar si hay una URL de destino guardada
+            const redirectUrl = localStorage.getItem('redirect_after_login');
+            
+            if (redirectUrl) {
+                // Limpiar la URL guardada y redirigir
+                localStorage.removeItem('redirect_after_login');
+                window.location.href = '${process.env.AUTH0_BASE_URL}' + redirectUrl;
+                console.log('[Auth Callback] Redirigiendo a URL guardada:', redirectUrl);
+            } else {
+                // Redirigir al index principal
+                window.location.href = '${process.env.AUTH0_BASE_URL}/index.html';
+                console.log('[Auth Callback] Redirigiendo al index principal');
+            }
         }, 2000);
     </script>
 </body>
