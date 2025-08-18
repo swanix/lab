@@ -234,7 +234,11 @@ exports.handler = async (event, context) => {
             console.log('[Auth Callback] URL de destino desde state:', redirectUrl);
             
             if (redirectUrl && redirectUrl !== 'null') {
-                const fullUrl = '${process.env.AUTH0_BASE_URL}' + redirectUrl;
+                // Construir URL completa correctamente
+                const baseUrl = '${process.env.AUTH0_BASE_URL}';
+                const fullUrl = redirectUrl.startsWith('/') ? 
+                    baseUrl + redirectUrl : 
+                    baseUrl + '/' + redirectUrl;
                 console.log('[Auth Callback] Redirigiendo a URL de destino:', fullUrl);
                 window.location.href = fullUrl;
             } else {

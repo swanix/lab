@@ -46,13 +46,32 @@
 
   <script>
     function login() {
-      // Redirigir a la función de autenticación de Auth0 con el parámetro action
-      window.location.href = '/api/auth/login?action=login';
+      // Obtener URL de destino desde parámetros
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirectUrl = urlParams.get('redirect');
+      
+      console.log('[Login] Función login() ejecutada');
+      console.log('[Login] Parámetros de URL:', window.location.search);
+      console.log('[Login] URL de destino encontrada:', redirectUrl);
+      
+      // Construir URL de login con parámetros
+      let loginUrl = '/api/auth/login?action=login';
+      if (redirectUrl) {
+        loginUrl += `&redirect=${encodeURIComponent(redirectUrl)}`;
+        console.log('[Login] ✅ Agregando redirect a URL de login:', redirectUrl);
+        console.log('[Login] URL final de login:', loginUrl);
+      }
+      
+      // Redirigir a la función de autenticación de Auth0
+      window.location.href = loginUrl;
     }
 
     async function checkAuth() {
       try {
         console.log('🔍 [Login] Verificando si el usuario ya está autenticado...');
+        console.log('[Login] URL actual:', window.location.href);
+        console.log('[Login] Parámetros de URL:', window.location.search);
+        
         const sessionData = localStorage.getItem('session_data');
         const sessionToken = localStorage.getItem('session_token');
         const sessionExpires = localStorage.getItem('session_expires');
@@ -86,6 +105,8 @@
           console.log('[Login] ✅ Usuario autenticado, redirigiendo...');
           const urlParams = new URLSearchParams(window.location.search);
           const redirectUrl = urlParams.get('redirect');
+          console.log('[Login] URL de destino para redirección:', redirectUrl);
+          
           if (redirectUrl) {
             console.log('[Login] Redirigiendo a URL de destino:', redirectUrl);
             window.location.href = redirectUrl;
