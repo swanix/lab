@@ -6,13 +6,7 @@
   NODE_VERSION = "18"
 
 # Variables de entorno para Auth0 (configurar en Netlify Dashboard)
-[context.production.environment]
-  AUTH0_SECRET = "your-auth0-secret"
-  AUTH0_BASE_URL = "https://your-site.netlify.app"
-  AUTH0_DOMAIN = "your-tenant.auth0.com"
-  AUTH0_CLIENT_ID = "your-auth0-client-id"
-  AUTH0_CLIENT_SECRET = "your-auth0-client-secret"
-  ALLOWED_ORIGIN = "https://your-site.netlify.app"
+# Ver archivo .env.example para la lista completa de variables requeridas
 
 # Redirección específica para el login de Auth0
 [[redirects]]
@@ -41,13 +35,25 @@
 # Redirección principal a login (solo para la raíz)
 [[redirects]]
   from = "/"
+  to = "/login"
+  status = 200
+
+# Redirección para login sin extensión
+[[redirects]]
+  from = "/login"
   to = "/login.html"
+  status = 200
+
+# Redirección para index sin extensión
+[[redirects]]
+  from = "/index"
+  to = "/index.html"
   status = 200
 
 # Redirección SPA para proyectos (después de login)
 [[redirects]]
   from = "/*"
-  to = "/index.html"
+  to = "/index"
   status = 200
 
 # Headers de seguridad mejorados - CSP corregido para SheetBest
