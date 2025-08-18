@@ -193,11 +193,14 @@ exports.handler = async (event, context) => {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Configurando sesión...</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="stylesheet" href="/assets/app.css">
 </head>
 <body class="callback-page">
     <div class="callback-container">
-        <div class="logo">•</div>
+        <div class="logo">
+            <img src="/favicon.svg" alt="Logo" class="logo-img">
+        </div>
         <h2>Configurando tu sesión</h2>
         
         <div class="progress-container">

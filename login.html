@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Iniciar sesión para acceder al diagrama">
   <title>Iniciar Sesión - Diagrama Interactivo</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="/assets/app.css">
 </head>
 <body class="login-page">
@@ -15,7 +16,9 @@
   </div>
   
   <div class="login-container" id="login-container">
-    <div class="logo">•</div>
+    <div class="logo">
+      <img src="/favicon.svg" alt="Logo" class="logo-img">
+    </div>
     <h1>Acceso al Diagrama</h1>
     <p class="subtitle">
       Para acceder al diagrama interactivo, debes iniciar sesión con tu cuenta de Google.
@@ -43,161 +46,101 @@
 
   <script>
     function login() {
-      // Detectar theme del usuario
-      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const theme = prefersDark ? 'dark' : 'light';
-      
-      console.log('🌙 [Login] Theme detectado:', theme);
-      
-      // Obtener URL de destino desde parámetros
-      const urlParams = new URLSearchParams(window.location.search);
-      const redirectUrl = urlParams.get('redirect');
-      
-      console.log('[Login] URL de destino:', redirectUrl);
-      
-      // Construir URL de login con parámetros
-      let loginUrl = `/api/auth/login?action=login&theme=${theme}`;
-      if (redirectUrl) {
-        loginUrl += `&redirect=${encodeURIComponent(redirectUrl)}`;
-        console.log('[Login] ✅ Agregando redirect a URL de login:', redirectUrl);
-      }
-      
-      // Redirigir a Auth0 para iniciar sesión con Google y theme
-      window.location.href = loginUrl;
+      // Redirigir a la función de autenticación de Auth0
+      window.location.href = '/api/auth/login';
     }
-    
-    // Verificar si ya está autenticado
+
     async function checkAuth() {
       try {
         console.log('🔍 [Login] Verificando si el usuario ya está autenticado...');
-        
-        // Verificar si hay datos de sesión en localStorage
         const sessionData = localStorage.getItem('session_data');
         const sessionToken = localStorage.getItem('session_token');
         const sessionExpires = localStorage.getItem('session_expires');
-        
-        console.log('[Login] Datos de sesión encontrados:', {
-          sessionData: !!sessionData,
-          sessionToken: !!sessionToken,
-          sessionExpires: !!sessionExpires
-        });
-        
-        // Si no hay datos de sesión, mostrar login
+
         if (!sessionData || !sessionToken || !sessionExpires) {
           console.log('[Login] No hay datos de sesión, mostrando página de login');
           return false;
         }
-        
-        // Verificar si la sesión ha expirado
+
         const now = Date.now();
         const expiresAt = parseInt(sessionExpires);
-        
         if (now > expiresAt) {
           console.log('[Login] Sesión expirada, mostrando página de login');
-          // Limpiar datos expirados
           localStorage.removeItem('session_data');
           localStorage.removeItem('session_token');
           localStorage.removeItem('session_expires');
           return false;
         }
-        
-        // Verificar autenticación con el servidor
+
         console.log('[Login] Verificando autenticación con el servidor...');
         const response = await fetch('/.netlify/functions/check-auth', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            sessionData: sessionData,
-            sessionToken: sessionToken
-          })
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sessionData: sessionData, sessionToken: sessionToken })
         });
-        
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-        
+
+        if (!response.ok) { throw new Error(`HTTP ${response.status}: ${response.statusText}`); }
         const data = await response.json();
-        
+
         if (data.authenticated) {
           console.log('[Login] ✅ Usuario autenticado, redirigiendo...');
-          
-          // Obtener URL de destino desde parámetros
           const urlParams = new URLSearchParams(window.location.search);
           const redirectUrl = urlParams.get('redirect');
-          
           if (redirectUrl) {
-            // Redirigir a la URL de destino
             console.log('[Login] Redirigiendo a URL de destino:', redirectUrl);
             window.location.href = redirectUrl;
           } else {
-            // Redirigir al home
             console.log('[Login] Redirigiendo al home');
             window.location.href = '/';
           }
-          return true; // Usuario autenticado
+          return true;
         }
-        
         console.log('[Login] Usuario no autenticado, mostrando página de login');
         return false;
-        
       } catch (error) {
         console.error('[Login] Error verificando autenticación:', error);
         console.log('[Login] Mostrando página de login debido a error');
         return false;
       }
     }
-    
-    // Verificar autenticación inmediatamente al cargar la página
-    // Esto evita que se muestre la página de login si el usuario ya está autenticado
+
     (async function() {
       const isAuthenticated = await checkAuth();
-      
-      // Ocultar indicador de carga
       const loadingIndicator = document.getElementById('loading-indicator');
-      if (loadingIndicator) {
-        loadingIndicator.style.display = 'none';
-      }
-      
-      // Solo ejecutar el resto del código si el usuario no está autenticado
+      if (loadingIndicator) { loadingIndicator.style.display = 'none'; }
+
       if (!isAuthenticated) {
-        // Mostrar el contenido de login con una pequeña transición
         const loginContainer = document.getElementById('login-container');
         if (loginContainer) {
-          // Pequeño delay para transición suave
-          setTimeout(() => {
-            loginContainer.classList.add('show');
-          }, 100);
+          setTimeout(() => { loginContainer.classList.add('show'); }, 100);
         }
-        
-        // Manejar errores de URL parameters
         function handleErrors() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const error = urlParams.get('error');
-      const errorDescription = urlParams.get('error_description');
-      
-      if (error && errorDescription) {
-        console.log('❌ [Login] Error detectado:', error, errorDescription);
-        
-        const errorMessage = document.getElementById('error-message');
-        const errorText = document.getElementById('error-text');
-        
-        if (error === 'access_denied') {
-          errorText.textContent = 'Tu cuenta no está autorizada para acceder a esta aplicación. Solo se permiten cuentas de Google (@gmail.com).';
-        } else {
-          errorText.textContent = errorDescription || 'Error de autenticación';
+          const urlParams = new URLSearchParams(window.location.search);
+          const error = urlParams.get('error');
+          const errorDescription = urlParams.get('error_description');
+          
+          if (error) {
+            const errorMessage = document.getElementById('error-message');
+            const errorText = document.getElementById('error-text');
+            
+            if (errorMessage && errorText) {
+              let message = '';
+              switch (error) {
+                case 'access_denied':
+                  message = 'Acceso denegado. Solo se permiten cuentas de Google (@gmail.com).';
+                  break;
+                case 'unauthorized':
+                  message = 'Tu cuenta no está autorizada para acceder a esta aplicación.';
+                  break;
+                default:
+                  message = errorDescription || 'Error de autenticación. Intenta nuevamente.';
+              }
+              
+              errorText.textContent = message;
+              errorMessage.classList.add('show');
+            }
+          }
         }
-        
-        errorMessage.classList.add('show');
-        
-        // Limpiar los parámetros de error de la URL
-        const newUrl = window.location.pathname;
-        window.history.replaceState({}, document.title, newUrl);
-      }
-    }
-    
-        // Manejar errores al cargar la página
         handleErrors();
       }
     })();

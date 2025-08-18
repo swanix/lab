@@ -144,6 +144,28 @@ body.login-page {
   line-height: 1;
 }
 
+/* Logo principal */
+.logo {
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  box-shadow: var(--shadow-md);
+}
+
+/* Ícono del botón de logout */
+.logo-icon {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+}
+
 /* Título */
 .login-container h1 {
   font-size: 1.75rem;

@@ -3,30 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Acceso denegado - Solo cuentas de Google permitidas">
+  <meta name="description" content="Acceso denegado">
   <title>Acceso Denegado - Diagrama Interactivo</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="/assets/app.css">
 </head>
 <body class="forbidden-page">
   <div class="forbidden-container">
-    <div class="logo">•</div>
+    <div class="logo">
+      <img src="/favicon.svg" alt="Logo" class="logo-img">
+    </div>
     <h1>Acceso Denegado</h1>
-    <p>
-      Tu cuenta no está autorizada para acceder a esta aplicación.
-    </p>
-    
+    <p>Tu cuenta no está autorizada para acceder a esta aplicación.</p>
     <div class="error-details">
       <h3>¿Por qué no puedo acceder?</h3>
       <p><strong>• Solo se permiten cuentas de Google (@gmail.com)</strong></p>
       <p>• Tu cuenta tiene un dominio personalizado que no está autorizado</p>
       <p>• Esta aplicación está restringida a usuarios específicos</p>
     </div>
-    
     <div class="button-group">
       <a href="/login" class="back-button">← Volver al Login</a>
       <button class="try-again-button" onclick="tryAgain()">Intentar con otra cuenta</button>
     </div>
-    
     <div class="security-note">
       <strong>¿Necesitas acceso?</strong><br>
       Contacta al administrador del sistema para solicitar autorización.
@@ -35,32 +33,14 @@
 
   <script>
     function tryAgain() {
-      // Limpiar cualquier sesión residual
-      localStorage.clear();
-      sessionStorage.clear();
-      
-      // Limpiar cookies
-      document.cookie.split(";").forEach(function(c) { 
-        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
-      });
+      // Limpiar cualquier dato de sesión residual
+      localStorage.removeItem('session_data');
+      localStorage.removeItem('session_token');
+      localStorage.removeItem('session_expires');
       
       // Redirigir al login
       window.location.href = '/login';
     }
-    
-    // Obtener detalles del error desde URL parameters
-    function getErrorDetails() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const error = urlParams.get('error');
-      const errorDescription = urlParams.get('error_description');
-      
-      if (error && errorDescription) {
-        console.log('Error de acceso:', error, errorDescription);
-      }
-    }
-    
-    // Ejecutar al cargar la página
-    getErrorDetails();
   </script>
 </body>
 </html>
