@@ -20,7 +20,6 @@
   
   <script src="/assets/auth.js"></script>
   <script src="/assets/projects-config.js"></script>
-  <script src="/assets/xdiagrams.min.js"></script>
   <script>
     // Router dinámico de proyectos
     async function initializeRouter() {
@@ -32,9 +31,12 @@
         const projectId = ProjectsConfig.getProjectIdFromPath();
         
         if (projectId) {
-          // Inicializar proyecto específico
+          // Inicializar proyecto específico ANTES de cargar XDiagrams
           await ProjectsConfig.initializeProject(projectId);
           console.log(`[Router] Proyecto ${projectId} cargado correctamente`);
+          
+          // Ahora cargar XDiagrams después de tener la configuración
+          loadXDiagrams();
         } else {
           // Mostrar página de proyectos disponibles
           showProjectsList();
@@ -47,6 +49,16 @@
         console.error('[Router] Error inicializando router:', error);
         // La autenticación ya maneja la redirección
       }
+    }
+
+    function loadXDiagrams() {
+      // Cargar XDiagrams dinámicamente después de tener la configuración
+      const script = document.createElement('script');
+      script.src = '/assets/xdiagrams.min.js';
+      script.onload = function() {
+        console.log('[Router] XDiagrams cargado correctamente');
+      };
+      document.head.appendChild(script);
     }
 
     function showProjectsList() {
