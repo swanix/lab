@@ -26,22 +26,16 @@
   to = "/.netlify/functions/auth-callback"
   status = 200
 
-# Redirecciones para APIs (incluyendo Auth0)
+# Redirección específica para logout
 [[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
+  from = "/api/logout"
+  to = "/.netlify/functions/logout"
   status = 200
 
-# Redirección principal a login
+# Redirección principal a login (solo para la raíz)
 [[redirects]]
   from = "/"
   to = "/login.html"
-  status = 200
-
-# Redirección SPA (Single Page Application)
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
   status = 200
 
 # Headers de seguridad mejorados
