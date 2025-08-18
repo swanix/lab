@@ -32,13 +32,19 @@
   to = "/.netlify/functions/logout"
   status = 200
 
+# Redirección específica para sheetbest-proxy (necesaria para XDiagrams)
+[[redirects]]
+  from = "/api/sheetbest-proxy"
+  to = "/.netlify/functions/sheetbest-proxy"
+  status = 200
+
 # Redirección principal a login (solo para la raíz)
 [[redirects]]
   from = "/"
   to = "/login.html"
   status = 200
 
-# Headers de seguridad mejorados
+# Headers de seguridad mejorados - CSP corregido para SheetBest
 [[headers]]
   for = "/*"
   [headers.values]
@@ -46,7 +52,7 @@
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://api.sheetbest.com;"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://api.sheetbest.com https://*.sheetbest.com;"
 
 # Headers específicos para funciones con CORS restringido
 [[headers]]
