@@ -297,7 +297,7 @@ exports.handler = async (event, context) => {
     </div>
     
     <script>
-        // Configurar sesión en localStorage (incluye access_token necesario)
+        // Configurar sesión en localStorage
         const sessionData = ${JSON.stringify(session)};
         const sessionToken = '${sessionToken}';
         

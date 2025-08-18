@@ -100,7 +100,7 @@ async function checkAuthentication() {
     
   } catch (error) {
     console.error('[Auth] Error verificando autenticación:', error);
-    // Guardar URL actual antes de redirigir
+    // Guardar URL actual como parámetro en lugar de localStorage
     const currentUrl = window.location.pathname + window.location.search;
     console.log('[Auth] URL a guardar:', currentUrl);
     if (currentUrl !== '/') {
@@ -115,11 +115,6 @@ async function checkAuthentication() {
     localStorage.removeItem('session_data');
     localStorage.removeItem('session_token');
     localStorage.removeItem('session_expires');
-    // Pequeño delay para asegurar que se guarde la URL
-    setTimeout(() => {
-      console.log('[Auth] Redirigiendo a login después de guardar URL...');
-      window.location.href = '/login.html';
-    }, 100);
   }
 }
 

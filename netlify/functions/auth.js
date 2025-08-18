@@ -16,9 +16,7 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    console.log('[Auth] Function invoked with parameters:', event.queryStringParameters);
     const { action } = event.queryStringParameters || {};
-    console.log('[Auth] Action parameter:', action);
     
     if (action === 'login') {
       // Redirigir a Auth0 para login
@@ -33,7 +31,6 @@ exports.handler = async (event, context) => {
       
       // Obtener URL de destino
       const redirectUrl = event.queryStringParameters && event.queryStringParameters.redirect;
-      console.log('[Auth] URL de destino recibida:', redirectUrl);
       
       // Construir state con URL de destino si existe
       const state = redirectUrl ? 
@@ -51,8 +48,6 @@ exports.handler = async (event, context) => {
         `state=${encodeURIComponent(state)}&` +
         `ui_locales=${prefersDark ? 'dark' : 'light'}`;
       
-      console.log('[Auth] Redirigiendo a Auth0 con state:', state);
-      
       return {
         statusCode: 302,
         headers: {
@@ -63,7 +58,6 @@ exports.handler = async (event, context) => {
       };
     }
     
-    console.log('[Auth] No valid action found, action was:', action);
     return {
       statusCode: 400,
       headers,
