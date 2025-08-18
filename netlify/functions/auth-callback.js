@@ -129,6 +129,11 @@ exports.handler = async (event, context) => {
     // Redirigir al diagrama con sesión
     const redirectUrl = `${process.env.AUTH0_BASE_URL}/index.html?session=${encodeURIComponent(JSON.stringify(session))}`;
     
+    console.log('🔄 [Auth Callback] Session created:', {
+      userEmail: session.user.email,
+      expiresAt: new Date(session.expires_at).toISOString(),
+      sessionLength: JSON.stringify(session).length
+    });
     console.log('🔄 [Auth Callback] Redirecting to:', redirectUrl);
     
     return {

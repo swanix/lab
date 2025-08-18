@@ -54,14 +54,22 @@
         const urlParams = new URLSearchParams(window.location.search);
         const session = urlParams.get('session');
         
+        console.log('🔍 [Auth] Verificando autenticación...');
+        console.log('🔍 [Auth] URL parameters:', window.location.search);
+        console.log('🔍 [Auth] Session parameter:', session ? 'Presente' : 'Ausente');
+        
         if (!session) {
           console.log('❌ [Auth] No hay sesión, redirigiendo a login');
           window.location.href = '/login.html';
           return;
         }
         
+        console.log('🔍 [Auth] Llamando a check-auth...');
         const response = await fetch(`/.netlify/functions/check-auth?session=${encodeURIComponent(session)}`);
+        console.log('🔍 [Auth] Response status:', response.status);
+        
         const data = await response.json();
+        console.log('🔍 [Auth] Response data:', data);
         
         if (!data.authenticated) {
           console.log('❌ [Auth] Usuario no autenticado, redirigiendo a login');
