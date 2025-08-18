@@ -86,6 +86,10 @@
         logoutContainer.style.display = 'block';
         
         logoutBtn.addEventListener('click', () => {
+          // Limpiar sesión local y redirigir al logout
+          localStorage.removeItem('auth0.is.authenticated');
+          sessionStorage.clear();
+          
           // Cerrar sesión usando la función de Netlify
           window.location.href = '/api/logout';
         });

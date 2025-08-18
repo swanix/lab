@@ -107,6 +107,10 @@
     // Verificar si ya está autenticado
     async function checkAuth() {
       try {
+        // Limpiar cualquier sesión local que pueda estar causando problemas
+        localStorage.removeItem('auth0.is.authenticated');
+        sessionStorage.clear();
+        
         // Verificar si hay sesión en URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const session = urlParams.get('session');
