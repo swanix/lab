@@ -31,8 +31,8 @@
   </div>
   
   <script>
-    // 🔐 Verificar autenticación antes de cargar el diagrama
-    async function checkAuthentication() {
+    // 🔐 Verificar autenticación y configurar XDiagrams inmediatamente
+    (async function() {
       try {
         // Obtener sesión desde URL parameters
         const urlParams = new URLSearchParams(window.location.search);
@@ -41,7 +41,7 @@
         if (!session) {
           console.log('❌ [Auth] No hay sesión, redirigiendo a login');
           window.location.href = '/login.html';
-          return false;
+          return;
         }
         
         const response = await fetch(`/.netlify/functions/check-auth?session=${encodeURIComponent(session)}`);
@@ -50,48 +50,32 @@
         if (!data.authenticated) {
           console.log('❌ [Auth] Usuario no autenticado, redirigiendo a login');
           window.location.href = '/login.html';
-          return false;
+          return;
         }
         
         console.log('✅ [Auth] Usuario autenticado:', data.user.email);
-        return true;
+        
+        // 🔐 Configurar XDiagrams inmediatamente
+        window.$xDiagrams = {
+          url: "https://api.sheetbest.com/sheets/28f15681-b2ab-47a0-bbcb-205d142d9ef7/tabs/All",
+          title: "Mi Diagrama Interactivo",
+          clustersPerRow: "6 3 7 6 3", 
+          showThemeToggle: true,         
+          spacing: 80,                   
+          verticalSpacing: 170,         
+          nodeWidth: 100,                
+          nodeHeight: 125,              
+        };
+        
+        // 🚀 Logs para debugging
+        console.log('🚀 [Template] XDiagrams configurado:', window.$xDiagrams);
+        console.log('📋 [Template] URL configurada:', window.$xDiagrams.url);
+        
       } catch (error) {
         console.error('❌ [Auth] Error verificando autenticación:', error);
         window.location.href = '/login.html';
-        return false;
       }
-    }
-
-    // 🔐 Inicializar diagrama solo si está autenticado
-    async function initializeDiagram() {
-      const isAuthenticated = await checkAuthentication();
-      
-      if (!isAuthenticated) {
-        return;
-      }
-
-      window.$xDiagrams = {
-        url: "https://api.sheetbest.com/sheets/28f15681-b2ab-47a0-bbcb-205d142d9ef7/tabs/All",
-        title: "Mi Diagrama Interactivo",
-        clustersPerRow: "6 3 7 6 3", 
-        showThemeToggle: true,         
-        spacing: 80,                   
-        verticalSpacing: 170,         
-        nodeWidth: 100,                
-        nodeHeight: 125,              
-      };
-      
-      // 🚀 Logs para debugging
-      console.log('🚀 [Template] XDiagrams configurado:', window.$xDiagrams);
-      console.log('📋 [Template] URL configurada:', window.$xDiagrams.url);
-    }
-
-    // 🔐 Inicializar cuando el DOM esté listo
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initializeDiagram);
-    } else {
-      initializeDiagram();
-    }
+    })();
 
     // 🔐 Configurar botón de cerrar sesión
     function setupLogout() {
