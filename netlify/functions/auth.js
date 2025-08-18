@@ -41,12 +41,13 @@ exports.handler = async (event, context) => {
         baseUrl: process.env.AUTH0_BASE_URL
       });
       
+      // Usar prompt=none solo si el usuario ya está autenticado
+      // Si no está autenticado, Auth0 mostrará la pantalla de login
       const authUrl = `https://${auth0Domain}/authorize?` +
         `response_type=code&` +
         `client_id=${clientId}&` +
         `redirect_uri=${encodeURIComponent(redirectUri)}&` +
         `scope=openid%20profile%20email&` +
-        `prompt=none&` +
         `state=${Math.random().toString(36).substring(7)}`;
       
       return {

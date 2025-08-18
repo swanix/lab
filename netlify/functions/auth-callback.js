@@ -28,13 +28,25 @@ exports.handler = async (event, context) => {
     if (error) {
       console.error('❌ [Auth Callback] Auth0 error:', error, error_description);
       
-      // Si el error es "login_required", redirigir al login
+      // Si el error es "login_required", redirigir al login con autenticación completa
       if (error === 'login_required') {
+        const auth0Domain = process.env.AUTH0_DOMAIN;
+        const clientId = process.env.AUTH0_CLIENT_ID;
+        const redirectUri = `${process.env.AUTH0_BASE_URL}/api/auth/callback`;
+        
+        // Redirigir a Auth0 sin prompt=none para forzar la autenticación
+        const authUrl = `https://${auth0Domain}/authorize?` +
+          `response_type=code&` +
+          `client_id=${clientId}&` +
+          `redirect_uri=${encodeURIComponent(redirectUri)}&` +
+          `scope=openid%20profile%20email&` +
+          `state=${Math.random().toString(36).substring(7)}`;
+        
         return {
           statusCode: 302,
           headers: {
             ...headers,
-            'Location': `${process.env.AUTH0_BASE_URL}/login.html`
+            'Location': authUrl
           },
           body: ''
         };
