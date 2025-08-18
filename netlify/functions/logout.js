@@ -25,9 +25,15 @@ exports.handler = async (event, context) => {
     
     const logoutUrl = `https://${auth0Domain}/v2/logout?` +
       `client_id=${clientId}&` +
-      `returnTo=${encodeURIComponent(returnTo)}`;
+      `returnTo=${encodeURIComponent(returnTo)}&` +
+      `federated=true`;
     
     console.log('🔄 [Logout Function] Redirecting to Auth0 logout:', logoutUrl);
+    console.log('🔍 [Logout Function] Config:', {
+      auth0Domain,
+      clientId,
+      returnTo
+    });
     
     return {
       statusCode: 302,

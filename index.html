@@ -108,10 +108,10 @@
             document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
           });
           
-          console.log('✅ [Logout] Datos de sesión limpiados, redirigiendo...');
+          console.log('✅ [Logout] Datos de sesión limpiados, cerrando sesión en Auth0...');
           
-          // Redirigir al login directamente
-          window.location.href = '/login.html';
+          // Cerrar sesión en Auth0 usando la función de Netlify
+          window.location.href = '/api/logout';
         });
       }
     }
