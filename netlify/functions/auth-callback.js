@@ -27,6 +27,19 @@ exports.handler = async (event, context) => {
     
     if (error) {
       console.error('❌ [Auth Callback] Auth0 error:', error, error_description);
+      
+      // Si el error es "login_required", redirigir al login
+      if (error === 'login_required') {
+        return {
+          statusCode: 302,
+          headers: {
+            ...headers,
+            'Location': `${process.env.AUTH0_BASE_URL}/login.html`
+          },
+          body: ''
+        };
+      }
+      
       return {
         statusCode: 400,
         headers,

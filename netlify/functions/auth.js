@@ -46,6 +46,7 @@ exports.handler = async (event, context) => {
         `client_id=${clientId}&` +
         `redirect_uri=${encodeURIComponent(redirectUri)}&` +
         `scope=openid%20profile%20email&` +
+        `prompt=none&` +
         `state=${Math.random().toString(36).substring(7)}`;
       
       return {
