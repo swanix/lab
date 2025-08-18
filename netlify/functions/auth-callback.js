@@ -25,41 +25,55 @@ exports.handler = async (event, context) => {
   try {
     const { code, state, error, error_description } = event.queryStringParameters || {};
     
-    if (error) {
-      console.error('❌ [Auth Callback] Auth0 error:', error, error_description);
-      
-      // Si el error es "login_required", redirigir al login con autenticación completa
-      if (error === 'login_required') {
-        const auth0Domain = process.env.AUTH0_DOMAIN;
-        const clientId = process.env.AUTH0_CLIENT_ID;
-        const redirectUri = `${process.env.AUTH0_BASE_URL}/api/auth/callback`;
+          if (error) {
+        console.error('❌ [Auth Callback] Auth0 error:', error, error_description);
         
-        // Redirigir directamente a Google con selección de cuenta
-        const authUrl = `https://${auth0Domain}/authorize?` +
-          `response_type=code&` +
-          `client_id=${clientId}&` +
-          `redirect_uri=${encodeURIComponent(redirectUri)}&` +
-          `scope=openid%20profile%20email&` +
-          `connection=google-oauth2&` +
-          `prompt=select_account&` +
-          `state=${Math.random().toString(36).substring(7)}`;
+        // Si el error es "login_required", redirigir al login con autenticación completa
+        if (error === 'login_required') {
+          const auth0Domain = process.env.AUTH0_DOMAIN;
+          const clientId = process.env.AUTH0_CLIENT_ID;
+          const redirectUri = `${process.env.AUTH0_BASE_URL}/api/auth/callback`;
+          
+          // Redirigir directamente a Google con selección de cuenta
+          const authUrl = `https://${auth0Domain}/authorize?` +
+            `response_type=code&` +
+            `client_id=${clientId}&` +
+            `redirect_uri=${encodeURIComponent(redirectUri)}&` +
+            `scope=openid%20profile%20email&` +
+            `connection=google-oauth2&` +
+            `prompt=select_account&` +
+            `state=${Math.random().toString(36).substring(7)}`;
+          
+          return {
+            statusCode: 302,
+            headers: {
+              ...headers,
+              'Location': authUrl
+            },
+            body: ''
+          };
+        }
+        
+        // Si el error es "access_denied", redirigir a la página de forbidden
+        if (error === 'access_denied') {
+          const forbiddenUrl = `${process.env.AUTH0_BASE_URL}/forbidden.html?error=${encodeURIComponent(error)}&error_description=${encodeURIComponent(error_description)}`;
+          
+          return {
+            statusCode: 302,
+            headers: {
+              ...headers,
+              'Location': forbiddenUrl
+            },
+            body: ''
+          };
+        }
         
         return {
-          statusCode: 302,
-          headers: {
-            ...headers,
-            'Location': authUrl
-          },
-          body: ''
+          statusCode: 400,
+          headers,
+          body: JSON.stringify({ error, error_description })
         };
       }
-      
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({ error, error_description })
-      };
-    }
     
     if (!code) {
       console.error('❌ [Auth Callback] No authorization code provided');
