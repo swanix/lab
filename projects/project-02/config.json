@@ -2,10 +2,5 @@
   "id": "project-02",
   "title": "Proyecto XDiagrams - Dashboard",
   "url": "https://api.sheetbest.com/sheets/28f15681-b2ab-47a0-bbcb-205d142d9ef7/tabs/Mobile",
-  "clustersPerRow": "4 4 4 4",
-  "showThemeToggle": true,
-  "spacing": 60,
-  "verticalSpacing": 140,
-  "nodeWidth": 120,
-  "nodeHeight": 100
+  "clustersPerRow": "4 4 4 4"
 }
