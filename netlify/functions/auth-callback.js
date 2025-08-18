@@ -204,34 +204,25 @@ exports.handler = async (event, context) => {
             color: white;
         }
         
-        .loader-container {
+        .progress-container {
             margin: 30px 0;
-        }
-        
-        .loader {
-            width: 50px;
-            height: 50px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-top: 3px solid white;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
         }
         
         .progress-bar {
             width: 100%;
-            height: 4px;
+            height: 6px;
             background: rgba(255, 255, 255, 0.2);
-            border-radius: 2px;
-            margin: 20px 0;
+            border-radius: 3px;
             overflow: hidden;
+            margin: 20px 0;
         }
         
         .progress-fill {
             height: 100%;
-            background: white;
-            border-radius: 2px;
+            background: linear-gradient(90deg, #fff, #f0f0f0);
+            border-radius: 3px;
             animation: progress 2s ease-in-out;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
         }
         
         .status {
@@ -251,11 +242,6 @@ exports.handler = async (event, context) => {
         .user-email {
             font-weight: 600;
             color: #fff;
-        }
-        
-        @keyframes spin { 
-            0% { transform: rotate(0deg); } 
-            100% { transform: rotate(360deg); } 
         }
         
         @keyframes pulse {
@@ -283,12 +269,10 @@ exports.handler = async (event, context) => {
         <div class="logo">🚀</div>
         <h2>Configurando tu sesión</h2>
         
-        <div class="loader-container">
-            <div class="loader"></div>
-        </div>
-        
-        <div class="progress-bar">
-            <div class="progress-fill"></div>
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
         </div>
         
         <div class="status">Redirigiendo al diagrama...</div>
