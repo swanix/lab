@@ -24,23 +24,13 @@
     // Router dinámico de proyectos
     async function initializeRouter() {
       try {
-        // Obtener ID del proyecto desde la URL ANTES de verificar autenticación
-        const projectId = ProjectsConfig.getProjectIdFromPath();
-        
-        // Si hay un proyecto específico, guardar la URL de destino
-        if (projectId) {
-          const currentUrl = window.location.pathname + window.location.search;
-          localStorage.setItem('redirect_after_login', currentUrl);
-          console.log(`[Router] Guardando URL de destino: ${currentUrl}`);
-        }
-        
-        // Verificar autenticación
+        // Verificar autenticación (auth.js ya maneja el guardado de URL)
         await checkAuthentication();
         
+        // Obtener ID del proyecto desde la URL
+        const projectId = ProjectsConfig.getProjectIdFromPath();
+        
         if (projectId) {
-          // Limpiar URL de destino ya que estamos autenticados
-          localStorage.removeItem('redirect_after_login');
-          
           // Inicializar proyecto específico ANTES de cargar XDiagrams
           await ProjectsConfig.initializeProject(projectId);
           console.log(`[Router] Proyecto ${projectId} cargado correctamente`);

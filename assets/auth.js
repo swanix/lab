@@ -7,7 +7,13 @@ async function checkAuthentication() {
     const sessionExpires = localStorage.getItem('session_expires');
     
     if (!sessionData || !sessionToken || !sessionExpires) {
-      console.log('[Auth] No hay datos de sesión, redirigiendo a login');
+      console.log('[Auth] No hay datos de sesión, guardando URL y redirigiendo a login');
+      // Guardar URL actual antes de redirigir
+      const currentUrl = window.location.pathname + window.location.search;
+      if (currentUrl !== '/') {
+        localStorage.setItem('redirect_after_login', currentUrl);
+        console.log('[Auth] Guardando URL de destino:', currentUrl);
+      }
       window.location.href = '/login.html';
       return;
     }
@@ -17,7 +23,13 @@ async function checkAuthentication() {
     const expiresAt = parseInt(sessionExpires);
     
     if (now > expiresAt) {
-      console.log('[Auth] Sesión expirada, limpiando datos y redirigiendo a login');
+      console.log('[Auth] Sesión expirada, guardando URL y redirigiendo a login');
+      // Guardar URL actual antes de redirigir
+      const currentUrl = window.location.pathname + window.location.search;
+      if (currentUrl !== '/') {
+        localStorage.setItem('redirect_after_login', currentUrl);
+        console.log('[Auth] Guardando URL de destino:', currentUrl);
+      }
       localStorage.removeItem('session_data');
       localStorage.removeItem('session_token');
       localStorage.removeItem('session_expires');
@@ -49,7 +61,13 @@ async function checkAuthentication() {
     const data = await response.json();
     
     if (!data.authenticated) {
-      console.log('[Auth] Usuario no autenticado, limpiando datos y redirigiendo a login');
+      console.log('[Auth] Usuario no autenticado, guardando URL y redirigiendo a login');
+      // Guardar URL actual antes de redirigir
+      const currentUrl = window.location.pathname + window.location.search;
+      if (currentUrl !== '/') {
+        localStorage.setItem('redirect_after_login', currentUrl);
+        console.log('[Auth] Guardando URL de destino:', currentUrl);
+      }
       localStorage.removeItem('session_data');
       localStorage.removeItem('session_token');
       localStorage.removeItem('session_expires');
@@ -61,6 +79,12 @@ async function checkAuthentication() {
     
   } catch (error) {
     console.error('[Auth] Error verificando autenticación:', error);
+    // Guardar URL actual antes de redirigir
+    const currentUrl = window.location.pathname + window.location.search;
+    if (currentUrl !== '/') {
+      localStorage.setItem('redirect_after_login', currentUrl);
+      console.log('[Auth] Guardando URL de destino:', currentUrl);
+    }
     // Limpiar datos de sesión en caso de error
     localStorage.removeItem('session_data');
     localStorage.removeItem('session_token');
