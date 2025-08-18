@@ -34,12 +34,13 @@ exports.handler = async (event, context) => {
         const clientId = process.env.AUTH0_CLIENT_ID;
         const redirectUri = `${process.env.AUTH0_BASE_URL}/api/auth/callback`;
         
-        // Redirigir a Auth0 sin prompt=none para forzar la autenticación
+        // Redirigir directamente a Google sin página intermedia de Auth0
         const authUrl = `https://${auth0Domain}/authorize?` +
           `response_type=code&` +
           `client_id=${clientId}&` +
           `redirect_uri=${encodeURIComponent(redirectUri)}&` +
           `scope=openid%20profile%20email&` +
+          `connection=google-oauth2&` +
           `state=${Math.random().toString(36).substring(7)}`;
         
         return {
