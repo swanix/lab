@@ -7,7 +7,7 @@ async function checkAuthentication() {
     const sessionExpires = localStorage.getItem('session_expires');
     
     if (!sessionData || !sessionToken || !sessionExpires) {
-      console.log('🔐 [Auth] No hay datos de sesión, redirigiendo a login');
+      console.log('[Auth] No hay datos de sesión, redirigiendo a login');
       window.location.href = '/login.html';
       return;
     }
@@ -17,7 +17,7 @@ async function checkAuthentication() {
     const expiresAt = parseInt(sessionExpires);
     
     if (now > expiresAt) {
-      console.log('🔐 [Auth] Sesión expirada, limpiando datos y redirigiendo a login');
+      console.log('[Auth] Sesión expirada, limpiando datos y redirigiendo a login');
       localStorage.removeItem('session_data');
       localStorage.removeItem('session_token');
       localStorage.removeItem('session_expires');
@@ -49,7 +49,7 @@ async function checkAuthentication() {
     const data = await response.json();
     
     if (!data.authenticated) {
-      console.log('🔐 [Auth] Usuario no autenticado, limpiando datos y redirigiendo a login');
+      console.log('[Auth] Usuario no autenticado, limpiando datos y redirigiendo a login');
       localStorage.removeItem('session_data');
       localStorage.removeItem('session_token');
       localStorage.removeItem('session_expires');
@@ -57,10 +57,10 @@ async function checkAuthentication() {
       return;
     }
     
-    console.log('✅ [Auth] Usuario autenticado:', data.user.email);
+    console.log('[Auth] Usuario autenticado:', data.user.email);
     
   } catch (error) {
-    console.error('❌ [Auth] Error verificando autenticación:', error);
+    console.error('[Auth] Error verificando autenticación:', error);
     // Limpiar datos de sesión en caso de error
     localStorage.removeItem('session_data');
     localStorage.removeItem('session_token');
@@ -90,7 +90,7 @@ function setupLogout() {
         // Redirigir a logout del servidor
         window.location.href = '/api/logout';
       } catch (error) {
-        console.error('❌ [Auth] Error en logout:', error);
+        console.error('[Auth] Error en logout:', error);
         // Redirigir de todas formas
         window.location.href = '/login.html';
       }

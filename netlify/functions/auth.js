@@ -18,9 +18,9 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    console.log('🔍 [Auth] Function invoked with parameters:', event.queryStringParameters);
+    console.log('[Auth] Function invoked with parameters:', event.queryStringParameters);
     const { action } = event.queryStringParameters || {};
-    console.log('🔍 [Auth] Action parameter:', action);
+    console.log('[Auth] Action parameter:', action);
     
     if (action === 'login') {
       // Redirigir a Auth0 para login
@@ -54,7 +54,7 @@ exports.handler = async (event, context) => {
       };
     }
     
-    console.log('❌ [Auth] No valid action found, action was:', action);
+    console.log('[Auth] No valid action found, action was:', action);
     return {
       statusCode: 400,
       headers,
@@ -62,7 +62,7 @@ exports.handler = async (event, context) => {
     };
 
   } catch (error) {
-    console.error('❌ [Auth] Error:', error);
+    console.error('[Auth] Error:', error);
     return {
       statusCode: 500,
       headers,

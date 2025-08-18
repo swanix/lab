@@ -19,7 +19,7 @@ exports.handler = async (event, context) => {
     const { code, state, error, error_description } = event.queryStringParameters || {};
     
     if (error) {
-      console.error('❌ [Auth Callback] Auth0 error:', error, error_description);
+      console.error('[Auth Callback] Error:', error, error_description);
       
       // Si el error es "login_required", redirigir al login con autenticación completa
       if (error === 'login_required') {
@@ -81,7 +81,7 @@ exports.handler = async (event, context) => {
     }
     
     if (!code) {
-      console.error('❌ [Auth Callback] No authorization code provided');
+      console.error('[Auth Callback] No authorization code provided');
       return {
         statusCode: 400,
         headers,
@@ -107,7 +107,7 @@ exports.handler = async (event, context) => {
     const tokenData = await tokenResponse.json();
     
     if (!tokenResponse.ok) {
-      console.error('❌ [Auth Callback] Error obteniendo token:', tokenData);
+      console.error('[Auth Callback] Error obteniendo token:', tokenData);
       return {
         statusCode: 400,
         headers,
@@ -125,7 +125,7 @@ exports.handler = async (event, context) => {
     const userData = await userResponse.json();
     
     if (!userResponse.ok) {
-      console.error('❌ [Auth Callback] Error obteniendo información del usuario:', userData);
+      console.error('[Auth Callback] Error obteniendo información del usuario:', userData);
       return {
         statusCode: 400,
         headers,
@@ -309,7 +309,7 @@ exports.handler = async (event, context) => {
     };
 
   } catch (error) {
-    console.error('❌ [Auth Callback] Error:', error);
+    console.error('[Auth Callback] Error:', error);
     return {
       statusCode: 500,
       headers,

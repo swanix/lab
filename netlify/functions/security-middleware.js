@@ -88,7 +88,7 @@ class SecurityMiddleware {
       ...details
     };
 
-    console.log(`🔒 [Security] ${JSON.stringify(logEntry)}`);
+    console.log(`[Security] ${JSON.stringify(logEntry)}`);
   }
 
   static generateSecureToken() {

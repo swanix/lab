@@ -47,7 +47,7 @@ exports.handler = async (event, context) => {
     const clientIP = event.headers['client-ip'] || event.headers['x-forwarded-for'] || 'unknown';
     
     if (!checkRateLimit(clientIP)) {
-      console.warn(`🚨 [Auth Check] Rate limit excedido - IP: ${clientIP}`);
+      console.warn(`[Auth Check] Rate limit excedido - IP: ${clientIP}`);
       return {
         statusCode: 429,
         headers,
@@ -59,7 +59,7 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // 🔐 Verificar datos de sesión desde el body
+    // Verificar datos de sesión desde el body
     let sessionData, sessionToken;
     
     if (event.httpMethod === 'POST') {
@@ -68,7 +68,7 @@ exports.handler = async (event, context) => {
         sessionData = body.sessionData;
         sessionToken = body.sessionToken;
       } catch (error) {
-        console.warn(`🚨 [Auth Check] Error parseando body - IP: ${clientIP}`);
+        console.warn(`[Auth Check] Error parseando body - IP: ${clientIP}`);
         return {
           statusCode: 400,
           headers,
@@ -81,7 +81,7 @@ exports.handler = async (event, context) => {
     }
     
     if (!sessionData || !sessionToken) {
-      console.warn(`🚨 [Auth Check] No hay datos de sesión - IP: ${clientIP}`);
+      console.warn(`[Auth Check] No hay datos de sesión - IP: ${clientIP}`);
       return {
         statusCode: 401,
         headers,
@@ -98,7 +98,7 @@ exports.handler = async (event, context) => {
     try {
       parsedSession = JSON.parse(sessionData);
     } catch (error) {
-      console.warn(`🚨 [Auth Check] Error parseando sesión - IP: ${clientIP}`);
+      console.warn(`[Auth Check] Error parseando sesión - IP: ${clientIP}`);
       return {
         statusCode: 401,
         headers,
@@ -112,7 +112,7 @@ exports.handler = async (event, context) => {
 
     // Verificar que la sesión no haya expirado
     if (parsedSession.expires_at && Date.now() > parsedSession.expires_at) {
-      console.warn(`🚨 [Auth Check] Sesión expirada - IP: ${clientIP}, Email: ${parsedSession.user?.email}`);
+      console.warn(`[Auth Check] Sesión expirada - IP: ${clientIP}, Email: ${parsedSession.user?.email}`);
       return {
         statusCode: 401,
         headers,
@@ -126,7 +126,7 @@ exports.handler = async (event, context) => {
 
     // Verificar que el usuario tenga un email de Google
     if (!parsedSession.user || !parsedSession.user.email || !parsedSession.user.email.endsWith('@gmail.com')) {
-      console.warn(`🚨 [Auth Check] Intento de acceso con email no autorizado - IP: ${clientIP}, Email: ${parsedSession.user?.email}`);
+      console.warn(`[Auth Check] Intento de acceso con email no autorizado - IP: ${clientIP}, Email: ${parsedSession.user?.email}`);
       return {
         statusCode: 403,
         headers,
@@ -138,8 +138,8 @@ exports.handler = async (event, context) => {
       };
     }
     
-    // ✅ Acceso autorizado
-    console.log(`✅ [Auth Check] Acceso autorizado - IP: ${clientIP}, Email: ${parsedSession.user.email}`);
+    // Acceso autorizado
+    console.log(`[Auth Check] Acceso autorizado - IP: ${clientIP}, Email: ${parsedSession.user.email}`);
     
     return {
       statusCode: 200,
@@ -156,7 +156,7 @@ exports.handler = async (event, context) => {
     };
 
   } catch (error) {
-    console.error('❌ [Auth Check] Error verificando autenticación:', error);
+    console.error('[Auth Check] Error verificando autenticación:', error);
     return {
       statusCode: 500,
       headers,

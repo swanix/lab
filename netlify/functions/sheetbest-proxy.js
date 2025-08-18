@@ -22,7 +22,7 @@ exports.handler = async (event, context) => {
     const apiKey = process.env.SHEETBEST_API_KEY;
     
     if (!apiKey) {
-      console.error('❌ [SheetBest Proxy] API Key no configurada');
+      console.error('[SheetBest Proxy] API Key no configurada');
       return {
         statusCode: 500,
         headers,
@@ -51,7 +51,7 @@ exports.handler = async (event, context) => {
 
     // Validar que la URL es de SheetBest
     if (!url.includes('api.sheetbest.com')) {
-      console.warn('🚨 [SheetBest Proxy] Intento de acceso a URL no autorizada:', url);
+      console.warn('[SheetBest Proxy] Intento de acceso a URL no autorizada:', url);
       return {
         statusCode: 400,
         headers,
@@ -63,7 +63,7 @@ exports.handler = async (event, context) => {
       };
     }
 
-    console.log('✅ [SheetBest Proxy] Petición autorizada a:', url);
+    console.log('[SheetBest Proxy] Petición autorizada a:', url);
 
     const response = await fetch(url, {
       headers: {
@@ -75,7 +75,7 @@ exports.handler = async (event, context) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`❌ [SheetBest Proxy] Error from SheetBest: ${response.status} - ${errorText}`);
+      console.error(`[SheetBest Proxy] Error from SheetBest: ${response.status} - ${errorText}`);
       return {
         statusCode: response.status,
         headers,
@@ -89,7 +89,7 @@ exports.handler = async (event, context) => {
 
     const data = await response.json();
     
-    console.log('✅ [SheetBest Proxy] Petición exitosa');
+    console.log('[SheetBest Proxy] Petición exitosa');
     
     return {
       statusCode: 200,
@@ -98,7 +98,7 @@ exports.handler = async (event, context) => {
     };
 
   } catch (error) {
-    console.error('❌ [SheetBest Proxy] Error proxying request:', error);
+    console.error('[SheetBest Proxy] Error proxying request:', error);
     return {
       statusCode: 500,
       headers,

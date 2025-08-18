@@ -30,6 +30,11 @@ src/js/modules/loader/config/api-keys.production.js
 
 # OS-specific files and folders
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
 
 # Editor/IDE settings
@@ -45,6 +50,8 @@ Thumbs.db
 *.swp
 *.tmp
 *.local
+*.bak
+*.orig
 
 # Vitest preview output
 .vitest/
@@ -52,4 +59,7 @@ Thumbs.db
 # Dependency lockfiles
 yarn.lock
 package-lock.json
-pnpm-lock.yamlsrc/js/config/api-keys.js
+pnpm-lock.yaml
+
+# Netlify
+.netlify/

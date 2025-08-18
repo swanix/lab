@@ -18,7 +18,7 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    console.log('🚪 [Logout] Procesando logout del usuario');
+    console.log('[Logout] Procesando logout del usuario');
 
     // Redirigir al login (los datos de sesión se limpian en el frontend)
     const loginUrl = `${process.env.AUTH0_BASE_URL}/login.html`;
@@ -33,7 +33,7 @@ exports.handler = async (event, context) => {
     };
 
   } catch (error) {
-    console.error('❌ [Logout] Error:', error);
+    console.error('[Logout] Error:', error);
     
     // En caso de error, redirigir al login de todas formas
     const loginUrl = `${process.env.AUTH0_BASE_URL}/login.html`;
