@@ -24,14 +24,21 @@
     // Router dinámico de proyectos
     async function initializeRouter() {
       try {
+        console.log('[Router] Iniciando router...');
+        console.log('[Router] URL actual:', window.location.pathname + window.location.search);
+        
         // Verificar autenticación (auth.js ya maneja el guardado de URL)
+        console.log('[Router] Verificando autenticación...');
         await checkAuthentication();
+        console.log('[Router] Autenticación verificada exitosamente');
         
         // Obtener ID del proyecto desde la URL
         const projectId = ProjectsConfig.getProjectIdFromPath();
+        console.log('[Router] Project ID detectado:', projectId);
         
         if (projectId) {
           // Inicializar proyecto específico ANTES de cargar XDiagrams
+          console.log('[Router] Inicializando proyecto:', projectId);
           await ProjectsConfig.initializeProject(projectId);
           console.log(`[Router] Proyecto ${projectId} cargado correctamente`);
           
@@ -39,6 +46,7 @@
           loadXDiagrams();
         } else {
           // Mostrar página de proyectos disponibles
+          console.log('[Router] Mostrando lista de proyectos');
           showProjectsList();
         }
         

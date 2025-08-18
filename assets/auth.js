@@ -1,18 +1,30 @@
 // Verificar autenticación usando localStorage
 async function checkAuthentication() {
   try {
+    console.log('[Auth] Iniciando verificación de autenticación...');
+    console.log('[Auth] URL actual:', window.location.pathname + window.location.search);
+    
     // Verificar si hay datos de sesión en localStorage
     const sessionData = localStorage.getItem('session_data');
     const sessionToken = localStorage.getItem('session_token');
     const sessionExpires = localStorage.getItem('session_expires');
     
+    console.log('[Auth] Datos de sesión encontrados:', {
+      sessionData: !!sessionData,
+      sessionToken: !!sessionToken,
+      sessionExpires: !!sessionExpires
+    });
+    
     if (!sessionData || !sessionToken || !sessionExpires) {
       console.log('[Auth] No hay datos de sesión, guardando URL y redirigiendo a login');
       // Guardar URL actual antes de redirigir
       const currentUrl = window.location.pathname + window.location.search;
+      console.log('[Auth] URL a guardar:', currentUrl);
       if (currentUrl !== '/') {
         localStorage.setItem('redirect_after_login', currentUrl);
-        console.log('[Auth] Guardando URL de destino:', currentUrl);
+        console.log('[Auth] ✅ URL guardada en localStorage:', currentUrl);
+      } else {
+        console.log('[Auth] ⚠️ No guardando URL porque es la raíz (/)');
       }
       window.location.href = '/login.html';
       return;
