@@ -19,10 +19,10 @@
   to = "/.netlify/functions/:splat"
   status = 200
 
-# Redirección específica para capturar el callback de Auth0
+# Redirección específica para el callback de Auth0
 [[redirects]]
   from = "/api/auth/callback"
-  to = "/.netlify/functions/capture-callback"
+  to = "/.netlify/functions/auth-callback"
   status = 200
 
 # Redirección principal a login

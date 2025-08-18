@@ -1,14 +1,6 @@
 const { ManagementClient } = require('auth0');
 
 exports.handler = async (event, context) => {
-  console.log('🚀 [Auth Function] Function invoked');
-  console.log('📋 [Auth Function] Event details:', {
-    httpMethod: event.httpMethod,
-    path: event.path,
-    queryStringParameters: event.queryStringParameters,
-    headers: event.headers
-  });
-  
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
@@ -34,13 +26,6 @@ exports.handler = async (event, context) => {
       const clientId = process.env.AUTH0_CLIENT_ID;
       const redirectUri = `${process.env.AUTH0_BASE_URL}/api/auth/callback`;
       
-      console.log('🔍 [Auth] Configuración:', {
-        auth0Domain,
-        clientId,
-        redirectUri,
-        baseUrl: process.env.AUTH0_BASE_URL
-      });
-      
       // Detectar theme del usuario desde headers o parámetros
       const userAgent = event.headers['user-agent'] || '';
       const prefersDark = userAgent.includes('dark') || 
@@ -62,114 +47,6 @@ exports.handler = async (event, context) => {
         headers: {
           ...headers,
           'Location': authUrl
-        },
-        body: ''
-      };
-    }
-    
-    if (action === 'callback' || event.path.includes('/callback')) {
-      // Manejar callback de Auth0
-      console.log('🔄 [Auth Function] Processing callback');
-      const { code, state, error, error_description } = event.queryStringParameters || {};
-      
-      if (error) {
-        console.error('❌ [Auth Function] Auth0 error:', error, error_description);
-        
-        // Si el error es "access_denied", redirigir a la página de forbidden
-        if (error === 'access_denied') {
-          const forbiddenUrl = `${process.env.AUTH0_BASE_URL}/forbidden.html?error=${encodeURIComponent(error)}&error_description=${encodeURIComponent(error_description)}`;
-          
-          return {
-            statusCode: 302,
-            headers: {
-              ...headers,
-              'Location': forbiddenUrl
-            },
-            body: ''
-          };
-        }
-        
-        // Para otros errores, redirigir al login
-        const loginUrl = `${process.env.AUTH0_BASE_URL}/login.html?error=${encodeURIComponent(error)}&error_description=${encodeURIComponent(error_description)}`;
-        
-        return {
-          statusCode: 302,
-          headers: {
-            ...headers,
-            'Location': loginUrl
-          },
-          body: ''
-        };
-      }
-      
-      if (!code) {
-        return {
-          statusCode: 400,
-          headers,
-          body: JSON.stringify({ error: 'Código de autorización no proporcionado' })
-        };
-      }
-      
-      // Intercambiar código por token
-      const tokenResponse = await fetch(`https://${process.env.AUTH0_DOMAIN}/oauth/token`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          grant_type: 'authorization_code',
-          client_id: process.env.AUTH0_CLIENT_ID,
-          client_secret: process.env.AUTH0_CLIENT_SECRET,
-          code: code,
-          redirect_uri: `${process.env.AUTH0_BASE_URL}/api/auth/callback`
-        })
-      });
-      
-      const tokenData = await tokenResponse.json();
-      
-      if (!tokenResponse.ok) {
-        console.error('❌ [Auth] Error obteniendo token:', tokenData);
-        return {
-          statusCode: 400,
-          headers,
-          body: JSON.stringify({ error: 'Error en autenticación' })
-        };
-      }
-      
-      // Obtener información del usuario
-      const userResponse = await fetch(`https://${process.env.AUTH0_DOMAIN}/userinfo`, {
-        headers: {
-          'Authorization': `Bearer ${tokenData.access_token}`
-        }
-      });
-      
-      const userData = await userResponse.json();
-      
-      // Crear sesión simple (en producción usarías cookies seguras)
-      const session = {
-        user: userData,
-        access_token: tokenData.access_token,
-        expires_at: Date.now() + (tokenData.expires_in * 1000)
-      };
-      
-      // Redirigir al diagrama con sesión
-      return {
-        statusCode: 302,
-        headers: {
-          ...headers,
-          'Location': `${process.env.AUTH0_BASE_URL}/index.html?session=${encodeURIComponent(JSON.stringify(session))}`
-        },
-        body: ''
-      };
-    }
-    
-    if (action === 'logout') {
-      // Logout simple
-      return {
-        statusCode: 302,
-        headers: {
-          ...headers,
-          'Location': `${process.env.AUTH0_BASE_URL}/login.html`
         },
         body: ''
       };

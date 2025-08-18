@@ -1,8 +1,6 @@
 // Función simplificada de verificación de autenticación
 
 exports.handler = async (event, context) => {
-  console.log('🔐 [Auth Check] Verificando autenticación...');
-  
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
@@ -20,14 +18,10 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    // Obtener sesión desde query parameters (simplificado)
+    // Obtener sesión desde query parameters
     const { session } = event.queryStringParameters || {};
     
-    console.log('🔍 [Auth Check] Query parameters:', event.queryStringParameters);
-    console.log('🔍 [Auth Check] Session parameter:', session ? 'Presente' : 'Ausente');
-    
     if (!session) {
-      console.log('❌ [Auth Check] No hay sesión');
       return {
         statusCode: 401,
         headers,
@@ -41,15 +35,8 @@ exports.handler = async (event, context) => {
 
     let sessionData;
     try {
-      console.log('🔍 [Auth Check] Intentando parsear sesión...');
       sessionData = JSON.parse(decodeURIComponent(session));
-      console.log('✅ [Auth Check] Sesión parseada correctamente:', {
-        userEmail: sessionData.user?.email,
-        expiresAt: sessionData.expires_at ? new Date(sessionData.expires_at).toISOString() : 'No expira'
-      });
     } catch (error) {
-      console.log('❌ [Auth Check] Error parseando sesión:', error.message);
-      console.log('❌ [Auth Check] Session raw:', session);
       return {
         statusCode: 401,
         headers,
@@ -63,7 +50,6 @@ exports.handler = async (event, context) => {
 
     // Verificar que la sesión no haya expirado
     if (sessionData.expires_at && Date.now() > sessionData.expires_at) {
-      console.log('❌ [Auth Check] Sesión expirada');
       return {
         statusCode: 401,
         headers,
@@ -77,7 +63,6 @@ exports.handler = async (event, context) => {
 
     // Verificar que el usuario tenga un email de Google
     if (!sessionData.user || !sessionData.user.email || !sessionData.user.email.endsWith('@gmail.com')) {
-      console.log('❌ [Auth Check] Email no válido:', sessionData.user?.email);
       return {
         statusCode: 403,
         headers,
@@ -88,8 +73,6 @@ exports.handler = async (event, context) => {
         })
       };
     }
-
-    console.log('✅ [Auth Check] Usuario autenticado correctamente');
     
     return {
       statusCode: 200,
