@@ -28,6 +28,13 @@ exports.handler = async (event, context) => {
       const clientId = process.env.AUTH0_CLIENT_ID;
       const redirectUri = `${process.env.AUTH0_BASE_URL}/api/auth/callback`;
       
+      console.log('🔍 [Auth] Configuración:', {
+        auth0Domain,
+        clientId,
+        redirectUri,
+        baseUrl: process.env.AUTH0_BASE_URL
+      });
+      
       const authUrl = `https://${auth0Domain}/authorize?` +
         `response_type=code&` +
         `client_id=${clientId}&` +
@@ -45,7 +52,7 @@ exports.handler = async (event, context) => {
       };
     }
     
-    if (action === 'callback') {
+    if (action === 'callback' || event.path.includes('/callback')) {
       // Manejar callback de Auth0
       const { code } = event.queryStringParameters || {};
       
