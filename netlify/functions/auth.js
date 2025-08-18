@@ -2,6 +2,12 @@ const { ManagementClient } = require('auth0');
 
 exports.handler = async (event, context) => {
   console.log('🚀 [Auth Function] Function invoked');
+  console.log('📋 [Auth Function] Event details:', {
+    httpMethod: event.httpMethod,
+    path: event.path,
+    queryStringParameters: event.queryStringParameters,
+    headers: event.headers
+  });
   
   const headers = {
     'Access-Control-Allow-Origin': '*',
@@ -54,7 +60,17 @@ exports.handler = async (event, context) => {
     
     if (action === 'callback' || event.path.includes('/callback')) {
       // Manejar callback de Auth0
-      const { code } = event.queryStringParameters || {};
+      console.log('🔄 [Auth Function] Processing callback');
+      const { code, state, error, error_description } = event.queryStringParameters || {};
+      
+      if (error) {
+        console.error('❌ [Auth Function] Auth0 error:', error, error_description);
+        return {
+          statusCode: 400,
+          headers,
+          body: JSON.stringify({ error, error_description })
+        };
+      }
       
       if (!code) {
         return {
