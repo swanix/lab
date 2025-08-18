@@ -11,11 +11,20 @@
 <body class="dashboard-page">
   <div id="app"></div>
   
-  <div id="logout-container">
-    <button id="logout-btn">
-      <span>🚪</span>
-      Cerrar Sesión
+  <div id="header-controls">
+    <button id="projects-btn" title="Listado de Proyectos">
+      <svg class="grid-icon" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M3 3v7h7V3H3zm9 0v7h7V3h-7zM3 14v7h7v-7H3zm9 0v7h7v-7h-7z"/>
+      </svg>
+      Proyectos
     </button>
+    
+    <div id="logout-container">
+      <button id="logout-btn">
+        <span>•</span>
+        Cerrar Sesión
+      </button>
+    </div>
   </div>
   
   <script src="/assets/auth.js"></script>
@@ -47,8 +56,8 @@
           showProjectsList();
         }
         
-        // Configurar logout
-        setupLogout();
+        // Configurar controles de header
+        setupHeaderControls();
         
       } catch (error) {
         console.error('[Router] Error inicializando router:', error);
@@ -77,8 +86,8 @@
         
         console.log('[Router] Grid de proyectos generado dinámicamente');
         
-        // Configurar logout en la página de proyectos
-        setupLogout();
+        // Configurar controles de header en la página de proyectos
+        setupHeaderControls();
         
       } catch (error) {
         console.error('[Router] Error cargando proyectos:', error);
@@ -87,15 +96,60 @@
           <div class="dashboard-container">
             <h1>Error al cargar proyectos</h1>
             <p>No se pudieron cargar los proyectos. Intenta recargar la página.</p>
-            <div id="logout-container">
-              <button id="logout-btn">
-                <span>•</span>
-                Cerrar Sesión
+            <div id="header-controls">
+              <button id="projects-btn" title="Listado de Proyectos">
+                <svg class="grid-icon" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M3 3v7h7V3H3zm9 0v7h7V3h-7zM3 14v7h7v-7H3zm9 0v7h7v-7h-7z"/>
+                </svg>
+                Proyectos
               </button>
+              <div id="logout-container">
+                <button id="logout-btn">
+                  <span>•</span>
+                  Cerrar Sesión
+                </button>
+              </div>
             </div>
           </div>
         `;
-        setupLogout();
+        setupHeaderControls();
+      }
+    }
+
+    function setupHeaderControls() {
+      // Configurar botón de proyectos
+      const projectsBtn = document.getElementById('projects-btn');
+      if (projectsBtn) {
+        projectsBtn.addEventListener('click', () => {
+          window.location.href = '/';
+        });
+      }
+      
+      // Configurar botón de logout
+      const logoutContainer = document.getElementById('logout-container');
+      const logoutBtn = document.getElementById('logout-btn');
+      
+      if (logoutContainer && logoutBtn) {
+        logoutContainer.style.display = 'block';
+        
+        logoutBtn.addEventListener('click', async () => {
+          try {
+            console.log('[Auth] Iniciando logout...');
+            
+            // Limpiar datos de sesión local
+            localStorage.removeItem('session_data');
+            localStorage.removeItem('session_token');
+            localStorage.removeItem('session_expires');
+            
+            // Redirigir a logout del servidor
+            window.location.href = '/api/logout';
+            
+          } catch (error) {
+            console.error('[Auth] Error en logout:', error);
+            // Redirigir de todas formas
+            window.location.href = '/api/logout';
+          }
+        });
       }
     }
 

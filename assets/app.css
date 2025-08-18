@@ -489,13 +489,53 @@ body.dashboard-page {
   margin: 0;
 }
 
-/* ===== ESTILOS PARA LOGOUT ===== */
+/* ===== ESTILOS PARA CONTROLES DEL HEADER ===== */
 
-#logout-container {
+#header-controls {
   position: fixed;
   top: 1rem;
   right: 1rem;
   z-index: 1000;
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+#projects-btn {
+  background: var(--color-gray-800);
+  color: var(--color-white);
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: 0.025em;
+}
+
+#projects-btn:hover {
+  background: var(--color-gray-700);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+#projects-btn:active {
+  transform: translateY(0);
+}
+
+.grid-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* ===== ESTILOS PARA LOGOUT ===== */
+
+#logout-container {
+  display: block;
 }
 
 #logout-btn {
@@ -555,14 +595,21 @@ body.dashboard-page {
     grid-template-columns: 1fr;
   }
   
-  #logout-container {
+  #header-controls {
     top: 0.5rem;
     right: 0.5rem;
+    gap: 0.5rem;
   }
   
+  #projects-btn,
   #logout-btn {
     padding: 8px 12px;
     font-size: 12px;
+  }
+  
+  .grid-icon {
+    width: 16px;
+    height: 16px;
   }
 }
 

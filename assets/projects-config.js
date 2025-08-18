@@ -108,11 +108,19 @@ class ProjectsConfig {
         <div class="dashboard-container">
           <h1>No hay proyectos disponibles</h1>
           <p>No se encontraron proyectos configurados en el sistema.</p>
-          <div id="logout-container">
-            <button id="logout-btn">
-              <span>•</span>
-              Cerrar Sesión
+          <div id="header-controls">
+            <button id="projects-btn" title="Listado de Proyectos">
+              <svg class="grid-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 3v7h7V3H3zm9 0v7h7V3h-7zM3 14v7h7v-7H3zm9 0v7h7v-7h-7z"/>
+              </svg>
+              Proyectos
             </button>
+            <div id="logout-container">
+              <button id="logout-btn">
+                <span>•</span>
+                Cerrar Sesión
+              </button>
+            </div>
           </div>
         </div>
       `;
@@ -135,11 +143,19 @@ class ProjectsConfig {
         <div class="projects-grid">
           ${projectsHTML}
         </div>
-        <div id="logout-container">
-          <button id="logout-btn">
-            <span>•</span>
-            Cerrar Sesión
+        <div id="header-controls">
+          <button id="projects-btn" title="Listado de Proyectos">
+            <svg class="grid-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M3 3v7h7V3H3zm9 0v7h7V3h-7zM3 14v7h7v-7H3zm9 0v7h7v-7h-7z"/>
+            </svg>
+            Proyectos
           </button>
+          <div id="logout-container">
+            <button id="logout-btn">
+              <span>•</span>
+              Cerrar Sesión
+            </button>
+          </div>
         </div>
       </div>
     `;
