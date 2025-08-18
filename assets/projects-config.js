@@ -41,10 +41,10 @@ class ProjectsConfig {
       // Mostrar página de error
       document.body.innerHTML = `
         <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
-          <h1>❌ Error</h1>
-          <p>No se pudo cargar el proyecto: ${projectId}</p>
-          <p>${error.message}</p>
-          <a href="/" style="color: #007bff;">Volver al inicio</a>
+          <h1>❌ Proyecto no encontrado</h1>
+          <p>El proyecto <strong>${projectId}</strong> no existe o no está disponible.</p>
+          <p style="color: #666; font-size: 0.9em;">Proyectos disponibles: project-01, project-02</p>
+          <a href="/" style="color: #007bff; text-decoration: none; padding: 10px 20px; border: 1px solid #007bff; border-radius: 5px; display: inline-block; margin-top: 20px;">← Volver al inicio</a>
         </div>
       `;
       throw error;
