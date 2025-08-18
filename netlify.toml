@@ -19,11 +19,7 @@
   to = "/.netlify/functions/auth"
   status = 200
 
-# Redirecciones para funciones serverless
-[[redirects]]
-  from = "/.netlify/functions/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
+# Las funciones de Netlify se manejan automáticamente, no necesitan redirección
 
 # Redirecciones para APIs
 [[redirects]]

@@ -1,13 +1,4 @@
-const { getSession } = require('@auth0/nextjs-auth0');
-
-// Configurar Auth0 con las variables de entorno correctas
-const config = {
-  secret: process.env.AUTH0_SECRET,
-  baseURL: process.env.AUTH0_BASE_URL,
-  issuerBaseURL: `https://${process.env.AUTH0_DOMAIN}`,
-  clientID: process.env.AUTH0_CLIENT_ID,
-  clientSecret: process.env.AUTH0_CLIENT_SECRET
-};
+// Función simplificada de verificación de autenticación
 
 exports.handler = async (event, context) => {
   console.log('🔐 [Auth Check] Verificando autenticación...');
