@@ -23,6 +23,9 @@ exports.handler = async (event, context) => {
     // Obtener sesión desde query parameters (simplificado)
     const { session } = event.queryStringParameters || {};
     
+    console.log('🔍 [Auth Check] Query parameters:', event.queryStringParameters);
+    console.log('🔍 [Auth Check] Session parameter:', session ? 'Presente' : 'Ausente');
+    
     if (!session) {
       console.log('❌ [Auth Check] No hay sesión');
       return {
@@ -38,9 +41,15 @@ exports.handler = async (event, context) => {
 
     let sessionData;
     try {
+      console.log('🔍 [Auth Check] Intentando parsear sesión...');
       sessionData = JSON.parse(decodeURIComponent(session));
+      console.log('✅ [Auth Check] Sesión parseada correctamente:', {
+        userEmail: sessionData.user?.email,
+        expiresAt: sessionData.expires_at ? new Date(sessionData.expires_at).toISOString() : 'No expira'
+      });
     } catch (error) {
-      console.log('❌ [Auth Check] Sesión inválida');
+      console.log('❌ [Auth Check] Error parseando sesión:', error.message);
+      console.log('❌ [Auth Check] Session raw:', session);
       return {
         statusCode: 401,
         headers,
