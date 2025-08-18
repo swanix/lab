@@ -461,6 +461,21 @@ body.dashboard-page {
   box-shadow: var(--shadow-md);
 }
 
+.project-logo {
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 48px;
+}
+
+.project-logo img {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  box-shadow: var(--shadow-sm);
+}
+
 .project-card h3 {
   font-size: 1.25rem;
   font-weight: 600;

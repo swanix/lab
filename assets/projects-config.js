@@ -22,6 +22,7 @@ class ProjectsConfig {
       window.$xDiagrams = {
         url: config.url,
         title: config.title,
+        logo: `/projects/${projectId}/img/logo.svg`,
         clustersPerRow: config.clustersPerRow,
         showThemeToggle: config.showThemeToggle,
         spacing: config.spacing,
@@ -119,6 +120,9 @@ class ProjectsConfig {
 
     const projectsHTML = projects.map(project => `
       <a href="${project.url}" class="project-card">
+        <div class="project-logo">
+          <img src="/projects/${project.id}/img/logo.svg" alt="${project.title}" onerror="this.style.display='none'">
+        </div>
         <h3>${project.title}</h3>
         <p>${project.description}</p>
       </a>
@@ -146,6 +150,8 @@ class ProjectsConfig {
     console.log(`[ProjectsConfig] Para agregar el proyecto '${projectId}':`);
     console.log(`1. Crear carpeta: projects/${projectId}/`);
     console.log(`2. Crear archivo: projects/${projectId}/config.json`);
-    console.log(`3. Agregar entrada en /projects/projects.json`);
+    console.log(`3. Crear carpeta: projects/${projectId}/img/`);
+    console.log(`4. Crear archivo: projects/${projectId}/img/logo.svg`);
+    console.log(`5. Agregar entrada en /projects/projects.json`);
   }
 }
