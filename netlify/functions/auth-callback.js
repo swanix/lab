@@ -133,6 +133,18 @@ exports.handler = async (event, context) => {
       };
     }
     
+    // Obtener URL de destino desde el state
+    let redirectUrl = null;
+    if (state) {
+      try {
+        const stateData = JSON.parse(decodeURIComponent(state));
+        redirectUrl = stateData.redirect;
+        console.log('[Auth Callback] URL de destino encontrada en state:', redirectUrl);
+      } catch (error) {
+        console.log('[Auth Callback] State no contiene URL de destino, usando index por defecto');
+      }
+    }
+    
     // Crear sesión con access_token (necesario para funcionalidad)
     const session = {
       user: {
@@ -295,15 +307,13 @@ exports.handler = async (event, context) => {
         
         // Redirigir al diagrama o a la URL guardada
         setTimeout(() => {
-            // Verificar si hay una URL de destino guardada
-            const redirectUrl = localStorage.getItem('redirect_after_login');
-            console.log('[Auth Callback] URL guardada encontrada:', redirectUrl);
+            // Usar URL de destino desde el state del servidor
+            const redirectUrl = '${redirectUrl}';
+            console.log('[Auth Callback] URL de destino desde state:', redirectUrl);
             
             if (redirectUrl) {
-                // Limpiar la URL guardada y redirigir
-                localStorage.removeItem('redirect_after_login');
                 const fullUrl = '${process.env.AUTH0_BASE_URL}' + redirectUrl;
-                console.log('[Auth Callback] Redirigiendo a URL guardada:', fullUrl);
+                console.log('[Auth Callback] Redirigiendo a URL de destino:', fullUrl);
                 window.location.href = fullUrl;
             } else {
                 // Redirigir al index principal

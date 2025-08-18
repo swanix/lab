@@ -31,6 +31,15 @@ exports.handler = async (event, context) => {
       const prefersDark = userAgent.includes('dark') || 
                          (event.queryStringParameters && event.queryStringParameters.theme === 'dark');
       
+      // Obtener URL de destino
+      const redirectUrl = event.queryStringParameters && event.queryStringParameters.redirect;
+      console.log('[Auth] URL de destino recibida:', redirectUrl);
+      
+      // Construir state con URL de destino si existe
+      const state = redirectUrl ? 
+        JSON.stringify({ redirect: redirectUrl }) : 
+        Math.random().toString(36).substring(7);
+      
       // Redirigir directamente a Google con selección de cuenta y theme
       const authUrl = `https://${auth0Domain}/authorize?` +
         `response_type=code&` +
@@ -39,8 +48,10 @@ exports.handler = async (event, context) => {
         `scope=openid%20profile%20email&` +
         `connection=google-oauth2&` +
         `prompt=select_account&` +
-        `state=${Math.random().toString(36).substring(7)}&` +
+        `state=${encodeURIComponent(state)}&` +
         `ui_locales=${prefersDark ? 'dark' : 'light'}`;
+      
+      console.log('[Auth] Redirigiendo a Auth0 con state:', state);
       
       return {
         statusCode: 302,

@@ -111,8 +111,21 @@
       
       console.log('🌙 [Login] Theme detectado:', theme);
       
+      // Obtener URL de destino desde parámetros
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirectUrl = urlParams.get('redirect');
+      
+      console.log('[Login] URL de destino:', redirectUrl);
+      
+      // Construir URL de login con parámetros
+      let loginUrl = `/api/auth/login?action=login&theme=${theme}`;
+      if (redirectUrl) {
+        loginUrl += `&redirect=${encodeURIComponent(redirectUrl)}`;
+        console.log('[Login] ✅ Agregando redirect a URL de login:', redirectUrl);
+      }
+      
       // Redirigir a Auth0 para iniciar sesión con Google y theme
-      window.location.href = `/api/auth/login?action=login&theme=${theme}`;
+      window.location.href = loginUrl;
     }
     
     // Verificar si ya está autenticado
