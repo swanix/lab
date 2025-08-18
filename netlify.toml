@@ -13,10 +13,10 @@
   AUTH0_CLIENT_ID = "your-auth0-client-id"
   AUTH0_CLIENT_SECRET = "your-auth0-client-secret"
 
-# Redirecciones para APIs (incluyendo Auth0)
+# Redirección específica para el login de Auth0
 [[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
+  from = "/api/auth/login"
+  to = "/.netlify/functions/auth"
   status = 200
 
 # Redirección específica para el callback de Auth0
@@ -25,10 +25,10 @@
   to = "/.netlify/functions/auth-callback"
   status = 200
 
-# Redirección específica para el login de Auth0
+# Redirecciones para APIs (incluyendo Auth0)
 [[redirects]]
-  from = "/api/auth/login"
-  to = "/.netlify/functions/auth"
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
   status = 200
 
 # Redirección principal a login
