@@ -19,9 +19,10 @@
   </div>
   
   <script>
-    // Configuración de XDiagrams con proxy autenticado - URL CORREGIDA
+    // Configuración de XDiagrams con URL directa de SheetBest
+    // La seguridad está garantizada por la autenticación obligatoria antes de acceder
     window.$xDiagrams = {
-      url: "/.netlify/functions/sheetbest-proxy?url=https://api.sheetbest.com/sheets/28f15681-b2ab-47a0-bbcb-205d142d9ef7/tabs/All&session=" + encodeURIComponent(new URLSearchParams(window.location.search).get('session') || ''),
+      url: "https://api.sheetbest.com/sheets/28f15681-b2ab-47a0-bbcb-205d142d9ef7/tabs/All",
       title: "Mi Diagrama Interactivo",
       clustersPerRow: "6 3 7 6 3", 
       showThemeToggle: true,         

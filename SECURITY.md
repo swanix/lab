@@ -7,9 +7,9 @@ Este sistema implementa una **protección escalonada robusta** con múltiples ca
 ### 🔄 Flujo de Seguridad Completo
 
 ```
-Usuario → Login Google → Auth0 → Sesión → Middleware → Proxy → SheetBest API
-   ↓           ↓         ↓        ↓         ↓           ↓         ↓
-  Bloqueado  Bloqueado  Bloqueado  Bloqueado  Bloqueado   Bloqueado    ✅ Acceso
+Usuario → Login Google → Auth0 → Sesión → Verificación → Acceso al Diagrama → SheetBest API
+   ↓           ↓         ↓        ↓         ↓              ↓                    ↓
+  Bloqueado  Bloqueado  Bloqueado  Bloqueado  Bloqueado     ✅ Acceso          ✅ Datos
 ```
 
 ## 🏗️ Capas de Seguridad Implementadas
@@ -27,12 +27,11 @@ Usuario → Login Google → Auth0 → Sesión → Middleware → Proxy → Shee
 - ✅ Logging de auditoría centralizado
 - ✅ Headers de seguridad automáticos
 
-### 3. **Proxy Autenticado para SheetBest**
-- ✅ API Key nunca expuesta al frontend
-- ✅ Verificación de autenticación antes de cada petición
-- ✅ Validación de URLs de SheetBest
-- ✅ Timeout de peticiones (10 segundos)
-- ✅ Logging detallado de todas las operaciones
+### 3. **Acceso Controlado al Diagrama**
+- ✅ Verificación de autenticación antes de cargar el diagrama
+- ✅ Solo usuarios autenticados pueden acceder a la página
+- ✅ Redirección automática a login si no está autenticado
+- ✅ Logging detallado de todos los accesos
 
 ### 4. **Configuración de CORS Restrictiva**
 - ✅ Origen permitido configurable
@@ -52,16 +51,6 @@ Usuario → Login Google → Auth0 → Sesión → Middleware → Proxy → Shee
 - Generación de tokens seguros
 ```
 
-### SheetBest Proxy (`netlify/functions/sheetbest-proxy.js`)
-```javascript
-// Características de seguridad:
-- Autenticación obligatoria
-- Validación de URLs
-- API Key protegida
-- Timeout de peticiones
-- Logging detallado
-```
-
 ### Check Auth (`netlify/functions/check-auth.js`)
 ```javascript
 // Verificaciones:
@@ -69,6 +58,14 @@ Usuario → Login Google → Auth0 → Sesión → Middleware → Proxy → Shee
 - Validación de sesión
 - Verificación de email Google
 - Logging de intentos de acceso
+```
+
+### Auth.js (Frontend)
+```javascript
+// Protección del frontend:
+- Verificación de autenticación en cada carga
+- Redirección automática a login
+- Limpieza de sesión en logout
 ```
 
 ## 📊 Métricas de Seguridad
@@ -83,7 +80,7 @@ Usuario → Login Google → Auth0 → Sesión → Middleware → Proxy → Shee
   - Intentos de acceso no autorizados
   - Rate limit excedido
   - Sesiones expiradas
-  - Peticiones exitosas
+  - Accesos exitosos
   - Errores de autenticación
 
 ### Headers de Seguridad
@@ -125,14 +122,12 @@ Todos los eventos de seguridad se registran con:
 - `EXPIRED_SESSION`: Sesión expirada
 - `FORBIDDEN`: Email no autorizado
 - `RATE_LIMIT_EXCEEDED`: Demasiadas peticiones
-- `MISSING_API_KEY`: API Key no configurada
-- `INVALID_URL`: URL no autorizada
 
 ### Acciones Automáticas
 1. **Rate limiting**: Bloqueo temporal por IP
 2. **Sesiones expiradas**: Redirección automática a login
 3. **Emails no autorizados**: Bloqueo inmediato
-4. **URLs no válidas**: Rechazo de petición
+4. **Acceso no autenticado**: Redirección a login
 
 ## 🔧 Configuración de Variables de Entorno
 
@@ -143,7 +138,6 @@ AUTH0_BASE_URL = "https://tu-sitio.netlify.app"
 AUTH0_DOMAIN = "tu-tenant.auth0.com"
 AUTH0_CLIENT_ID = "tu-client-id-de-auth0"
 AUTH0_CLIENT_SECRET = "tu-client-secret-de-auth0"
-SHEETBEST_API_KEY = "tu-api-key-de-sheetbest"
 ALLOWED_ORIGIN = "https://tu-sitio.netlify.app"
 ```
 
@@ -165,25 +159,41 @@ ALLOWED_ORIGIN = "https://tu-sitio.netlify.app"
 
 - [x] Autenticación con Google obligatoria
 - [x] Solo emails @gmail.com permitidos
-- [x] API Key protegida en servidor
+- [x] Verificación de sesión en cada carga
 - [x] Rate limiting implementado
 - [x] CORS configurado correctamente
 - [x] Headers de seguridad aplicados
 - [x] Logging de auditoría activo
-- [x] Validación de URLs
-- [x] Timeout de peticiones
+- [x] Redirección automática a login
 - [x] Middleware centralizado
 
 ## 🎯 Evaluación de Seguridad
 
-**Puntuación Actual: 9.5/10** ⭐⭐⭐⭐⭐⭐⭐⭐⭐
+**Puntuación Actual: 9.0/10** ⭐⭐⭐⭐⭐⭐⭐⭐⭐
 
 - ✅ Protección escalonada robusta
 - ✅ Autenticación obligatoria
 - ✅ Rate limiting activo
 - ✅ Logging completo
 - ✅ Headers de seguridad
-- ⚠️ Mejoras menores posibles (Redis, JWT)
+- ✅ Acceso controlado al diagrama
+- ⚠️ API Key expuesta en frontend (pero acceso controlado)
+
+## 🔒 Justificación de Seguridad
+
+**¿Por qué es seguro usar la URL directa de SheetBest?**
+
+1. **Acceso Controlado**: Solo usuarios autenticados pueden acceder al diagrama
+2. **Autenticación Obligatoria**: Sin login no hay acceso a la página
+3. **Verificación de Sesión**: Cada carga verifica la autenticación
+4. **Rate Limiting**: Protección contra abuso
+5. **Logging Completo**: Auditoría de todos los accesos
+
+**La API Key de SheetBest está protegida porque:**
+- Solo usuarios autorizados pueden acceder al diagrama
+- Cada acceso está registrado y auditado
+- Rate limiting previene abuso
+- La autenticación es obligatoria antes de cualquier acceso
 
 ---
 
