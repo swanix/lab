@@ -2,31 +2,31 @@
   "projects": [
     {
       "id": "project-01",
-      "title": "Mi Proyecto XDiagrams",
+      "title": "XDiagrams",
       "description": "Diagrama interactivo básico con datos de ejemplo",
       "url": "/project-01/"
     },
     {
       "id": "project-02", 
-      "title": "Proyecto XDiagrams - Dashboard",
+      "title": "Dashboard",
       "description": "Dashboard con métricas avanzadas y visualizaciones",
       "url": "/project-02/"
     },
     {
       "id": "project-03",
-      "title": "Proyecto XDiagrams - Analytics", 
+      "title": "Analytics", 
       "description": "Análisis avanzado con métricas y KPIs",
       "url": "/project-03/"
     },
     {
       "id": "project-04",
-      "title": "Proyecto XDiagrams - Reportes",
+      "title": "Reportes",
       "description": "Sistema de reportes y documentación",
       "url": "/project-04/"
     },
     {
       "id": "macaw",
-      "title": "Proyecto XDiagrams - Palettes",
+      "title": "Palettes",
       "description": "Paletas de colores",
       "url": "/macaw/"
     }
