@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Iniciar sesión para acceder al diagrama">
   <title>Iniciar Sesión - Diagrama Interactivo</title>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <link rel="stylesheet" href="/assets/app.css">
 </head>
 <body class="login-page">
@@ -17,7 +17,7 @@
   
   <div class="login-container" id="login-container">
     <div class="logo">
-      <img src="/favicon.svg" alt="Logo" class="logo-img">
+      <img src="/assets/favicon.svg" alt="Logo" class="logo-img">
     </div>
     <h1>Acceso al Diagrama</h1>
     <p class="subtitle">
@@ -46,8 +46,8 @@
 
   <script>
     function login() {
-      // Redirigir a la función de autenticación de Auth0
-      window.location.href = '/api/auth/login';
+      // Redirigir a la función de autenticación de Auth0 con el parámetro action
+      window.location.href = '/api/auth/login?action=login';
     }
 
     async function checkAuth() {

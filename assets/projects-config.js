@@ -55,7 +55,7 @@ class ProjectsConfig {
       document.body.innerHTML = `
         <div class="forbidden-container">
           <div class="logo">
-            <img src="/favicon.svg" alt="Logo" class="logo-img">
+            <img src="/assets/favicon.svg" alt="Logo" class="logo-img">
           </div>
           <h1>Proyecto no encontrado</h1>
           <p>El proyecto <strong>${projectId}</strong> no existe o no está disponible.</p>
