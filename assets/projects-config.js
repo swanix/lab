@@ -38,56 +38,18 @@ class ProjectsConfig {
       
     } catch (error) {
       console.error('[ProjectsConfig] Error inicializando proyecto:', error);
-      // Mostrar página de error
+      // Mostrar página de error usando la estética centralizada
       document.body.innerHTML = `
-        <div style="
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        ">
-          <div style="
-            text-align: center;
-            padding: 40px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
-            width: 90%;
-          ">
-            <h1 style="
-              color: #333;
-              font-size: 1.8rem;
-              font-weight: 600;
-              margin-bottom: 20px;
-            ">Proyecto no encontrado</h1>
-            <p style="
-              color: #666;
-              font-size: 1rem;
-              line-height: 1.5;
-              margin-bottom: 15px;
-            ">El proyecto <strong>${projectId}</strong> no existe o no está disponible.</p>
-            <p style="
-              color: #888;
-              font-size: 0.9rem;
-              margin-bottom: 30px;
-            ">Proyectos disponibles: <strong>project-01</strong>, <strong>project-02</strong></p>
-            <a href="/" style="
-              color: #007bff;
-              text-decoration: none;
-              padding: 12px 24px;
-              border: 2px solid #007bff;
-              border-radius: 6px;
-              display: inline-block;
-              font-weight: 500;
-              transition: all 0.2s ease;
-            " onmouseover="this.style.background='#007bff'; this.style.color='white'" onmouseout="this.style.background='transparent'; this.style.color='#007bff'">← Volver al inicio</a>
+        <div class="forbidden-container">
+          <div class="logo">•</div>
+          <h1>Proyecto no encontrado</h1>
+          <p>El proyecto <strong>${projectId}</strong> no existe o no está disponible.</p>
+          <div class="error-details">
+            <h3>Proyectos disponibles:</h3>
+            <p>Verifica que el proyecto esté correctamente configurado en el sistema.</p>
+          </div>
+          <div class="button-group">
+            <a href="/" class="back-button">← Volver al inicio</a>
           </div>
         </div>
       `;
@@ -105,5 +67,80 @@ class ProjectsConfig {
     }
     
     return null;
+  }
+
+  static async getAllProjects() {
+    try {
+      console.log('[ProjectsConfig] Cargando lista de proyectos disponibles...');
+      
+      // Lista de proyectos conocidos (se puede expandir dinámicamente)
+      // En el futuro, esto podría ser detectado automáticamente desde el servidor
+      const knownProjects = ['project-01', 'project-02', 'project-03'];
+      const projects = [];
+      
+      // Verificar cada proyecto conocido
+      for (const projectId of knownProjects) {
+        try {
+          const config = await this.loadProjectConfig(projectId);
+          projects.push({
+            id: projectId,
+            title: config.title,
+            description: config.description || `Proyecto ${projectId}`,
+            url: `/${projectId}/`
+          });
+          console.log(`[ProjectsConfig] Proyecto ${projectId} cargado:`, config.title);
+        } catch (error) {
+          console.warn(`[ProjectsConfig] Proyecto ${projectId} no disponible:`, error.message);
+          // No agregar proyectos que no existen
+        }
+      }
+      
+      console.log(`[ProjectsConfig] Total de proyectos cargados: ${projects.length}`);
+      return projects;
+      
+    } catch (error) {
+      console.error('[ProjectsConfig] Error cargando proyectos:', error);
+      return [];
+    }
+  }
+
+  static generateProjectsGrid(projects) {
+    if (!projects || projects.length === 0) {
+      return `
+        <div class="dashboard-container">
+          <h1>No hay proyectos disponibles</h1>
+          <p>No se encontraron proyectos configurados en el sistema.</p>
+          <div id="logout-container">
+            <button id="logout-btn">
+              <span>•</span>
+              Cerrar Sesión
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    const projectsHTML = projects.map(project => `
+      <a href="${project.url}" class="project-card">
+        <h3>${project.title}</h3>
+        <p>${project.description}</p>
+      </a>
+    `).join('');
+
+    return `
+      <div class="dashboard-container">
+        <h1>Proyectos XDiagrams</h1>
+        <p>Selecciona un proyecto para continuar:</p>
+        <div class="projects-grid">
+          ${projectsHTML}
+        </div>
+        <div id="logout-container">
+          <button id="logout-btn">
+            <span>•</span>
+            Cerrar Sesión
+          </button>
+        </div>
+      </div>
+    `;
   }
 }

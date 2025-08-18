@@ -61,45 +61,36 @@
       document.head.appendChild(script);
     }
 
-    function showProjectsList() {
-      document.body.innerHTML = `
-        <div class="dashboard-container">
-          <h1>Proyectos XDiagrams</h1>
-          <p>Selecciona un proyecto para continuar:</p>
-          <div class="projects-grid">
-            <a href="/project-01/" class="project-card">
-              <h3>Proyecto 01</h3>
-              <p>Diagrama interactivo básico</p>
-            </a>
-            <a href="/project-02/" class="project-card">
-              <h3>Proyecto 02 - Dashboard</h3>
-              <p>Dashboard con métricas avanzadas</p>
-            </a>
+    async function showProjectsList() {
+      try {
+        // Cargar proyectos dinámicamente
+        const projects = await ProjectsConfig.getAllProjects();
+        
+        // Generar HTML del grid
+        const projectsHTML = ProjectsConfig.generateProjectsGrid(projects);
+        document.body.innerHTML = projectsHTML;
+        
+        console.log('[Router] Grid de proyectos generado dinámicamente');
+        
+        // Configurar logout en la página de proyectos
+        setupLogout();
+        
+      } catch (error) {
+        console.error('[Router] Error cargando proyectos:', error);
+        // Mostrar mensaje de error
+        document.body.innerHTML = `
+          <div class="dashboard-container">
+            <h1>Error al cargar proyectos</h1>
+            <p>No se pudieron cargar los proyectos. Intenta recargar la página.</p>
+            <div id="logout-container">
+              <button id="logout-btn">
+                <span>•</span>
+                Cerrar Sesión
+              </button>
+            </div>
           </div>
-          <div id="logout-container">
-            <button id="logout-btn">
-              <span>•</span>
-              Cerrar Sesión
-            </button>
-          </div>
-        </div>
-      `;
-      
-      // Configurar logout en la página de proyectos
-      const logoutBtn = document.getElementById('logout-btn');
-      if (logoutBtn) {
-        logoutBtn.addEventListener('click', async () => {
-          try {
-            localStorage.removeItem('session_data');
-            localStorage.removeItem('session_token');
-            localStorage.removeItem('session_expires');
-            sessionStorage.clear();
-            window.location.href = '/api/logout';
-          } catch (error) {
-            console.error('[Router] Error en logout:', error);
-            window.location.href = '/login';
-          }
-        });
+        `;
+        setupLogout();
       }
     }
 
