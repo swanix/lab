@@ -18,22 +18,16 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    // Construir URL de logout de Auth0
-    const auth0Domain = process.env.AUTH0_DOMAIN;
-    const clientId = process.env.AUTH0_CLIENT_ID;
+    // Logout simple - redirigir directamente al login
     const returnTo = `${process.env.AUTH0_BASE_URL}/login.html`;
     
-    const logoutUrl = `https://${auth0Domain}/v2/logout?` +
-      `client_id=${clientId}&` +
-      `returnTo=${encodeURIComponent(returnTo)}`;
-    
-    console.log('🔄 [Logout Function] Redirecting to Auth0 logout:', logoutUrl);
+    console.log('🔄 [Logout Function] Redirecting to login:', returnTo);
     
     return {
       statusCode: 302,
       headers: {
         ...headers,
-        'Location': logoutUrl
+        'Location': returnTo
       },
       body: ''
     };
