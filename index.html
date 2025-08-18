@@ -34,7 +34,17 @@
     // 🔐 Verificar autenticación antes de cargar el diagrama
     async function checkAuthentication() {
       try {
-        const response = await fetch('/.netlify/functions/check-auth');
+        // Obtener sesión desde URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const session = urlParams.get('session');
+        
+        if (!session) {
+          console.log('❌ [Auth] No hay sesión, redirigiendo a login');
+          window.location.href = '/login.html';
+          return false;
+        }
+        
+        const response = await fetch(`/.netlify/functions/check-auth?session=${encodeURIComponent(session)}`);
         const data = await response.json();
         
         if (!data.authenticated) {
@@ -92,7 +102,7 @@
         logoutContainer.style.display = 'block';
         
         logoutBtn.addEventListener('click', () => {
-          window.location.href = '/api/auth/logout?returnTo=' + encodeURIComponent(window.location.origin + '/login.html');
+          window.location.href = '/api/auth/logout?action=logout';
         });
       }
     }

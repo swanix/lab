@@ -29,17 +29,11 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    // Obtener la sesión del usuario
-    const session = await getSession(event, context, config);
+    // Obtener sesión desde query parameters (simplificado)
+    const { session } = event.queryStringParameters || {};
     
-    console.log('🔍 [Auth Check] Estado de sesión:', {
-      isAuthenticated: !!session?.user,
-      userEmail: session?.user?.email,
-      userSub: session?.user?.sub
-    });
-
-    if (!session || !session.user) {
-      console.log('❌ [Auth Check] Usuario no autenticado');
+    if (!session) {
+      console.log('❌ [Auth Check] No hay sesión');
       return {
         statusCode: 401,
         headers,
@@ -51,9 +45,39 @@ exports.handler = async (event, context) => {
       };
     }
 
+    let sessionData;
+    try {
+      sessionData = JSON.parse(decodeURIComponent(session));
+    } catch (error) {
+      console.log('❌ [Auth Check] Sesión inválida');
+      return {
+        statusCode: 401,
+        headers,
+        body: JSON.stringify({
+          error: 'Sesión inválida',
+          message: 'Debes iniciar sesión nuevamente',
+          code: 'INVALID_SESSION'
+        })
+      };
+    }
+
+    // Verificar que la sesión no haya expirado
+    if (sessionData.expires_at && Date.now() > sessionData.expires_at) {
+      console.log('❌ [Auth Check] Sesión expirada');
+      return {
+        statusCode: 401,
+        headers,
+        body: JSON.stringify({
+          error: 'Sesión expirada',
+          message: 'Debes iniciar sesión nuevamente',
+          code: 'EXPIRED_SESSION'
+        })
+      };
+    }
+
     // Verificar que el usuario tenga un email de Google
-    if (!session.user.email || !session.user.email.endsWith('@gmail.com')) {
-      console.log('❌ [Auth Check] Email no válido:', session.user.email);
+    if (!sessionData.user || !sessionData.user.email || !sessionData.user.email.endsWith('@gmail.com')) {
+      console.log('❌ [Auth Check] Email no válido:', sessionData.user?.email);
       return {
         statusCode: 403,
         headers,
@@ -73,9 +97,9 @@ exports.handler = async (event, context) => {
       body: JSON.stringify({
         authenticated: true,
         user: {
-          email: session.user.email,
-          name: session.user.name,
-          picture: session.user.picture
+          email: sessionData.user.email,
+          name: sessionData.user.name,
+          picture: sessionData.user.picture
         },
         message: 'Acceso autorizado'
       })

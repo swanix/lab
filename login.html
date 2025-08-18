@@ -101,7 +101,7 @@
   <script>
     function login() {
       // Redirigir a Auth0 para iniciar sesión con Google
-      window.location.href = '/api/auth/login?returnTo=' + encodeURIComponent(window.location.origin + '/index.html');
+      window.location.href = '/api/auth/login?action=login';
     }
     
     // Verificar si ya está autenticado
