@@ -31,7 +31,23 @@
   </div>
   
   <script>
-    // 🔐 Verificar autenticación y configurar XDiagrams inmediatamente
+    // 🔐 Configurar XDiagrams ANTES de que se cargue el script
+    window.$xDiagrams = {
+      url: "https://api.sheetbest.com/sheets/28f15681-b2ab-47a0-bbcb-205d142d9ef7/tabs/All",
+      title: "Mi Diagrama Interactivo",
+      clustersPerRow: "6 3 7 6 3", 
+      showThemeToggle: true,         
+      spacing: 80,                   
+      verticalSpacing: 170,         
+      nodeWidth: 100,                
+      nodeHeight: 125,              
+    };
+    
+    // 🚀 Logs para debugging
+    console.log('🚀 [Template] XDiagrams configurado ANTES:', window.$xDiagrams);
+    console.log('📋 [Template] URL configurada:', window.$xDiagrams.url);
+    
+    // 🔐 Verificar autenticación después de configurar
     (async function() {
       try {
         // Obtener sesión desde URL parameters
@@ -54,22 +70,6 @@
         }
         
         console.log('✅ [Auth] Usuario autenticado:', data.user.email);
-        
-        // 🔐 Configurar XDiagrams inmediatamente
-        window.$xDiagrams = {
-          url: "https://api.sheetbest.com/sheets/28f15681-b2ab-47a0-bbcb-205d142d9ef7/tabs/All",
-          title: "Mi Diagrama Interactivo",
-          clustersPerRow: "6 3 7 6 3", 
-          showThemeToggle: true,         
-          spacing: 80,                   
-          verticalSpacing: 170,         
-          nodeWidth: 100,                
-          nodeHeight: 125,              
-        };
-        
-        // 🚀 Logs para debugging
-        console.log('🚀 [Template] XDiagrams configurado:', window.$xDiagrams);
-        console.log('📋 [Template] URL configurada:', window.$xDiagrams.url);
         
       } catch (error) {
         console.error('❌ [Auth] Error verificando autenticación:', error);
