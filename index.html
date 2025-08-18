@@ -31,6 +31,9 @@
         const projectId = ProjectsConfig.getProjectIdFromPath();
         
         if (projectId) {
+          // Cambiar clase del body para pantalla completa
+          document.body.className = 'project-page';
+          
           // Inicializar proyecto específico ANTES de cargar XDiagrams
           await ProjectsConfig.initializeProject(projectId);
           console.log(`[Router] Proyecto ${projectId} cargado correctamente`);
@@ -38,6 +41,8 @@
           // Ahora cargar XDiagrams después de tener la configuración
           loadXDiagrams();
         } else {
+          // Mantener clase dashboard para la lista de proyectos
+          document.body.className = 'dashboard-page';
           // Mostrar página de proyectos disponibles
           showProjectsList();
         }
