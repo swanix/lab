@@ -1,5 +1,14 @@
 const { getSession } = require('@auth0/nextjs-auth0');
 
+// Configurar Auth0 con las variables de entorno correctas
+const config = {
+  secret: process.env.AUTH0_SECRET,
+  baseURL: process.env.AUTH0_BASE_URL,
+  issuerBaseURL: `https://${process.env.AUTH0_DOMAIN}`,
+  clientID: process.env.AUTH0_CLIENT_ID,
+  clientSecret: process.env.AUTH0_CLIENT_SECRET
+};
+
 exports.handler = async (event, context) => {
   console.log('🔐 [Auth Check] Verificando autenticación...');
   
@@ -21,7 +30,7 @@ exports.handler = async (event, context) => {
 
   try {
     // Obtener la sesión del usuario
-    const session = await getSession(event, context);
+    const session = await getSession(event, context, config);
     
     console.log('🔍 [Auth Check] Estado de sesión:', {
       isAuthenticated: !!session?.user,

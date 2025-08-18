@@ -27,7 +27,7 @@ En el dashboard de Netlify, ve a Site settings > Environment variables y agrega:
 ```
 AUTH0_SECRET = "tu-secret-aleatorio-de-32-caracteres"
 AUTH0_BASE_URL = "https://tu-sitio.netlify.app"
-AUTH0_ISSUER_BASE_URL = "https://tu-tenant.auth0.com"
+AUTH0_DOMAIN = "tu-tenant.auth0.com"
 AUTH0_CLIENT_ID = "tu-client-id-de-auth0"
 AUTH0_CLIENT_SECRET = "tu-client-secret-de-auth0"
 SHEETBEST_API_KEY = "tu-api-key-de-sheetbest"
