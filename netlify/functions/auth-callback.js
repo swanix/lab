@@ -145,6 +145,8 @@ exports.handler = async (event, context) => {
       }
     }
     
+    console.log('[Auth Callback] URL de destino final:', redirectUrl);
+    
     // Crear sesión con access_token (necesario para funcionalidad)
     const session = {
       user: {
@@ -308,10 +310,10 @@ exports.handler = async (event, context) => {
         // Redirigir al diagrama o a la URL guardada
         setTimeout(() => {
             // Usar URL de destino desde el state del servidor
-            const redirectUrl = '${redirectUrl}';
+            const redirectUrl = ${redirectUrl ? `'${redirectUrl}'` : 'null'};
             console.log('[Auth Callback] URL de destino desde state:', redirectUrl);
             
-            if (redirectUrl) {
+            if (redirectUrl && redirectUrl !== 'null') {
                 const fullUrl = '${process.env.AUTH0_BASE_URL}' + redirectUrl;
                 console.log('[Auth Callback] Redirigiendo a URL de destino:', fullUrl);
                 window.location.href = fullUrl;
