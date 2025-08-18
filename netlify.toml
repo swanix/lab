@@ -44,16 +44,17 @@
   to = "/login.html"
   status = 200
 
-# Redirección para index sin extensión
+# Redirección para forbidden sin extensión
 [[redirects]]
-  from = "/index"
-  to = "/index.html"
+  from = "/forbidden"
+  to = "/forbidden.html"
   status = 200
 
 # Redirección SPA para proyectos (después de login)
+# Esta regla debe ir al final para capturar todas las rutas no definidas
 [[redirects]]
   from = "/*"
-  to = "/index"
+  to = "/index.html"
   status = 200
 
 # Headers de seguridad mejorados - CSP corregido para SheetBest

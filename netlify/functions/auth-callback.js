@@ -55,7 +55,7 @@ exports.handler = async (event, context) => {
       
       // Si el error es "access_denied", redirigir a la página de forbidden
       if (error === 'access_denied') {
-        const forbiddenUrl = `${process.env.AUTH0_BASE_URL}/forbidden.html?error=${encodeURIComponent(error)}&error_description=${encodeURIComponent(error_description)}`;
+        const forbiddenUrl = `${process.env.AUTH0_BASE_URL}/forbidden?error=${encodeURIComponent(error)}&error_description=${encodeURIComponent(error_description)}`;
         
         return {
           statusCode: 302,
@@ -68,7 +68,7 @@ exports.handler = async (event, context) => {
       }
       
       // Para otros errores, redirigir al login
-      const loginUrl = `${process.env.AUTH0_BASE_URL}/login.html?error=${encodeURIComponent(error)}&error_description=${encodeURIComponent(error_description)}`;
+      const loginUrl = `${process.env.AUTH0_BASE_URL}/login?error=${encodeURIComponent(error)}&error_description=${encodeURIComponent(error_description)}`;
       
       return {
         statusCode: 302,
@@ -152,7 +152,7 @@ exports.handler = async (event, context) => {
       console.error('[Auth Callback] Intento de acceso con email no autorizado:', userData.email);
       
       // Redirigir a la página de forbidden
-      const forbiddenUrl = `${process.env.AUTH0_BASE_URL}/forbidden.html?error=access_denied&error_description=${encodeURIComponent('Solo se permiten cuentas de Google (@gmail.com)')}`;
+      const forbiddenUrl = `${process.env.AUTH0_BASE_URL}/forbidden?error=access_denied&error_description=${encodeURIComponent('Solo se permiten cuentas de Google (@gmail.com)')}`;
       
       return {
         statusCode: 302,
@@ -335,10 +335,10 @@ exports.handler = async (event, context) => {
                 console.log('[Auth Callback] Redirigiendo a URL de destino:', fullUrl);
                 window.location.href = fullUrl;
             } else {
-                // Redirigir al index principal
-                const indexUrl = '${process.env.AUTH0_BASE_URL}/index.html';
-                console.log('[Auth Callback] Redirigiendo al index principal:', indexUrl);
-                window.location.href = indexUrl;
+                // Redirigir al dashboard principal (raíz)
+                const dashboardUrl = '${process.env.AUTH0_BASE_URL}/';
+                console.log('[Auth Callback] Redirigiendo al dashboard principal:', dashboardUrl);
+                window.location.href = dashboardUrl;
             }
         }, 2000);
     </script>
