@@ -147,6 +147,23 @@ exports.handler = async (event, context) => {
     
     console.log('[Auth Callback] URL de destino final:', redirectUrl);
     
+    // Verificar que el usuario tenga un email de Google autorizado
+    if (!userData.email || !userData.email.endsWith('@gmail.com')) {
+      console.error('[Auth Callback] Intento de acceso con email no autorizado:', userData.email);
+      
+      // Redirigir a la página de forbidden
+      const forbiddenUrl = `${process.env.AUTH0_BASE_URL}/forbidden.html?error=access_denied&error_description=${encodeURIComponent('Solo se permiten cuentas de Google (@gmail.com)')}`;
+      
+      return {
+        statusCode: 302,
+        headers: {
+          ...headers,
+          'Location': forbiddenUrl
+        },
+        body: ''
+      };
+    }
+    
     // Crear sesión con access_token (necesario para funcionalidad)
     const session = {
       user: {
