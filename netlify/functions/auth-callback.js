@@ -133,9 +133,19 @@ exports.handler = async (event, context) => {
       };
     }
     
-    // Crear sesión
+    // Crear sesión con access_token (necesario para funcionalidad)
     const session = {
-      user: userData,
+      user: {
+        sub: userData.sub,
+        given_name: userData.given_name,
+        family_name: userData.family_name,
+        nickname: userData.nickname,
+        name: userData.name,
+        picture: userData.picture,
+        updated_at: userData.updated_at,
+        email: userData.email,
+        email_verified: userData.email_verified
+      },
       access_token: tokenData.access_token,
       expires_at: Date.now() + (tokenData.expires_in * 1000)
     };
@@ -178,7 +188,7 @@ exports.handler = async (event, context) => {
     <p>Redirigiendo al diagrama...</p>
     
     <script>
-        // Configurar sesión en localStorage
+        // Configurar sesión en localStorage (incluye access_token necesario)
         const sessionData = ${JSON.stringify(session)};
         const sessionToken = '${sessionToken}';
         
