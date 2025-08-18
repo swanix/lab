@@ -7,8 +7,83 @@
   <title>Mi Proyecto XDiagrams</title>
   <!-- CDN de XDiagrams -->
   <link href="assets/xdiagrams.min.css" rel="stylesheet">
+  <style>
+    /* Estilos para la pantalla de carga */
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      color: white;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top: 4px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .loading-text {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+    
+    .loading-subtext {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+    
+    .loading-progress {
+      width: 200px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 2px;
+      margin-top: 20px;
+      overflow: hidden;
+    }
+    
+    .loading-progress-bar {
+      height: 100%;
+      background: white;
+      width: 0%;
+      transition: width 0.3s ease;
+      border-radius: 2px;
+    }
+    
+    .hidden {
+      display: none !important;
+    }
+  </style>
 </head>
 <body>
+  <!-- Pantalla de carga -->
+  <div id="loading-screen" class="loading-screen">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Cargando diagrama...</div>
+    <div class="loading-subtext">Verificando autenticación</div>
+    <div class="loading-progress">
+      <div id="progress-bar" class="loading-progress-bar"></div>
+    </div>
+  </div>
+
   <div id="app"></div>
   
   <!-- 🔐 Botón de cerrar sesión -->
@@ -47,9 +122,33 @@
     console.log('🚀 [Template] XDiagrams configurado ANTES:', window.$xDiagrams);
     console.log('📋 [Template] URL configurada:', window.$xDiagrams.url);
     
+    // Función para actualizar la pantalla de carga
+    function updateLoading(step, text, subtext) {
+      const progressBar = document.getElementById('progress-bar');
+      const loadingText = document.querySelector('.loading-text');
+      const loadingSubtext = document.querySelector('.loading-subtext');
+      
+      if (progressBar) progressBar.style.width = `${step * 25}%`;
+      if (loadingText) loadingText.textContent = text;
+      if (loadingSubtext) loadingSubtext.textContent = subtext;
+    }
+    
+    // Función para ocultar la pantalla de carga
+    function hideLoading() {
+      const loadingScreen = document.getElementById('loading-screen');
+      if (loadingScreen) {
+        loadingScreen.style.opacity = '0';
+        setTimeout(() => {
+          loadingScreen.classList.add('hidden');
+        }, 300);
+      }
+    }
+    
     // 🔐 Verificar autenticación después de configurar
     (async function() {
       try {
+        updateLoading(1, 'Cargando diagrama...', 'Verificando autenticación');
+        
         // Obtener sesión desde URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const session = urlParams.get('session');
@@ -64,6 +163,7 @@
           return;
         }
         
+        updateLoading(2, 'Cargando diagrama...', 'Validando sesión');
         console.log('🔍 [Auth] Llamando a check-auth...');
         const response = await fetch(`/.netlify/functions/check-auth?session=${encodeURIComponent(session)}`);
         console.log('🔍 [Auth] Response status:', response.status);
@@ -77,7 +177,23 @@
           return;
         }
         
+        updateLoading(3, 'Cargando diagrama...', 'Inicializando XDiagrams');
         console.log('✅ [Auth] Usuario autenticado:', data.user.email);
+        
+        // Esperar a que XDiagrams se cargue
+        const checkXDiagrams = setInterval(() => {
+          if (window.xDiagrams && window.xDiagrams.isReady) {
+            clearInterval(checkXDiagrams);
+            updateLoading(4, '¡Diagrama listo!', 'Cargando interfaz');
+            setTimeout(hideLoading, 500);
+          }
+        }, 100);
+        
+        // Timeout de seguridad
+        setTimeout(() => {
+          clearInterval(checkXDiagrams);
+          hideLoading();
+        }, 5000);
         
       } catch (error) {
         console.error('❌ [Auth] Error verificando autenticación:', error);
