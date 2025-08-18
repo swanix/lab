@@ -11,22 +11,94 @@
 <body>
   <div id="app"></div>
   
+  <!-- 🔐 Botón de cerrar sesión -->
+  <div id="logout-container" style="position: fixed; top: 20px; right: 20px; z-index: 1000; display: none;">
+    <button id="logout-btn" style="
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    ">
+      <span>🚪</span>
+      Cerrar Sesión
+    </button>
+  </div>
+  
   <script>
+    // 🔐 Verificar autenticación antes de cargar el diagrama
+    async function checkAuthentication() {
+      try {
+        const response = await fetch('/.netlify/functions/check-auth');
+        const data = await response.json();
+        
+        if (!data.authenticated) {
+          console.log('❌ [Auth] Usuario no autenticado, redirigiendo a login');
+          window.location.href = '/login.html';
+          return false;
+        }
+        
+        console.log('✅ [Auth] Usuario autenticado:', data.user.email);
+        return true;
+      } catch (error) {
+        console.error('❌ [Auth] Error verificando autenticación:', error);
+        window.location.href = '/login.html';
+        return false;
+      }
+    }
 
-    window.$xDiagrams = {
-      url: "https://api.sheetbest.com/sheets/28f15681-b2ab-47a0-bbcb-205d142d9ef7/tabs/All",
-      title: "Mi Diagrama Interactivo",
-      clustersPerRow: "6 3 7 6 3", 
-      showThemeToggle: true,         
-      spacing: 80,                   
-      verticalSpacing: 170,         
-      nodeWidth: 100,                
-      nodeHeight: 125,              
-    };
-    
-    // 🚀 Logs para debugging
-    console.log('🚀 [Template] XDiagrams configurado:', window.$xDiagrams);
-    console.log('📋 [Template] URL configurada:', window.$xDiagrams.url);
+    // 🔐 Inicializar diagrama solo si está autenticado
+    async function initializeDiagram() {
+      const isAuthenticated = await checkAuthentication();
+      
+      if (!isAuthenticated) {
+        return;
+      }
+
+      window.$xDiagrams = {
+        url: "https://api.sheetbest.com/sheets/28f15681-b2ab-47a0-bbcb-205d142d9ef7/tabs/All",
+        title: "Mi Diagrama Interactivo",
+        clustersPerRow: "6 3 7 6 3", 
+        showThemeToggle: true,         
+        spacing: 80,                   
+        verticalSpacing: 170,         
+        nodeWidth: 100,                
+        nodeHeight: 125,              
+      };
+      
+      // 🚀 Logs para debugging
+      console.log('🚀 [Template] XDiagrams configurado:', window.$xDiagrams);
+      console.log('📋 [Template] URL configurada:', window.$xDiagrams.url);
+    }
+
+    // 🔐 Inicializar cuando el DOM esté listo
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeDiagram);
+    } else {
+      initializeDiagram();
+    }
+
+    // 🔐 Configurar botón de cerrar sesión
+    function setupLogout() {
+      const logoutContainer = document.getElementById('logout-container');
+      const logoutBtn = document.getElementById('logout-btn');
+      
+      if (logoutContainer && logoutBtn) {
+        logoutContainer.style.display = 'block';
+        
+        logoutBtn.addEventListener('click', () => {
+          window.location.href = '/api/auth/logout?returnTo=' + encodeURIComponent(window.location.origin + '/login.html');
+        });
+      }
+    }
+
+    // 🔐 Configurar logout cuando el diagrama esté listo
+    window.addEventListener('load', setupLogout);
   </script>
   
   <!-- Cargar XDiagrams desde CDN -->
