@@ -18,16 +18,27 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    // Logout simple - redirigir directamente al login personalizado
+    // Logout con Auth0 pero sin federated para evitar redirección a Google
+    const auth0Domain = process.env.AUTH0_DOMAIN;
+    const clientId = process.env.AUTH0_CLIENT_ID;
     const returnTo = `${process.env.AUTH0_BASE_URL}/login.html`;
     
-    console.log('🔄 [Logout Function] Redirecting to login personalizado:', returnTo);
+    const logoutUrl = `https://${auth0Domain}/v2/logout?` +
+      `client_id=${clientId}&` +
+      `returnTo=${encodeURIComponent(returnTo)}`;
+    
+    console.log('🔄 [Logout Function] Redirecting to Auth0 logout:', logoutUrl);
+    console.log('🔍 [Logout Function] Config:', {
+      auth0Domain,
+      clientId,
+      returnTo
+    });
     
     return {
       statusCode: 302,
       headers: {
         ...headers,
-        'Location': returnTo
+        'Location': logoutUrl
       },
       body: ''
     };
