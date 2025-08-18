@@ -44,6 +44,12 @@
   to = "/login.html"
   status = 200
 
+# Redirección SPA para proyectos (después de login)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
 # Headers de seguridad mejorados - CSP corregido para SheetBest
 [[headers]]
   for = "/*"

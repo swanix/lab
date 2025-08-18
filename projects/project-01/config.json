@@ -1,0 +1,11 @@
+{
+  "id": "project-01",
+  "title": "Mi Proyecto XDiagrams",
+  "url": "https://api.sheetbest.com/sheets/28f15681-b2ab-47a0-bbcb-205d142d9ef7/tabs/All",
+  "clustersPerRow": "6 3 7 6 3",
+  "showThemeToggle": true,
+  "spacing": 80,
+  "verticalSpacing": 170,
+  "nodeWidth": 100,
+  "nodeHeight": 125
+}

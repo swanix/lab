@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Diagrama interactivo creado con XDiagrams">
-  <title>Mi Proyecto XDiagrams</title>
+  <title>Router de Proyectos XDiagrams</title>
   <link href="assets/xdiagrams.min.css" rel="stylesheet">
   <link href="assets/logout.css" rel="stylesheet">
 </head>
@@ -18,24 +18,78 @@
     </button>
   </div>
   
-  <script>
-    // Configuración de XDiagrams con URL directa de SheetBest
-    // La seguridad está garantizada por la autenticación obligatoria antes de acceder
-    window.$xDiagrams = {
-      url: "https://api.sheetbest.com/sheets/28f15681-b2ab-47a0-bbcb-205d142d9ef7/tabs/All",
-      title: "Mi Diagrama Interactivo",
-      clustersPerRow: "6 3 7 6 3", 
-      showThemeToggle: true,         
-      spacing: 80,                   
-      verticalSpacing: 170,         
-      nodeWidth: 100,                
-      nodeHeight: 125
-    };
-  </script>
   <script src="assets/auth.js"></script>
+  <script src="assets/projects-config.js"></script>
   <script src="assets/xdiagrams.min.js"></script>
   <script>
-    window.addEventListener('load', setupLogout);
+    // Router dinámico de proyectos
+    async function initializeRouter() {
+      try {
+        // Verificar autenticación primero
+        await checkAuthentication();
+        
+        // Obtener ID del proyecto desde la URL
+        const projectId = ProjectsConfig.getProjectIdFromPath();
+        
+        if (projectId) {
+          // Inicializar proyecto específico
+          await ProjectsConfig.initializeProject(projectId);
+          console.log(`[Router] Proyecto ${projectId} cargado correctamente`);
+        } else {
+          // Mostrar página de proyectos disponibles
+          showProjectsList();
+        }
+        
+        // Configurar logout
+        setupLogout();
+        
+      } catch (error) {
+        console.error('[Router] Error inicializando router:', error);
+        // La autenticación ya maneja la redirección
+      }
+    }
+
+    function showProjectsList() {
+      document.body.innerHTML = `
+        <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
+          <h1>🚀 Proyectos XDiagrams</h1>
+          <p>Selecciona un proyecto para continuar:</p>
+          <div style="margin: 30px 0;">
+            <a href="/project-01/" style="display: inline-block; margin: 10px; padding: 15px 30px; background: #007bff; color: white; text-decoration: none; border-radius: 5px;">
+              📊 Proyecto 01
+            </a>
+            <a href="/project-02/" style="display: inline-block; margin: 10px; padding: 15px 30px; background: #28a745; color: white; text-decoration: none; border-radius: 5px;">
+              📈 Proyecto 02 - Dashboard
+            </a>
+          </div>
+          <div id="logout-container">
+            <button id="logout-btn" style="padding: 10px 20px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer;">
+              <span>🚪</span> Cerrar Sesión
+            </button>
+          </div>
+        </div>
+      `;
+      
+      // Configurar logout en la página de proyectos
+      const logoutBtn = document.getElementById('logout-btn');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', async () => {
+          try {
+            localStorage.removeItem('session_data');
+            localStorage.removeItem('session_token');
+            localStorage.removeItem('session_expires');
+            sessionStorage.clear();
+            window.location.href = '/api/logout';
+          } catch (error) {
+            console.error('[Router] Error en logout:', error);
+            window.location.href = '/login.html';
+          }
+        });
+      }
+    }
+
+    // Inicializar router cuando la página cargue
+    window.addEventListener('load', initializeRouter);
   </script>
 </body>
 </html>
