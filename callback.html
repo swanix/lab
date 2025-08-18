@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Procesando autenticación...">
+  <title>Procesando - Diagrama Interactivo</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+    
+    .callback-container {
+      text-align: center;
+      max-width: 400px;
+      padding: 2rem;
+    }
+    
+    .callback-spinner {
+      width: 60px;
+      height: 60px;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top: 4px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 2rem;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .callback-title {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+    
+    .callback-subtitle {
+      font-size: 16px;
+      opacity: 0.9;
+      line-height: 1.5;
+    }
+    
+    .callback-steps {
+      margin-top: 2rem;
+      text-align: left;
+    }
+    
+    .callback-step {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      opacity: 0.7;
+    }
+    
+    .callback-step.active {
+      opacity: 1;
+      font-weight: 500;
+    }
+    
+    .callback-step-icon {
+      margin-right: 0.5rem;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="callback-container">
+    <div class="callback-spinner"></div>
+    <h1 class="callback-title">Procesando autenticación</h1>
+    <p class="callback-subtitle">
+      Estamos verificando tu cuenta y preparando el diagrama...
+    </p>
+    
+    <div class="callback-steps">
+      <div class="callback-step active" id="step1">
+        <span class="callback-step-icon">⏳</span>
+        <span>Intercambiando código de autorización</span>
+      </div>
+      <div class="callback-step" id="step2">
+        <span class="callback-step-icon">🔐</span>
+        <span>Obteniendo información del usuario</span>
+      </div>
+      <div class="callback-step" id="step3">
+        <span class="callback-step-icon">📋</span>
+        <span>Creando sesión de usuario</span>
+      </div>
+      <div class="callback-step" id="step4">
+        <span class="callback-step-icon">🚀</span>
+        <span>Redirigiendo al diagrama</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Simular progreso de los pasos
+    const steps = [
+      { id: 'step1', delay: 500, text: 'Intercambiando código de autorización' },
+      { id: 'step2', delay: 1500, text: 'Obteniendo información del usuario' },
+      { id: 'step3', delay: 2500, text: 'Creando sesión de usuario' },
+      { id: 'step4', delay: 3500, text: 'Redirigiendo al diagrama' }
+    ];
+    
+    let currentStep = 0;
+    
+    function updateSteps() {
+      steps.forEach((step, index) => {
+        const stepElement = document.getElementById(step.id);
+        if (stepElement) {
+          if (index <= currentStep) {
+            stepElement.classList.add('active');
+            stepElement.querySelector('.callback-step-icon').textContent = '✅';
+          } else {
+            stepElement.classList.remove('active');
+            stepElement.querySelector('.callback-step-icon').textContent = '⏳';
+          }
+        }
+      });
+    }
+    
+    // Iniciar progreso automático
+    steps.forEach((step, index) => {
+      setTimeout(() => {
+        currentStep = index;
+        updateSteps();
+        
+        // En el último paso, redirigir
+        if (index === steps.length - 1) {
+          setTimeout(() => {
+            // Obtener sesión de URL parameters y redirigir al diagrama
+            const urlParams = new URLSearchParams(window.location.search);
+            const session = urlParams.get('session');
+            
+            if (session) {
+              // Redirigir al diagrama con la sesión
+              window.location.href = `/index.html?session=${encodeURIComponent(session)}`;
+            } else {
+              // Si no hay sesión, ir al login
+              window.location.href = '/login.html';
+            }
+          }, 1000);
+        }
+      }, step.delay);
+    });
+    
+    // Inicializar
+    updateSteps();
+    
+    // Timeout de seguridad por si algo falla
+    setTimeout(() => {
+      console.log('⚠️ [Callback] Timeout de seguridad, redirigiendo...');
+      const urlParams = new URLSearchParams(window.location.search);
+      const session = urlParams.get('session');
+      
+      if (session) {
+        window.location.href = `/index.html?session=${encodeURIComponent(session)}`;
+      } else {
+        window.location.href = '/login.html';
+      }
+    }, 8000);
+  </script>
+</body>
+</html>

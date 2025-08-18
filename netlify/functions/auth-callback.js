@@ -147,8 +147,8 @@ exports.handler = async (event, context) => {
       expires_at: Date.now() + (tokenData.expires_in * 1000)
     };
     
-    // Redirigir al diagrama con sesión
-    const redirectUrl = `${process.env.AUTH0_BASE_URL}/index.html?session=${encodeURIComponent(JSON.stringify(session))}`;
+    // Redirigir a la página de callback personalizada
+    const redirectUrl = `${process.env.AUTH0_BASE_URL}/callback.html?session=${encodeURIComponent(JSON.stringify(session))}`;
     
     console.log('🔄 [Auth Callback] Session created:', {
       userEmail: session.user.email,
