@@ -1,12 +1,8 @@
 const fetch = require('node-fetch');
+const SecurityMiddleware = require('./security-middleware');
 
 exports.handler = async (event, context) => {
-  const headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-    'Content-Type': 'application/json'
-  };
+  const headers = SecurityMiddleware.createHeaders();
 
   // Manejar preflight requests (CORS)
   if (event.httpMethod === 'OPTIONS') {
@@ -18,11 +14,26 @@ exports.handler = async (event, context) => {
   }
 
   try {
+    // 🔐 VERIFICACIÓN DE AUTENTICACIÓN usando middleware centralizado
+    const authResult = await SecurityMiddleware.authenticate(event);
+    
+    if (!authResult.success) {
+      return {
+        statusCode: authResult.statusCode,
+        headers,
+        body: JSON.stringify(authResult.body)
+      };
+    }
+
+    // ✅ Usuario autenticado y autorizado - continuar con la petición a SheetBest
+    const { user, ip } = authResult;
+    console.log(`✅ [SheetBest Proxy] Usuario autorizado: ${user.email} (IP: ${ip})`);
+
     // Obtener API Key desde variables de entorno de Netlify
     const apiKey = process.env.SHEETBEST_API_KEY;
     
     if (!apiKey) {
-      console.error('❌ [SheetBest Proxy] API Key no configurada');
+      SecurityMiddleware.logSecurityEvent(event, 'ERROR', 'API Key no configurada', { email: user.email });
       return {
         statusCode: 500,
         headers,
@@ -38,6 +49,7 @@ exports.handler = async (event, context) => {
     const { url } = event.queryStringParameters || {};
     
     if (!url) {
+      SecurityMiddleware.logSecurityEvent(event, 'WARN', 'URL no proporcionada', { email: user.email });
       return {
         statusCode: 400,
         headers,
@@ -51,6 +63,10 @@ exports.handler = async (event, context) => {
 
     // Validar que la URL es de SheetBest
     if (!url.includes('api.sheetbest.com')) {
+      SecurityMiddleware.logSecurityEvent(event, 'WARN', 'Intento de acceso a URL no autorizada', { 
+        email: user.email, 
+        url: url 
+      });
       return {
         statusCode: 400,
         headers,
@@ -62,6 +78,12 @@ exports.handler = async (event, context) => {
       };
     }
 
+    // 🔍 Log de auditoría
+    SecurityMiddleware.logSecurityEvent(event, 'INFO', 'Petición autorizada a SheetBest', { 
+      email: user.email, 
+      url: url 
+    });
+
     const response = await fetch(url, {
       headers: {
         'X-Api-Key': apiKey,
@@ -72,7 +94,12 @@ exports.handler = async (event, context) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`❌ [SheetBest Proxy] Error from SheetBest: ${response.status} - ${errorText}`);
+      SecurityMiddleware.logSecurityEvent(event, 'ERROR', 'Error desde SheetBest', { 
+        email: user.email, 
+        status: response.status, 
+        error: errorText 
+      });
+      
       return {
         statusCode: response.status,
         headers,
@@ -86,6 +113,10 @@ exports.handler = async (event, context) => {
 
     const data = await response.json();
     
+    SecurityMiddleware.logSecurityEvent(event, 'INFO', 'Petición exitosa a SheetBest', { 
+      email: user.email 
+    });
+    
     return {
       statusCode: 200,
       headers,
@@ -93,7 +124,10 @@ exports.handler = async (event, context) => {
     };
 
   } catch (error) {
-    console.error('❌ [SheetBest Proxy] Error proxying request:', error);
+    SecurityMiddleware.logSecurityEvent(event, 'ERROR', 'Error interno del servidor', { 
+      error: error.message 
+    });
+    
     return {
       statusCode: 500,
       headers,

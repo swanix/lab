@@ -12,6 +12,7 @@
   AUTH0_DOMAIN = "your-tenant.auth0.com"
   AUTH0_CLIENT_ID = "your-auth0-client-id"
   AUTH0_CLIENT_SECRET = "your-auth0-client-secret"
+  ALLOWED_ORIGIN = "https://your-site.netlify.app"
 
 # Redirección específica para el login de Auth0
 [[redirects]]
@@ -43,7 +44,7 @@
   to = "/index.html"
   status = 200
 
-# Headers de seguridad
+# Headers de seguridad mejorados
 [[headers]]
   for = "/*"
   [headers.values]
@@ -51,11 +52,13 @@
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://api.sheetbest.com;"
 
-# Headers específicos para funciones
+# Headers específicos para funciones con CORS restringido
 [[headers]]
   for = "/.netlify/functions/*"
   [headers.values]
-    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Origin = "https://your-site.netlify.app"
     Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
     Access-Control-Allow-Headers = "Content-Type, Authorization"
+    Access-Control-Max-Age = "86400"
