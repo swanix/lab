@@ -39,6 +39,18 @@ class ProjectsConfig {
     } catch (error) {
       console.error('[ProjectsConfig] Error inicializando proyecto:', error);
       // Mostrar página de error usando la estética centralizada
+      // Cargar lista de proyectos disponibles para mostrar en el error
+      let availableProjects = [];
+      try {
+        availableProjects = await this.getAllProjects();
+      } catch (error) {
+        console.warn('[ProjectsConfig] No se pudieron cargar los proyectos para el mensaje de error');
+      }
+      
+      const projectsList = availableProjects.length > 0 
+        ? availableProjects.map(p => `<strong>${p.id}</strong>`).join(', ')
+        : 'No hay proyectos disponibles';
+      
       document.body.innerHTML = `
         <div class="forbidden-container">
           <div class="logo">•</div>
@@ -46,7 +58,7 @@ class ProjectsConfig {
           <p>El proyecto <strong>${projectId}</strong> no existe o no está disponible.</p>
           <div class="error-details">
             <h3>Proyectos disponibles:</h3>
-            <p>Verifica que el proyecto esté correctamente configurado en el sistema.</p>
+            <p>${projectsList}</p>
           </div>
           <div class="button-group">
             <a href="/" class="back-button">← Volver al inicio</a>
@@ -61,9 +73,12 @@ class ProjectsConfig {
     const path = window.location.pathname;
     const segments = path.split('/').filter(segment => segment.length > 0);
     
-    // Si la ruta es /project-01/, retornar project-01
-    if (segments.length > 0 && segments[0].startsWith('project-')) {
-      return segments[0];
+    // Si hay un segmento en la ruta, retornarlo como projectId
+    // Esto permite cualquier nombre de proyecto, no solo "project-*"
+    if (segments.length > 0) {
+      const projectId = segments[0];
+      console.log(`[ProjectsConfig] ProjectId detectado en URL: ${projectId}`);
+      return projectId;
     }
     
     return null;
@@ -71,35 +86,23 @@ class ProjectsConfig {
 
   static async getAllProjects() {
     try {
-      console.log('[ProjectsConfig] Cargando lista de proyectos disponibles...');
-      
-      // Lista de proyectos conocidos (se puede expandir dinámicamente)
-      // En el futuro, esto podría ser detectado automáticamente desde el servidor
-      const knownProjects = ['project-01', 'project-02', 'project-03'];
-      const projects = [];
-      
-      // Verificar cada proyecto conocido
-      for (const projectId of knownProjects) {
-        try {
-          const config = await this.loadProjectConfig(projectId);
-          projects.push({
-            id: projectId,
-            title: config.title,
-            description: config.description || `Proyecto ${projectId}`,
-            url: `/${projectId}/`
-          });
-          console.log(`[ProjectsConfig] Proyecto ${projectId} cargado:`, config.title);
-        } catch (error) {
-          console.warn(`[ProjectsConfig] Proyecto ${projectId} no disponible:`, error.message);
-          // No agregar proyectos que no existen
-        }
+      console.log('[ProjectsConfig] Cargando lista de proyectos disponibles desde /projects/index.json ...');
+      const response = await fetch('/projects/index.json', { cache: 'no-store' });
+      if (!response.ok) {
+        throw new Error(`No se pudo leer /projects/index.json (HTTP ${response.status})`);
       }
-      
+      const data = await response.json();
+      const manifest = Array.isArray(data.projects) ? data.projects : [];
+      const projects = manifest.map(entry => ({
+        id: entry.id || entry.dir,
+        title: entry.title || entry.id || entry.dir,
+        description: entry.description || `Proyecto ${entry.id || entry.dir}`,
+        url: entry.path || `/${entry.dir || entry.id}/`
+      }));
       console.log(`[ProjectsConfig] Total de proyectos cargados: ${projects.length}`);
       return projects;
-      
     } catch (error) {
-      console.error('[ProjectsConfig] Error cargando proyectos:', error);
+      console.error('[ProjectsConfig] Error cargando proyectos (manifest):', error);
       return [];
     }
   }
@@ -142,5 +145,13 @@ class ProjectsConfig {
         </div>
       </div>
     `;
+  }
+
+  // Función auxiliar para agregar nuevos proyectos fácilmente
+  static addProjectToList(projectId) {
+    console.log(`[ProjectsConfig] Para agregar el proyecto '${projectId}':`);
+    console.log(`1. Crear carpeta: projects/${projectId}/`);
+    console.log(`2. Crear archivo: projects/${projectId}/config.json`);
+    console.log(`3. El manifiesto /projects/index.json se generará automáticamente en build`);
   }
 }
