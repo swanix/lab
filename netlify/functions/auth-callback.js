@@ -291,20 +291,25 @@ exports.handler = async (event, context) => {
         localStorage.setItem('session_token', sessionToken);
         localStorage.setItem('session_expires', '${session.expires_at}');
         
+        console.log('[Auth Callback] Sesión configurada correctamente');
+        
         // Redirigir al diagrama o a la URL guardada
         setTimeout(() => {
             // Verificar si hay una URL de destino guardada
             const redirectUrl = localStorage.getItem('redirect_after_login');
+            console.log('[Auth Callback] URL guardada encontrada:', redirectUrl);
             
             if (redirectUrl) {
                 // Limpiar la URL guardada y redirigir
                 localStorage.removeItem('redirect_after_login');
-                window.location.href = '${process.env.AUTH0_BASE_URL}' + redirectUrl;
-                console.log('[Auth Callback] Redirigiendo a URL guardada:', redirectUrl);
+                const fullUrl = '${process.env.AUTH0_BASE_URL}' + redirectUrl;
+                console.log('[Auth Callback] Redirigiendo a URL guardada:', fullUrl);
+                window.location.href = fullUrl;
             } else {
                 // Redirigir al index principal
-                window.location.href = '${process.env.AUTH0_BASE_URL}/index.html';
-                console.log('[Auth Callback] Redirigiendo al index principal');
+                const indexUrl = '${process.env.AUTH0_BASE_URL}/index.html';
+                console.log('[Auth Callback] Redirigiendo al index principal:', indexUrl);
+                window.location.href = indexUrl;
             }
         }, 2000);
     </script>
