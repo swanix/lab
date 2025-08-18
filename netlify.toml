@@ -22,7 +22,7 @@
 # Redirección específica para debug del callback de Auth0
 [[redirects]]
   from = "/api/auth/callback"
-  to = "/.netlify/functions/debug-auth"
+  to = "/debug-callback.html"
   status = 200
 
 # Redirección principal a login
