@@ -1,6 +1,4 @@
-// Función mejorada de verificación de autenticación con cookies
-
-const SessionManager = require('./session-manager');
+// Función mejorada de verificación de autenticación con localStorage
 
 // Simulación de rate limiting (en producción usar Redis)
 const requestCounts = new Map();
@@ -61,36 +59,74 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // 🔐 Verificar sesión usando cookies
-    const sessionValidation = SessionManager.validateSession(event);
+    // 🔐 Verificar datos de sesión desde el body
+    let sessionData, sessionToken;
     
-    if (!sessionValidation.valid) {
-      console.warn(`🚨 [Auth Check] Sesión inválida - IP: ${clientIP}, Error: ${sessionValidation.error}`);
+    if (event.httpMethod === 'POST') {
+      try {
+        const body = JSON.parse(event.body || '{}');
+        sessionData = body.sessionData;
+        sessionToken = body.sessionToken;
+      } catch (error) {
+        console.warn(`🚨 [Auth Check] Error parseando body - IP: ${clientIP}`);
+        return {
+          statusCode: 400,
+          headers,
+          body: JSON.stringify({
+            error: 'Datos de sesión inválidos',
+            code: 'INVALID_SESSION_DATA'
+          })
+        };
+      }
+    }
+    
+    if (!sessionData || !sessionToken) {
+      console.warn(`🚨 [Auth Check] No hay datos de sesión - IP: ${clientIP}`);
       return {
-        statusCode: sessionValidation.code === 'FORBIDDEN' ? 403 : 401,
+        statusCode: 401,
         headers,
         body: JSON.stringify({
-          error: sessionValidation.error,
-          message: sessionValidation.error,
-          code: sessionValidation.code
+          error: 'No autenticado',
+          message: 'Debes iniciar sesión con Google para acceder al diagrama',
+          code: 'UNAUTHORIZED'
         })
       };
     }
 
-    // ✅ Sesión válida - obtener información del usuario desde cookies
-    const cookies = SessionManager.parseCookies(event);
-    
-    // En una implementación real, aquí obtendrías los datos del usuario desde una base de datos
-    // usando el sessionToken. Por ahora, simulamos un usuario autorizado
-    const userData = {
-      email: 'usuario@gmail.com', // Esto vendría de la base de datos
-      name: 'Usuario Autorizado',
-      picture: 'https://example.com/avatar.jpg'
-    };
+    // Validar datos de sesión
+    let parsedSession;
+    try {
+      parsedSession = JSON.parse(sessionData);
+    } catch (error) {
+      console.warn(`🚨 [Auth Check] Error parseando sesión - IP: ${clientIP}`);
+      return {
+        statusCode: 401,
+        headers,
+        body: JSON.stringify({
+          error: 'Sesión inválida',
+          message: 'Debes iniciar sesión nuevamente',
+          code: 'INVALID_SESSION'
+        })
+      };
+    }
+
+    // Verificar que la sesión no haya expirado
+    if (parsedSession.expires_at && Date.now() > parsedSession.expires_at) {
+      console.warn(`🚨 [Auth Check] Sesión expirada - IP: ${clientIP}, Email: ${parsedSession.user?.email}`);
+      return {
+        statusCode: 401,
+        headers,
+        body: JSON.stringify({
+          error: 'Sesión expirada',
+          message: 'Debes iniciar sesión nuevamente',
+          code: 'EXPIRED_SESSION'
+        })
+      };
+    }
 
     // Verificar que el usuario tenga un email de Google
-    if (!userData.email || !userData.email.endsWith('@gmail.com')) {
-      console.warn(`🚨 [Auth Check] Intento de acceso con email no autorizado - IP: ${clientIP}, Email: ${userData.email}`);
+    if (!parsedSession.user || !parsedSession.user.email || !parsedSession.user.email.endsWith('@gmail.com')) {
+      console.warn(`🚨 [Auth Check] Intento de acceso con email no autorizado - IP: ${clientIP}, Email: ${parsedSession.user?.email}`);
       return {
         statusCode: 403,
         headers,
@@ -103,14 +139,18 @@ exports.handler = async (event, context) => {
     }
     
     // ✅ Acceso autorizado
-    console.log(`✅ [Auth Check] Acceso autorizado - IP: ${clientIP}, Email: ${userData.email}`);
+    console.log(`✅ [Auth Check] Acceso autorizado - IP: ${clientIP}, Email: ${parsedSession.user.email}`);
     
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
         authenticated: true,
-        user: userData,
+        user: {
+          email: parsedSession.user.email,
+          name: parsedSession.user.name,
+          picture: parsedSession.user.picture
+        },
         message: 'Acceso autorizado'
       })
     };

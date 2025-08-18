@@ -144,32 +144,63 @@ exports.handler = async (event, context) => {
     const crypto = require('crypto');
     const sessionToken = crypto.randomBytes(32).toString('hex');
     
-    // Encriptar datos de sesión
-    const sessionData = JSON.stringify(session);
-    const sessionHash = crypto.createHash('sha256').update(sessionData).digest('hex');
+    // Crear página HTML que configure localStorage y redirija
+    const html = `
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Configurando sesión...</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            padding: 50px; 
+            background: #f5f5f5; 
+        }
+        .loader { 
+            border: 4px solid #f3f3f3; 
+            border-top: 4px solid #3498db; 
+            border-radius: 50%; 
+            width: 40px; 
+            height: 40px; 
+            animation: spin 1s linear infinite; 
+            margin: 20px auto; 
+        }
+        @keyframes spin { 
+            0% { transform: rotate(0deg); } 
+            100% { transform: rotate(360deg); } 
+        }
+    </style>
+</head>
+<body>
+    <h2>Configurando tu sesión...</h2>
+    <div class="loader"></div>
+    <p>Redirigiendo al diagrama...</p>
     
-    // Configurar cookies seguras
-    const cookieOptions = [
-      `session_token=${sessionToken}`,
-      `session_hash=${sessionHash}`,
-      'Path=/',
-      'HttpOnly',
-      'Secure',
-      'SameSite=Strict',
-      `Max-Age=${tokenData.expires_in}`
-    ];
-    
-    // Redirigir al diagrama con cookies limpias
-    const redirectUrl = `${process.env.AUTH0_BASE_URL}/index.html`;
+    <script>
+        // Configurar sesión en localStorage
+        const sessionData = ${JSON.stringify(session)};
+        const sessionToken = '${sessionToken}';
+        
+        localStorage.setItem('session_data', JSON.stringify(sessionData));
+        localStorage.setItem('session_token', sessionToken);
+        localStorage.setItem('session_expires', '${session.expires_at}');
+        
+        // Redirigir al diagrama
+        setTimeout(() => {
+            window.location.href = '${process.env.AUTH0_BASE_URL}/index.html';
+        }, 1000);
+    </script>
+</body>
+</html>`;
     
     return {
-      statusCode: 302,
+      statusCode: 200,
       headers: {
         ...headers,
-        'Location': redirectUrl,
-        'Set-Cookie': cookieOptions.join('; ')
+        'Content-Type': 'text/html'
       },
-      body: ''
+      body: html
     };
 
   } catch (error) {

@@ -1,4 +1,4 @@
-// Función de logout que limpia cookies de sesión
+// Función de logout simplificada
 
 exports.handler = async (event, context) => {
   const headers = {
@@ -20,27 +20,14 @@ exports.handler = async (event, context) => {
   try {
     console.log('🚪 [Logout] Procesando logout del usuario');
 
-    // Configurar cookies para limpiar la sesión
-    const clearCookieOptions = [
-      'session_token=',
-      'session_hash=',
-      'Path=/',
-      'HttpOnly',
-      'Secure',
-      'SameSite=Strict',
-      'Max-Age=0',
-      'Expires=Thu, 01 Jan 1970 00:00:01 GMT'
-    ];
-
-    // Redirigir al login con cookies limpias
+    // Redirigir al login (los datos de sesión se limpian en el frontend)
     const loginUrl = `${process.env.AUTH0_BASE_URL}/login.html`;
     
     return {
       statusCode: 302,
       headers: {
         ...headers,
-        'Location': loginUrl,
-        'Set-Cookie': clearCookieOptions.join('; ')
+        'Location': loginUrl
       },
       body: ''
     };
