@@ -131,50 +131,95 @@
     // Verificar si ya está autenticado
     async function checkAuth() {
       try {
-        // Limpiar TODOS los datos de sesión al cargar la página de login
-        console.log('🧹 [Login] Limpiando datos de sesión residuales...');
+        console.log('🔍 [Login] Verificando si el usuario ya está autenticado...');
         
-        // Limpiar localStorage completamente
-        localStorage.clear();
+        // Verificar si hay datos de sesión en localStorage
+        const sessionData = localStorage.getItem('session_data');
+        const sessionToken = localStorage.getItem('session_token');
+        const sessionExpires = localStorage.getItem('session_expires');
         
-        // Limpiar sessionStorage completamente
-        sessionStorage.clear();
-        
-        // Limpiar cookies específicas de Auth0
-        document.cookie.split(";").forEach(function(c) { 
-          document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+        console.log('[Login] Datos de sesión encontrados:', {
+          sessionData: !!sessionData,
+          sessionToken: !!sessionToken,
+          sessionExpires: !!sessionExpires
         });
         
-        console.log('✅ [Login] Datos de sesión limpiados');
-        
-        // Verificar si hay sesión en URL parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        const session = urlParams.get('session');
-        
-        if (session) {
-          // Si hay sesión, verificar si es válida
-          const response = await fetch(`/.netlify/functions/check-auth?session=${encodeURIComponent(session)}`);
-          const data = await response.json();
-          
-          if (data.authenticated) {
-            // Si ya está autenticado, redirigir al diagrama
-            window.location.href = '/';
-            return;
-          }
+        // Si no hay datos de sesión, mostrar login
+        if (!sessionData || !sessionToken || !sessionExpires) {
+          console.log('[Login] No hay datos de sesión, mostrando página de login');
+          return false;
         }
         
-        // Si no hay sesión o no es válida, mostrar página de login
-        console.log('Usuario no autenticado, mostrando página de login');
+        // Verificar si la sesión ha expirado
+        const now = Date.now();
+        const expiresAt = parseInt(sessionExpires);
+        
+        if (now > expiresAt) {
+          console.log('[Login] Sesión expirada, mostrando página de login');
+          // Limpiar datos expirados
+          localStorage.removeItem('session_data');
+          localStorage.removeItem('session_token');
+          localStorage.removeItem('session_expires');
+          return false;
+        }
+        
+        // Verificar autenticación con el servidor
+        console.log('[Login] Verificando autenticación con el servidor...');
+        const response = await fetch('/.netlify/functions/check-auth', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            sessionData: sessionData,
+            sessionToken: sessionToken
+          })
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.authenticated) {
+          console.log('[Login] ✅ Usuario autenticado, redirigiendo...');
+          
+          // Obtener URL de destino desde parámetros
+          const urlParams = new URLSearchParams(window.location.search);
+          const redirectUrl = urlParams.get('redirect');
+          
+          if (redirectUrl) {
+            // Redirigir a la URL de destino
+            console.log('[Login] Redirigiendo a URL de destino:', redirectUrl);
+            window.location.href = redirectUrl;
+          } else {
+            // Redirigir al home
+            console.log('[Login] Redirigiendo al home');
+            window.location.href = '/';
+          }
+          return true; // Usuario autenticado
+        }
+        
+        console.log('[Login] Usuario no autenticado, mostrando página de login');
+        return false;
+        
       } catch (error) {
-        console.log('Usuario no autenticado, mostrando página de login');
+        console.error('[Login] Error verificando autenticación:', error);
+        console.log('[Login] Mostrando página de login debido a error');
+        return false;
       }
     }
     
-    // Verificar autenticación al cargar la página
-    checkAuth();
-    
-    // Manejar errores de URL parameters
-    function handleErrors() {
+    // Verificar autenticación inmediatamente al cargar la página
+    // Esto evita que se muestre la página de login si el usuario ya está autenticado
+    (async function() {
+      const isAuthenticated = await checkAuth();
+      
+      // Solo ejecutar el resto del código si el usuario no está autenticado
+      if (!isAuthenticated) {
+        // Manejar errores de URL parameters
+        function handleErrors() {
       const urlParams = new URLSearchParams(window.location.search);
       const error = urlParams.get('error');
       const errorDescription = urlParams.get('error_description');
@@ -199,8 +244,10 @@
       }
     }
     
-    // Manejar errores al cargar la página
-    handleErrors();
+        // Manejar errores al cargar la página
+        handleErrors();
+      }
+    })();
   </script>
 </body>
 </html>
