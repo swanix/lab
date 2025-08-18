@@ -105,8 +105,14 @@
 
   <script>
     function login() {
-      // Redirigir a Auth0 para iniciar sesión con Google
-      window.location.href = '/api/auth/login?action=login';
+      // Detectar theme del usuario
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = prefersDark ? 'dark' : 'light';
+      
+      console.log('🌙 [Login] Theme detectado:', theme);
+      
+      // Redirigir a Auth0 para iniciar sesión con Google y theme
+      window.location.href = `/api/auth/login?action=login&theme=${theme}`;
     }
     
     // Verificar si ya está autenticado
