@@ -1,15 +1,25 @@
-// Verificar autenticación
+// Verificar autenticación usando cookies
 async function checkAuthentication() {
   try {
-    const urlParams = new URLSearchParams(window.location.search);
-    const session = urlParams.get('session');
+    // Verificar si hay cookies de sesión
+    const cookies = document.cookie.split(';').reduce((acc, cookie) => {
+      const [name, value] = cookie.trim().split('=');
+      if (name && value) {
+        acc[name] = decodeURIComponent(value);
+      }
+      return acc;
+    }, {});
     
-    if (!session) {
+    if (!cookies.session_token || !cookies.session_hash) {
+      console.log('🔐 [Auth] No hay cookies de sesión, redirigiendo a login');
       window.location.href = '/login.html';
       return;
     }
     
-    const authPromise = fetch(`/.netlify/functions/check-auth?session=${encodeURIComponent(session)}`);
+    // Verificar autenticación con el servidor
+    const authPromise = fetch('/.netlify/functions/check-auth', {
+      credentials: 'include' // Incluir cookies en la petición
+    });
     const timeoutPromise = new Promise((_, reject) => 
       setTimeout(() => reject(new Error('Timeout')), 10000)
     );
@@ -23,12 +33,15 @@ async function checkAuthentication() {
     const data = await response.json();
     
     if (!data.authenticated) {
+      console.log('🔐 [Auth] Usuario no autenticado, redirigiendo a login');
       window.location.href = '/login.html';
       return;
     }
     
+    console.log('✅ [Auth] Usuario autenticado:', data.user.email);
+    
   } catch (error) {
-    console.error('Error verificando autenticación:', error);
+    console.error('❌ [Auth] Error verificando autenticación:', error);
     window.location.href = '/login.html';
   }
 }
@@ -41,15 +54,23 @@ function setupLogout() {
   if (logoutContainer && logoutBtn) {
     logoutContainer.style.display = 'block';
     
-    logoutBtn.addEventListener('click', () => {
-      localStorage.clear();
-      sessionStorage.clear();
-      
-      document.cookie.split(";").forEach(function(c) { 
-        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
-      });
-      
-      window.location.href = '/api/logout';
+    logoutBtn.addEventListener('click', async () => {
+      try {
+        // Limpiar cookies del lado del cliente
+        document.cookie = 'session_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        document.cookie = 'session_hash=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        
+        // Limpiar localStorage y sessionStorage
+        localStorage.clear();
+        sessionStorage.clear();
+        
+        // Redirigir a logout del servidor
+        window.location.href = '/api/logout';
+      } catch (error) {
+        console.error('❌ [Auth] Error en logout:', error);
+        // Redirigir de todas formas
+        window.location.href = '/login.html';
+      }
     });
   }
 }

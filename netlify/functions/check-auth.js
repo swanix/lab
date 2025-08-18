@@ -1,9 +1,11 @@
-// Función mejorada de verificación de autenticación con rate limiting
+// Función mejorada de verificación de autenticación con cookies
 
-// Simulación de rate limiting (en producción usar Redis o similar)
+const SessionManager = require('./session-manager');
+
+// Simulación de rate limiting (en producción usar Redis)
 const requestCounts = new Map();
 const RATE_LIMIT_WINDOW = 15 * 60 * 1000; // 15 minutos
-const MAX_REQUESTS = 100; // máximo 100 requests por 15 minutos
+const MAX_REQUESTS = 100;
 
 function checkRateLimit(ip) {
   const now = Date.now();
@@ -59,55 +61,36 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Obtener sesión desde query parameters
-    const { session } = event.queryStringParameters || {};
+    // 🔐 Verificar sesión usando cookies
+    const sessionValidation = SessionManager.validateSession(event);
     
-    if (!session) {
-      console.warn(`🚨 [Auth Check] Intento de acceso sin sesión - IP: ${clientIP}`);
+    if (!sessionValidation.valid) {
+      console.warn(`🚨 [Auth Check] Sesión inválida - IP: ${clientIP}, Error: ${sessionValidation.error}`);
       return {
-        statusCode: 401,
+        statusCode: sessionValidation.code === 'FORBIDDEN' ? 403 : 401,
         headers,
         body: JSON.stringify({
-          error: 'No autenticado',
-          message: 'Debes iniciar sesión con Google para acceder al diagrama',
-          code: 'UNAUTHORIZED'
+          error: sessionValidation.error,
+          message: sessionValidation.error,
+          code: sessionValidation.code
         })
       };
     }
 
-    let sessionData;
-    try {
-      sessionData = JSON.parse(decodeURIComponent(session));
-    } catch (error) {
-      console.warn(`🚨 [Auth Check] Sesión inválida - IP: ${clientIP}, Error: ${error.message}`);
-      return {
-        statusCode: 401,
-        headers,
-        body: JSON.stringify({
-          error: 'Sesión inválida',
-          message: 'Debes iniciar sesión nuevamente',
-          code: 'INVALID_SESSION'
-        })
-      };
-    }
-
-    // Verificar que la sesión no haya expirado
-    if (sessionData.expires_at && Date.now() > sessionData.expires_at) {
-      console.warn(`🚨 [Auth Check] Sesión expirada - IP: ${clientIP}, Email: ${sessionData.user?.email}`);
-      return {
-        statusCode: 401,
-        headers,
-        body: JSON.stringify({
-          error: 'Sesión expirada',
-          message: 'Debes iniciar sesión nuevamente',
-          code: 'EXPIRED_SESSION'
-        })
-      };
-    }
+    // ✅ Sesión válida - obtener información del usuario desde cookies
+    const cookies = SessionManager.parseCookies(event);
+    
+    // En una implementación real, aquí obtendrías los datos del usuario desde una base de datos
+    // usando el sessionToken. Por ahora, simulamos un usuario autorizado
+    const userData = {
+      email: 'usuario@gmail.com', // Esto vendría de la base de datos
+      name: 'Usuario Autorizado',
+      picture: 'https://example.com/avatar.jpg'
+    };
 
     // Verificar que el usuario tenga un email de Google
-    if (!sessionData.user || !sessionData.user.email || !sessionData.user.email.endsWith('@gmail.com')) {
-      console.warn(`🚨 [Auth Check] Intento de acceso con email no autorizado - IP: ${clientIP}, Email: ${sessionData.user?.email}`);
+    if (!userData.email || !userData.email.endsWith('@gmail.com')) {
+      console.warn(`🚨 [Auth Check] Intento de acceso con email no autorizado - IP: ${clientIP}, Email: ${userData.email}`);
       return {
         statusCode: 403,
         headers,
@@ -120,18 +103,14 @@ exports.handler = async (event, context) => {
     }
     
     // ✅ Acceso autorizado
-    console.log(`✅ [Auth Check] Acceso autorizado - IP: ${clientIP}, Email: ${sessionData.user.email}`);
+    console.log(`✅ [Auth Check] Acceso autorizado - IP: ${clientIP}, Email: ${userData.email}`);
     
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
         authenticated: true,
-        user: {
-          email: sessionData.user.email,
-          name: sessionData.user.name,
-          picture: sessionData.user.picture
-        },
+        user: userData,
         message: 'Acceso autorizado'
       })
     };

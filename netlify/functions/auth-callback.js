@@ -1,6 +1,6 @@
 exports.handler = async (event, context) => {
   const headers = {
-    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Origin': process.env.ALLOWED_ORIGIN || 'https://your-site.netlify.app',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
     'Content-Type': 'application/json'
@@ -140,14 +140,34 @@ exports.handler = async (event, context) => {
       expires_at: Date.now() + (tokenData.expires_in * 1000)
     };
     
-    // Redirigir a la página de callback personalizada
-    const redirectUrl = `${process.env.AUTH0_BASE_URL}/callback.html?session=${encodeURIComponent(JSON.stringify(session))}`;
+    // Generar token de sesión seguro
+    const crypto = require('crypto');
+    const sessionToken = crypto.randomBytes(32).toString('hex');
+    
+    // Encriptar datos de sesión
+    const sessionData = JSON.stringify(session);
+    const sessionHash = crypto.createHash('sha256').update(sessionData).digest('hex');
+    
+    // Configurar cookies seguras
+    const cookieOptions = [
+      `session_token=${sessionToken}`,
+      `session_hash=${sessionHash}`,
+      'Path=/',
+      'HttpOnly',
+      'Secure',
+      'SameSite=Strict',
+      `Max-Age=${tokenData.expires_in}`
+    ];
+    
+    // Redirigir al diagrama con cookies limpias
+    const redirectUrl = `${process.env.AUTH0_BASE_URL}/index.html`;
     
     return {
       statusCode: 302,
       headers: {
         ...headers,
-        'Location': redirectUrl
+        'Location': redirectUrl,
+        'Set-Cookie': cookieOptions.join('; ')
       },
       body: ''
     };
