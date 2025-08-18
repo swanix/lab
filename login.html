@@ -107,13 +107,24 @@
     // Verificar si ya está autenticado
     async function checkAuth() {
       try {
-        const response = await fetch('/.netlify/functions/check-auth');
-        const data = await response.json();
+        // Verificar si hay sesión en URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const session = urlParams.get('session');
         
-        if (data.authenticated) {
-          // Si ya está autenticado, redirigir al diagrama
-          window.location.href = '/index.html';
+        if (session) {
+          // Si hay sesión, verificar si es válida
+          const response = await fetch(`/.netlify/functions/check-auth?session=${encodeURIComponent(session)}`);
+          const data = await response.json();
+          
+          if (data.authenticated) {
+            // Si ya está autenticado, redirigir al diagrama
+            window.location.href = '/index.html';
+            return;
+          }
         }
+        
+        // Si no hay sesión o no es válida, mostrar página de login
+        console.log('Usuario no autenticado, mostrando página de login');
       } catch (error) {
         console.log('Usuario no autenticado, mostrando página de login');
       }
