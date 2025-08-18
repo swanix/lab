@@ -107,9 +107,21 @@
     // Verificar si ya está autenticado
     async function checkAuth() {
       try {
-        // Limpiar cualquier sesión local que pueda estar causando problemas
-        localStorage.removeItem('auth0.is.authenticated');
+        // Limpiar TODOS los datos de sesión al cargar la página de login
+        console.log('🧹 [Login] Limpiando datos de sesión residuales...');
+        
+        // Limpiar localStorage completamente
+        localStorage.clear();
+        
+        // Limpiar sessionStorage completamente
         sessionStorage.clear();
+        
+        // Limpiar cookies específicas de Auth0
+        document.cookie.split(";").forEach(function(c) { 
+          document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+        });
+        
+        console.log('✅ [Login] Datos de sesión limpiados');
         
         // Verificar si hay sesión en URL parameters
         const urlParams = new URLSearchParams(window.location.search);

@@ -94,12 +94,24 @@
         logoutContainer.style.display = 'block';
         
         logoutBtn.addEventListener('click', () => {
-          // Limpiar sesión local y redirigir al logout
-          localStorage.removeItem('auth0.is.authenticated');
+          // Limpiar TODOS los datos de sesión
+          console.log('🚪 [Logout] Limpiando todos los datos de sesión...');
+          
+          // Limpiar localStorage completamente
+          localStorage.clear();
+          
+          // Limpiar sessionStorage completamente
           sessionStorage.clear();
           
-          // Cerrar sesión usando la función de Netlify
-          window.location.href = '/api/logout';
+          // Limpiar cookies específicas de Auth0
+          document.cookie.split(";").forEach(function(c) { 
+            document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+          });
+          
+          console.log('✅ [Logout] Datos de sesión limpiados, redirigiendo...');
+          
+          // Redirigir al login directamente
+          window.location.href = '/login.html';
         });
       }
     }
