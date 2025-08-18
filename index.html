@@ -5,57 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Diagrama interactivo creado con XDiagrams">
   <title>Mi Proyecto XDiagrams</title>
-  
   <!-- CDN de XDiagrams -->
-  <link href="https://cdn.jsdelivr.net/npm/xdiagrams@2.0.0/dist/xdiagrams.min.css" rel="stylesheet">
-  
-  <style>
-    /* Estilos personalizados opcionales */
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    }
-    
-    #app {
-      width: 100vw;
-      height: 100vh;
-    }
-  </style>
+  <link href="assets/xdiagrams.min.css" rel="stylesheet">
 </head>
 <body>
   <div id="app"></div>
   
   <script>
-    // Configuración de XDiagrams
+
     window.$xDiagrams = {
-      // 🔗 URL de datos - ELIGE UNA OPCIÓN:
-      
-      // Opción 1: Datos locales (CSV/JSON)
-      // url: "datos.csv",
-      
-      // Opción 2: API pública
-      // url: "https://api.ejemplo.com/datos",
-      
-      // Opción 3: API protegida (SheetBest) - RECOMENDADO
-      url: "/.netlify/functions/sheetbest-proxy?url=https://api.sheetbest.com/sheets/TU-SHEET-ID/tabs/TU-TAB",
-      
-      // 📝 Configuración básica
+      url: "/.netlify/functions/sheetbest-proxy?url=https://api.sheetbest.com/sheets/e5d98c88-3e44-4793-9e66-f0a26981e281",
       title: "Mi Diagrama Interactivo",
-      clustersPerRow: "6 3 7 6 3",  // Ajusta según tu estructura de datos
-      
-      // 🎨 Personalización visual
-      showThemeToggle: true,         // Mostrar toggle de tema claro/oscuro
-      spacing: 80,                   // Espaciado horizontal entre nodos
-      verticalSpacing: 170,          // Espaciado vertical entre filas
-      nodeWidth: 100,                // Ancho de cada nodo
-      nodeHeight: 125,               // Alto de cada nodo
-      
-      // 🔧 Configuración avanzada (opcional)
-      // enableAnimations: true,     // Habilitar animaciones
-      // enableZoom: true,           // Habilitar zoom
-      // enablePan: true,            // Habilitar pan
-      // enableTooltips: true,       // Habilitar tooltips
+      clustersPerRow: "6 3 7 6 3", 
+      showThemeToggle: true,         
+      spacing: 80,                   
+      verticalSpacing: 170,         
+      nodeWidth: 100,                
+      nodeHeight: 125,              
     };
     
     // 🚀 Logs para debugging
@@ -64,7 +30,7 @@
   </script>
   
   <!-- Cargar XDiagrams desde CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/xdiagrams@2.0.0/dist/xdiagrams.min.js"></script>
+  <script src="assets/xdiagrams.min.js"></script>
   
   <script>
     // ✅ Confirmar que XDiagrams se cargó correctamente
