@@ -68,10 +68,31 @@ exports.handler = async (event, context) => {
       
       if (error) {
         console.error('❌ [Auth Function] Auth0 error:', error, error_description);
+        
+        // Si el error es "access_denied", redirigir a la página de forbidden
+        if (error === 'access_denied') {
+          const forbiddenUrl = `${process.env.AUTH0_BASE_URL}/forbidden.html?error=${encodeURIComponent(error)}&error_description=${encodeURIComponent(error_description)}`;
+          
+          return {
+            statusCode: 302,
+            headers: {
+              ...headers,
+              'Location': forbiddenUrl
+            },
+            body: ''
+          };
+        }
+        
+        // Para otros errores, redirigir al login
+        const loginUrl = `${process.env.AUTH0_BASE_URL}/login.html?error=${encodeURIComponent(error)}&error_description=${encodeURIComponent(error_description)}`;
+        
         return {
-          statusCode: 400,
-          headers,
-          body: JSON.stringify({ error, error_description })
+          statusCode: 302,
+          headers: {
+            ...headers,
+            'Location': loginUrl
+          },
+          body: ''
         };
       }
       

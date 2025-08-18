@@ -83,6 +83,11 @@
       Para acceder al diagrama interactivo, debes iniciar sesión con tu cuenta de Google.
     </p>
     
+    <!-- Mensaje de error -->
+    <div id="error-message" style="display: none; background: #fee; color: #c33; padding: 1rem; border-radius: 6px; margin-bottom: 1rem; border: 1px solid #fcc;">
+      <strong>⚠️ Error:</strong> <span id="error-text"></span>
+    </div>
+    
     <button class="login-button" onclick="login()">
       <svg class="google-icon" viewBox="0 0 24 24">
         <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -148,6 +153,35 @@
     
     // Verificar autenticación al cargar la página
     checkAuth();
+    
+    // Manejar errores de URL parameters
+    function handleErrors() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const error = urlParams.get('error');
+      const errorDescription = urlParams.get('error_description');
+      
+      if (error && errorDescription) {
+        console.log('❌ [Login] Error detectado:', error, errorDescription);
+        
+        const errorMessage = document.getElementById('error-message');
+        const errorText = document.getElementById('error-text');
+        
+        if (error === 'access_denied') {
+          errorText.textContent = 'Tu cuenta no está autorizada para acceder a esta aplicación. Solo se permiten cuentas de Google (@gmail.com).';
+        } else {
+          errorText.textContent = errorDescription || 'Error de autenticación';
+        }
+        
+        errorMessage.style.display = 'block';
+        
+        // Limpiar los parámetros de error de la URL
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+      }
+    }
+    
+    // Manejar errores al cargar la página
+    handleErrors();
   </script>
 </body>
 </html>

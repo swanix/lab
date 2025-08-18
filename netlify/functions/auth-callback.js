@@ -68,10 +68,16 @@ exports.handler = async (event, context) => {
           };
         }
         
+        // Para otros errores, redirigir al login
+        const loginUrl = `${process.env.AUTH0_BASE_URL}/login.html?error=${encodeURIComponent(error)}&error_description=${encodeURIComponent(error_description)}`;
+        
         return {
-          statusCode: 400,
-          headers,
-          body: JSON.stringify({ error, error_description })
+          statusCode: 302,
+          headers: {
+            ...headers,
+            'Location': loginUrl
+          },
+          body: ''
         };
       }
     
