@@ -86,23 +86,17 @@ class ProjectsConfig {
 
   static async getAllProjects() {
     try {
-      console.log('[ProjectsConfig] Cargando lista de proyectos disponibles desde /projects/index.json ...');
-      const response = await fetch('/projects/index.json', { cache: 'no-store' });
+      console.log('[ProjectsConfig] Cargando lista de proyectos desde /projects/projects.json...');
+      const response = await fetch('/projects/projects.json');
       if (!response.ok) {
-        throw new Error(`No se pudo leer /projects/index.json (HTTP ${response.status})`);
+        throw new Error(`No se pudo leer /projects/projects.json (HTTP ${response.status})`);
       }
       const data = await response.json();
-      const manifest = Array.isArray(data.projects) ? data.projects : [];
-      const projects = manifest.map(entry => ({
-        id: entry.id || entry.dir,
-        title: entry.title || entry.id || entry.dir,
-        description: entry.description || `Proyecto ${entry.id || entry.dir}`,
-        url: entry.path || `/${entry.dir || entry.id}/`
-      }));
+      const projects = Array.isArray(data.projects) ? data.projects : [];
       console.log(`[ProjectsConfig] Total de proyectos cargados: ${projects.length}`);
       return projects;
     } catch (error) {
-      console.error('[ProjectsConfig] Error cargando proyectos (manifest):', error);
+      console.error('[ProjectsConfig] Error cargando proyectos:', error);
       return [];
     }
   }
@@ -152,6 +146,6 @@ class ProjectsConfig {
     console.log(`[ProjectsConfig] Para agregar el proyecto '${projectId}':`);
     console.log(`1. Crear carpeta: projects/${projectId}/`);
     console.log(`2. Crear archivo: projects/${projectId}/config.json`);
-    console.log(`3. El manifiesto /projects/index.json se generará automáticamente en build`);
+    console.log(`3. Agregar entrada en /projects/projects.json`);
   }
 }
