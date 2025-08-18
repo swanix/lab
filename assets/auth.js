@@ -21,12 +21,12 @@ async function checkAuthentication() {
       const currentUrl = window.location.pathname + window.location.search;
       console.log('[Auth] URL a guardar:', currentUrl);
       if (currentUrl !== '/') {
-        const loginUrl = `/login.html?redirect=${encodeURIComponent(currentUrl)}`;
+        const loginUrl = `/login?redirect=${encodeURIComponent(currentUrl)}`;
         console.log('[Auth] ✅ Redirigiendo a login con URL de destino:', loginUrl);
         window.location.href = loginUrl;
       } else {
         console.log('[Auth] ⚠️ Redirigiendo a login sin URL de destino');
-        window.location.href = '/login.html';
+        window.location.href = '/login';
       }
       return;
     }
@@ -41,12 +41,12 @@ async function checkAuthentication() {
       const currentUrl = window.location.pathname + window.location.search;
       console.log('[Auth] URL a guardar:', currentUrl);
       if (currentUrl !== '/') {
-        const loginUrl = `/login.html?redirect=${encodeURIComponent(currentUrl)}`;
+        const loginUrl = `/login?redirect=${encodeURIComponent(currentUrl)}`;
         console.log('[Auth] ✅ Redirigiendo a login con URL de destino:', loginUrl);
         window.location.href = loginUrl;
       } else {
         console.log('[Auth] ⚠️ Redirigiendo a login sin URL de destino');
-        window.location.href = '/login.html';
+        window.location.href = '/login';
       }
       localStorage.removeItem('session_data');
       localStorage.removeItem('session_token');
@@ -83,12 +83,12 @@ async function checkAuthentication() {
       const currentUrl = window.location.pathname + window.location.search;
       console.log('[Auth] URL a guardar:', currentUrl);
       if (currentUrl !== '/') {
-        const loginUrl = `/login.html?redirect=${encodeURIComponent(currentUrl)}`;
+        const loginUrl = `/login?redirect=${encodeURIComponent(currentUrl)}`;
         console.log('[Auth] ✅ Redirigiendo a login con URL de destino:', loginUrl);
         window.location.href = loginUrl;
       } else {
         console.log('[Auth] ⚠️ Redirigiendo a login sin URL de destino');
-        window.location.href = '/login.html';
+        window.location.href = '/login';
       }
       localStorage.removeItem('session_data');
       localStorage.removeItem('session_token');
@@ -104,12 +104,12 @@ async function checkAuthentication() {
     const currentUrl = window.location.pathname + window.location.search;
     console.log('[Auth] URL a guardar:', currentUrl);
     if (currentUrl !== '/') {
-      const loginUrl = `/login.html?redirect=${encodeURIComponent(currentUrl)}`;
+      const loginUrl = `/login?redirect=${encodeURIComponent(currentUrl)}`;
       console.log('[Auth] ✅ Redirigiendo a login con URL de destino:', loginUrl);
       window.location.href = loginUrl;
     } else {
       console.log('[Auth] ⚠️ Redirigiendo a login sin URL de destino');
-      window.location.href = '/login.html';
+      window.location.href = '/login';
     }
     // Limpiar datos de sesión en caso de error
     localStorage.removeItem('session_data');
@@ -141,7 +141,7 @@ function setupLogout() {
       } catch (error) {
         console.error('[Auth] Error en logout:', error);
         // Redirigir de todas formas
-        window.location.href = '/login.html';
+        window.location.href = '/login';
       }
     });
   }
