@@ -195,8 +195,97 @@ exports.handler = async (event, context) => {
     <title>Configurando sesión...</title>
     <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
     <link rel="stylesheet" href="/assets/app.css">
+    <style>
+        /* Estilos específicos para el callback en dark mode */
+        body {
+            background: #0f0f0f !important;
+            color: #ffffff !important;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .callback-container {
+            background: #1f1f1f;
+            border: 1px solid #404040;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+        }
+        
+        .logo {
+            margin-bottom: 1.5rem;
+        }
+        
+        .logo-img {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            background: #2a2a2a;
+            padding: 8px;
+        }
+        
+        h2 {
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .progress-container {
+            margin: 1.5rem 0;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #404040;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #3b82f6;
+            border-radius: 2px;
+            animation: progress 2s ease-in-out infinite;
+        }
+        
+        @keyframes progress {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+        
+        .status {
+            color: #e5e5e5;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .user-info {
+            background: #2a2a2a;
+            border: 1px solid #525252;
+            padding: 1rem;
+            border-radius: 8px;
+            color: #e5e5e5;
+            font-size: 0.9rem;
+        }
+        
+        .user-email {
+            color: #3b82f6;
+            font-weight: 600;
+        }
+    </style>
 </head>
-<body class="callback-page">
+<body>
     <div class="callback-container">
         <div class="logo">
             <img src="/assets/favicon.svg" alt="Logo" class="logo-img">
