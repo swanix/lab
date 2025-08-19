@@ -58,6 +58,20 @@ body {
   line-height: 1.6;
 }
 
+/* Ocultar contenido durante la carga inicial para evitar saltos visuales */
+body.loading {
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+body.loading #header-controls {
+  visibility: hidden;
+}
+
+body:not(.loading) {
+  opacity: 1;
+}
+
 /* ===== ESTILOS PARA PÁGINAS DE PROYECTOS (VISOR DE DIAGRAMAS) ===== */
 
 /* Cuando se carga un proyecto individual, el body debe ocupar toda la pantalla */

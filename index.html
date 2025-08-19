@@ -9,7 +9,7 @@
   <link href="/assets/xdiagrams.min.css" rel="stylesheet">
   <link href="/assets/app.css" rel="stylesheet">
 </head>
-<body class="dashboard-page">
+<body class="dashboard-page loading">
   <div id="app"></div>
   
   <div id="header-controls">
@@ -86,9 +86,13 @@
         // Configurar controles de header
         setupHeaderControls();
         
+        // Remover clase de loading para mostrar contenido
+        document.body.classList.remove('loading');
+        
       } catch (error) {
         console.error('[Router] Error inicializando router:', error);
         // La autenticación ya maneja la redirección
+        document.body.classList.remove('loading');
       }
     }
 
