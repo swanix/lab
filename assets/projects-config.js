@@ -117,11 +117,33 @@ class ProjectsConfig {
               </svg>
               Proyectos
             </button>
-            <div id="logout-container">
-              <button id="logout-btn">
-                <span>•</span>
-                Cerrar Sesión
+            <div class="user-menu-container">
+              <button id="user-menu-trigger" class="user-menu-trigger" title="Menú de usuario">
+                <img id="user-avatar" src="/assets/favicon.svg" alt="Usuario" class="user-avatar">
               </button>
+              <div id="user-menu" class="user-menu">
+                <div class="user-info">
+                  <img id="user-avatar-large" src="/assets/favicon.svg" alt="Usuario" class="user-avatar-large">
+                  <div class="user-details">
+                    <div id="user-name" class="user-name">Usuario</div>
+                    <div id="user-email" class="user-email">usuario@gmail.com</div>
+                  </div>
+                  <button id="theme-toggle" class="theme-toggle" title="Cambiar tema">
+                    <svg class="theme-icon" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="user-menu-separator"></div>
+                <button id="logout-btn" class="user-menu-logout">
+                  <svg class="logout-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M4 12v3a5 5 0 0 0 5 5h6a5 5 0 0 0 5-5v-3"/>
+                    <polyline points="16 8 20 12 16 16"/>
+                    <line x1="20" y1="12" x2="10" y2="12"/>
+                  </svg>
+                  Cerrar Sesión
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -152,11 +174,33 @@ class ProjectsConfig {
             </svg>
             Proyectos
           </button>
-          <div id="logout-container">
-            <button id="logout-btn">
-              <span>•</span>
-              Cerrar Sesión
+          <div class="user-menu-container">
+            <button id="user-menu-trigger" class="user-menu-trigger" title="Menú de usuario">
+              <img id="user-avatar" src="/assets/favicon.svg" alt="Usuario" class="user-avatar">
             </button>
+            <div id="user-menu" class="user-menu">
+              <div class="user-info">
+                <img id="user-avatar-large" src="/assets/favicon.svg" alt="Usuario" class="user-avatar-large">
+                <div class="user-details">
+                  <div id="user-name" class="user-name">Usuario</div>
+                  <div id="user-email" class="user-email">usuario@gmail.com</div>
+                </div>
+                <button id="theme-toggle" class="theme-toggle" title="Cambiar tema">
+                  <svg class="theme-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="user-menu-separator"></div>
+              <button id="logout-btn" class="user-menu-logout">
+                <svg class="logout-icon" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M4 12v3a5 5 0 0 0 5 5h6a5 5 0 0 0 5-5v-3"/>
+                  <polyline points="16 8 20 12 16 16"/>
+                  <line x1="20" y1="12" x2="10" y2="12"/>
+                </svg>
+                Cerrar Sesión
+              </button>
+            </div>
           </div>
         </div>
       </div>
