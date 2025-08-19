@@ -58,10 +58,11 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
+  height: 100vh; /* Altura fija para evitar scroll */
   color: var(--color-text-primary);
   line-height: 1.6;
   overflow-x: hidden; /* Prevenir scroll horizontal */
-  overflow-y: auto; /* Permitir scroll vertical solo cuando sea necesario */
+  overflow-y: hidden; /* Prevenir scroll vertical por defecto */
 }
 
 /* Ocultar contenido durante la carga inicial para evitar saltos visuales */
@@ -70,14 +71,29 @@ body.loading {
   transition: opacity var(--transition-normal);
   padding: 0 !important;
   overflow: hidden; /* Prevenir scroll horizontal y vertical */
+  height: 100vh; /* Forzar altura fija */
+  width: 100vw; /* Forzar ancho fijo */
 }
 
 body.loading #header-controls {
   visibility: hidden;
+  opacity: 0;
+}
+
+body.loading #app {
+  visibility: hidden;
+  opacity: 0;
 }
 
 body:not(.loading) {
   opacity: 1;
+}
+
+body:not(.loading) #header-controls,
+body:not(.loading) #app {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity var(--transition-normal);
 }
 
 /* ===== ESTILOS PARA PÁGINAS DE PROYECTOS (VISOR DE DIAGRAMAS) ===== */

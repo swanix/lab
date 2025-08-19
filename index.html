@@ -80,11 +80,14 @@
           // Mantener clase dashboard para la lista de proyectos
           document.body.className = 'dashboard-page';
           // Mostrar página de proyectos disponibles
-          showProjectsList();
+          await showProjectsList();
         }
         
         // Configurar controles de header
         setupHeaderControls();
+        
+        // Pequeña pausa para asegurar que todo esté listo
+        await new Promise(resolve => setTimeout(resolve, 100));
         
         // Remover clase de loading para mostrar contenido
         document.body.classList.remove('loading');
