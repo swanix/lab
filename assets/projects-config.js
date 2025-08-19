@@ -207,6 +207,37 @@ class ProjectsConfig {
     `;
   }
 
+  static generateProjectsGridContent(projects) {
+    if (!projects || projects.length === 0) {
+      return `
+        <div class="dashboard-container">
+          <h1>No hay proyectos disponibles</h1>
+          <p>No se encontraron proyectos configurados en el sistema.</p>
+        </div>
+      `;
+    }
+
+    const projectsHTML = projects.map(project => `
+      <a href="${project.url}" class="project-card">
+        <div class="project-logo">
+          <img src="/projects/${project.id}/img/logo.svg" alt="${project.title}" onerror="this.style.display='none'">
+        </div>
+        <h3>${project.title}</h3>
+        <p>${project.description}</p>
+      </a>
+    `).join('');
+
+    return `
+      <div class="dashboard-container">
+        <h1>Proyectos XDiagrams</h1>
+        <p>Selecciona un proyecto para continuar:</p>
+        <div class="projects-grid">
+          ${projectsHTML}
+        </div>
+      </div>
+    `;
+  }
+
   // Función auxiliar para agregar nuevos proyectos fácilmente
   static addProjectToList(projectId) {
     console.log(`[ProjectsConfig] Para agregar el proyecto '${projectId}':`);
