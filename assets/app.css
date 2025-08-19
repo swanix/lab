@@ -56,12 +56,15 @@ body {
   min-height: 100vh;
   color: var(--color-text-primary);
   line-height: 1.6;
+  overflow-x: hidden; /* Prevenir scroll horizontal */
 }
 
 /* Ocultar contenido durante la carga inicial para evitar saltos visuales */
 body.loading {
   opacity: 0;
   transition: opacity var(--transition-normal);
+  padding: 0 !important;
+  overflow: hidden;
 }
 
 body.loading #header-controls {
@@ -463,7 +466,7 @@ body.callback-page {
 body.dashboard-page {
   background: linear-gradient(135deg, var(--color-bg-primary) 0%, var(--color-bg-secondary) 100%);
   min-height: 100vh;
-  padding: 2rem 1rem;
+  padding: 4rem 1rem 2rem 1rem; /* Más padding arriba para los controles fijos */
 }
 
 .dashboard-container {
