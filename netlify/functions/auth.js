@@ -24,6 +24,12 @@ exports.handler = async (event, context) => {
       const clientId = process.env.AUTH0_CLIENT_ID;
       const redirectUri = `${process.env.AUTH0_BASE_URL}/api/auth/callback`;
       
+      console.log('[Auth] Configuración de Auth0:');
+      console.log('[Auth] AUTH0_DOMAIN:', auth0Domain);
+      console.log('[Auth] AUTH0_CLIENT_ID:', clientId);
+      console.log('[Auth] AUTH0_BASE_URL:', process.env.AUTH0_BASE_URL);
+      console.log('[Auth] redirectUri construida:', redirectUri);
+      
       // Detectar theme del usuario desde headers o parámetros
       const userAgent = event.headers['user-agent'] || '';
       const prefersDark = userAgent.includes('dark') || 
@@ -47,6 +53,8 @@ exports.handler = async (event, context) => {
         `prompt=select_account&` +
         `state=${encodeURIComponent(state)}&` +
         `ui_locales=${prefersDark ? 'dark' : 'light'}`;
+      
+      console.log('[Auth] URL de autorización completa:', authUrl);
       
       return {
         statusCode: 302,
