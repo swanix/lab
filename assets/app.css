@@ -48,15 +48,20 @@
   box-sizing: border-box;
 }
 
+html {
+  background: #0f0f0f; /* Color de fondo oscuro por defecto */
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  background: var(--color-bg-primary);
+  background: #0f0f0f; /* Color de fondo oscuro explícito */
   margin: 0;
   padding: 0;
   min-height: 100vh;
   color: var(--color-text-primary);
   line-height: 1.6;
   overflow-x: hidden; /* Prevenir scroll horizontal */
+  overflow-y: auto; /* Permitir scroll vertical solo cuando sea necesario */
 }
 
 /* Ocultar contenido durante la carga inicial para evitar saltos visuales */
@@ -64,7 +69,7 @@ body.loading {
   opacity: 0;
   transition: opacity var(--transition-normal);
   padding: 0 !important;
-  overflow: hidden;
+  overflow: hidden; /* Prevenir scroll horizontal y vertical */
 }
 
 body.loading #header-controls {
