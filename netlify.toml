@@ -1,5 +1,5 @@
 [build]
-  functions = "netlify/functions"
+  functions = "auth/functions"
   publish = "."
 
 [build.environment]
@@ -41,13 +41,13 @@
 # Redirección para login sin extensión
 [[redirects]]
   from = "/login"
-  to = "/login.html"
+  to = "/auth/pages/login.html"
   status = 200
 
 # Redirección para forbidden sin extensión
 [[redirects]]
   from = "/forbidden"
-  to = "/forbidden.html"
+  to = "/auth/pages/forbidden.html"
   status = 200
 
 # Redirección SPA para proyectos (después de login)

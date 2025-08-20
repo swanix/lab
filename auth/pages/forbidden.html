@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Acceso denegado">
+  <title>Acceso Denegado</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="stylesheet" href="/auth/assets/auth.css">
+</head>
+<body class="forbidden-page">
+  <div class="forbidden-container">
+    <div class="logo">
+      <img src="/assets/favicon.svg" alt="Logo" class="logo-img">
+    </div>
+    
+    <h1>Acceso Denegado</h1>
+    
+    <div id="forbidden-message" class="forbidden-message">
+      <p>No tienes permisos para acceder a esta aplicación.</p>
+      <p id="specific-reason" class="specific-reason"></p>
+    </div>
+    
+    <div class="forbidden-details">
+      <h3>Restricciones de acceso:</h3>
+      <ul>
+        <li>Solo se permiten correos de <strong>Gmail</strong></li>
+        <li>Tu correo debe estar en la lista de usuarios autorizados</li>
+        <li>Contacta al administrador para solicitar acceso</li>
+      </ul>
+    </div>
+    
+    <div class="actions">
+      <button onclick="window.location.href='/auth/pages/login.html'" class="btn-primary">
+        Intentar con otro correo
+      </button>
+      
+      <button onclick="window.history.back()" class="btn-secondary">
+        Volver
+      </button>
+    </div>
+  </div>
+
+  <!-- Cargar configuración -->
+  <script src="/auth/assets/auth-config.js"></script>
+  
+  <script>
+    // Mostrar motivo específico si está disponible
+    const urlParams = new URLSearchParams(window.location.search);
+    const reason = urlParams.get('reason');
+    
+    if (reason) {
+      const reasonElement = document.getElementById('specific-reason');
+      reasonElement.textContent = `Motivo: ${reason}`;
+      reasonElement.style.display = 'block';
+    }
+  </script>
+</body>
+</html>

@@ -54,14 +54,18 @@
     </div>
   </div>
   
-  <script src="/assets/auth.js"></script>
+  <!-- Cargar configuración de auth primero -->
+  <script src="/auth/assets/auth-config.js"></script>
+  
+  <!-- Cargar sistema de autenticación -->
+  <script src="/auth/assets/auth.js"></script>
   <script src="/assets/projects-config.js"></script>
   <script>
     // Router dinámico de proyectos
     async function initializeRouter() {
       try {
         // Verificar autenticación
-        await checkAuthentication();
+        await Auth.checkAuthentication();
         
         // Obtener ID del proyecto desde la URL
         const projectId = ProjectsConfig.getProjectIdFromPath();
