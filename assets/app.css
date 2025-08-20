@@ -336,78 +336,96 @@ body.forbidden-page {
   line-height: 1.6;
 }
 
-.error-details {
+.forbidden-message {
+  margin: 1.5rem 0;
+  padding: 1rem;
   background: var(--color-bg-tertiary);
   border: 1px solid var(--color-border-secondary);
-  padding: 1.5rem;
   border-radius: 8px;
-  margin: 2rem 0;
-  text-align: left;
+  text-align: center;
 }
 
-.error-details h3 {
+.specific-reason {
+  color: var(--color-error);
+  font-weight: 600;
+  margin-top: 0.5rem;
+  display: none;
+}
+
+.forbidden-details {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-primary);
+  border-radius: 8px;
+}
+
+.forbidden-details h3 {
   color: var(--color-text-primary);
   margin-bottom: 1rem;
   font-size: 1.1rem;
 }
 
-.error-details p {
-  color: var(--color-text-secondary);
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
+.forbidden-details ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-.button-group {
+.forbidden-details li {
+  color: var(--color-text-secondary);
+  margin-bottom: 0.5rem;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.forbidden-details li:before {
+  content: "•";
+  color: var(--color-error);
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+}
+
+.actions {
   display: flex;
   gap: 1rem;
   justify-content: center;
-  margin: 2rem 0;
-  flex-wrap: wrap;
+  margin-top: 2rem;
 }
 
-.back-button,
-.try-again-button {
-  padding: 12px 24px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 500;
-  transition: all var(--transition-fast);
-  border: none;
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-
-.back-button {
-  background: var(--color-bg-tertiary);
-  color: var(--color-text-primary);
-  border: 1px solid var(--color-border-secondary);
-}
-
-.back-button:hover {
-  background: var(--color-border-secondary);
-  transform: translateY(-1px);
-}
-
-.try-again-button {
+.btn-primary {
   background: var(--color-info);
-  color: var(--color-white);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
 }
 
-.try-again-button:hover {
+.btn-primary:hover {
   background: #2563eb;
   transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
 }
 
-.security-note {
+.btn-secondary {
   background: var(--color-bg-tertiary);
-  border: 1px solid var(--color-border-secondary);
-  padding: 1rem;
-  border-radius: 8px;
-  font-size: 0.85rem;
-  color: var(--color-text-secondary);
-  line-height: 1.5;
-  margin-top: 2rem;
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-primary);
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-secondary:hover {
+  background: var(--color-border-secondary);
+  transform: translateY(-1px);
 }
 
 /* ===== ESTILOS PARA CALLBACK ===== */

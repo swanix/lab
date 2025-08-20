@@ -1,33 +1,16 @@
-// Verificar autenticación usando localStorage
+// ===== FUNCIÓN DE VERIFICACIÓN DE SESIÓN =====
 async function checkAuthentication() {
   try {
-    console.log('[Auth] Iniciando verificación de autenticación...');
-    console.log('[Auth] URL actual:', window.location.pathname + window.location.search);
+    console.log('[Auth] Verificando autenticación...');
     
-    // Verificar si hay datos de sesión en localStorage
+    // Verificar si hay datos de sesión
     const sessionData = localStorage.getItem('session_data');
     const sessionToken = localStorage.getItem('session_token');
     const sessionExpires = localStorage.getItem('session_expires');
     
-    console.log('[Auth] Datos de sesión encontrados:', {
-      sessionData: !!sessionData,
-      sessionToken: !!sessionToken,
-      sessionExpires: !!sessionExpires
-    });
-    
     if (!sessionData || !sessionToken || !sessionExpires) {
-      console.log('[Auth] No hay datos de sesión, redirigiendo a login con URL de destino');
-      // Guardar URL actual como parámetro en lugar de localStorage
-      const currentUrl = window.location.pathname + window.location.search;
-      console.log('[Auth] URL a guardar:', currentUrl);
-      if (currentUrl !== '/') {
-        const loginUrl = `/login?redirect=${encodeURIComponent(currentUrl)}`;
-        console.log('[Auth] ✅ Redirigiendo a login con URL de destino:', loginUrl);
-        window.location.href = loginUrl;
-      } else {
-        console.log('[Auth] ⚠️ Redirigiendo a login sin URL de destino');
-        window.location.href = '/login';
-      }
+      console.log('[Auth] No hay datos de sesión');
+      redirectToLogin();
       return;
     }
     
@@ -35,87 +18,69 @@ async function checkAuthentication() {
     const now = Date.now();
     const expiresAt = parseInt(sessionExpires);
     
-    if (now > expiresAt) {
-      console.log('[Auth] Sesión expirada, redirigiendo a login con URL de destino');
-      // Guardar URL actual como parámetro en lugar de localStorage
-      const currentUrl = window.location.pathname + window.location.search;
-      console.log('[Auth] URL a guardar:', currentUrl);
-      if (currentUrl !== '/') {
-        const loginUrl = `/login?redirect=${encodeURIComponent(currentUrl)}`;
-        console.log('[Auth] ✅ Redirigiendo a login con URL de destino:', loginUrl);
-        window.location.href = loginUrl;
-      } else {
-        console.log('[Auth] ⚠️ Redirigiendo a login sin URL de destino');
-        window.location.href = '/login';
-      }
-      localStorage.removeItem('session_data');
-      localStorage.removeItem('session_token');
-      localStorage.removeItem('session_expires');
+    if (now >= expiresAt) {
+      console.log('[Auth] Sesión expirada');
+      clearSession();
+      redirectToLogin();
       return;
     }
     
-    // Verificar autenticación con el servidor
-    const authPromise = fetch('/.netlify/functions/check-auth', {
+    // Parsear datos de sesión
+    const session = JSON.parse(sessionData);
+    
+    // Verificar que el token de sesión sea válido
+    const response = await fetch('/api/auth/check', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${sessionToken}`
       },
       body: JSON.stringify({
-        sessionData: sessionData,
-        sessionToken: sessionToken
+        session_data: sessionData
       })
     });
-    const timeoutPromise = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('Timeout')), 10000)
-    );
-    
-    const response = await Promise.race([authPromise, timeoutPromise]);
     
     if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-    
-    const data = await response.json();
-    
-    if (!data.authenticated) {
-      console.log('[Auth] Usuario no autenticado, redirigiendo a login con URL de destino');
-      // Guardar URL actual como parámetro en lugar de localStorage
-      const currentUrl = window.location.pathname + window.location.search;
-      console.log('[Auth] URL a guardar:', currentUrl);
-      if (currentUrl !== '/') {
-        const loginUrl = `/login?redirect=${encodeURIComponent(currentUrl)}`;
-        console.log('[Auth] ✅ Redirigiendo a login con URL de destino:', loginUrl);
-        window.location.href = loginUrl;
-      } else {
-        console.log('[Auth] ⚠️ Redirigiendo a login sin URL de destino');
-        window.location.href = '/login';
-      }
-      localStorage.removeItem('session_data');
-      localStorage.removeItem('session_token');
-      localStorage.removeItem('session_expires');
+      console.error('[Auth] Error verificando sesión:', response.status);
+      clearSession();
+      redirectToLogin();
       return;
     }
     
-    console.log('[Auth] Usuario autenticado:', data.user.email);
+    const result = await response.json();
+    
+    if (!result.valid) {
+      console.error('[Auth] Sesión inválida');
+      clearSession();
+      redirectToLogin();
+      return;
+    }
+    
+    // Si llegamos aquí, Auth0 ya verificó el dominio y email
+    console.log('[Auth] ✅ Autenticación exitosa');
+    return session;
     
   } catch (error) {
-    console.error('[Auth] Error verificando autenticación:', error);
-    // Guardar URL actual como parámetro en lugar de localStorage
-    const currentUrl = window.location.pathname + window.location.search;
-    console.log('[Auth] URL a guardar:', currentUrl);
-    if (currentUrl !== '/') {
-      const loginUrl = `/login?redirect=${encodeURIComponent(currentUrl)}`;
-      console.log('[Auth] ✅ Redirigiendo a login con URL de destino:', loginUrl);
-      window.location.href = loginUrl;
-    } else {
-      console.log('[Auth] ⚠️ Redirigiendo a login sin URL de destino');
-      window.location.href = '/login';
-    }
-    // Limpiar datos de sesión en caso de error
-    localStorage.removeItem('session_data');
-    localStorage.removeItem('session_token');
-    localStorage.removeItem('session_expires');
+    console.error('[Auth] Error en verificación:', error);
+    clearSession();
+    redirectToLogin();
   }
+}
+
+// ===== FUNCIÓN PARA LIMPIAR SESIÓN =====
+function clearSession() {
+  localStorage.removeItem('session_data');
+  localStorage.removeItem('session_token');
+  localStorage.removeItem('session_expires');
+  console.log('[Auth] Sesión limpiada');
+}
+
+// ===== FUNCIÓN PARA REDIRIGIR AL LOGIN =====
+function redirectToLogin() {
+  const currentUrl = window.location.pathname + window.location.search;
+  const loginUrl = `/login?redirect=${encodeURIComponent(currentUrl)}`;
+  console.log('[Auth] Redirigiendo a login:', loginUrl);
+  window.location.href = loginUrl;
 }
 
 // Configurar botón de logout

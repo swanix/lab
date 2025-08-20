@@ -4,42 +4,52 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Acceso denegado">
-  <title>Acceso Denegado - Diagrama Interactivo</title>
+  <title>Acceso Denegado - XDiagrams</title>
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
-  <link rel="stylesheet" href="/assets/app.css">
+  <link href="/assets/app.css" rel="stylesheet">
 </head>
 <body class="forbidden-page">
   <div class="forbidden-container">
     <div class="logo">
       <img src="/assets/favicon.svg" alt="Logo" class="logo-img">
     </div>
+    
     <h1>Acceso Denegado</h1>
-    <p>Tu cuenta no está autorizada para acceder a esta aplicación.</p>
-    <div class="error-details">
-      <h3>¿Por qué no puedo acceder?</h3>
-      <p><strong>• Solo se permiten cuentas de Google (@gmail.com)</strong></p>
-      <p>• Tu cuenta tiene un dominio personalizado que no está autorizado</p>
-      <p>• Esta aplicación está restringida a usuarios específicos</p>
+    
+    <div id="forbidden-message" class="forbidden-message">
+      <p>No tienes permisos para acceder a esta aplicación.</p>
+      <p id="specific-reason" class="specific-reason"></p>
     </div>
-    <div class="button-group">
-      <a href="/login" class="back-button">← Volver al Login</a>
-      <button class="try-again-button" onclick="tryAgain()">Intentar con otra cuenta</button>
+    
+    <div class="forbidden-details">
+      <h3>Restricciones de acceso:</h3>
+      <ul>
+        <li>Solo se permiten correos de <strong>Gmail</strong></li>
+        <li>Tu correo debe estar en la lista de usuarios autorizados</li>
+        <li>Contacta al administrador para solicitar acceso</li>
+      </ul>
     </div>
-    <div class="security-note">
-      <strong>¿Necesitas acceso?</strong><br>
-      Contacta al administrador del sistema para solicitar autorización.
+    
+    <div class="actions">
+      <button onclick="window.location.href='/login'" class="btn-primary">
+        Intentar con otro correo
+      </button>
+      
+      <button onclick="window.history.back()" class="btn-secondary">
+        Volver
+      </button>
     </div>
   </div>
 
   <script>
-    function tryAgain() {
-      // Limpiar cualquier dato de sesión residual
-      localStorage.removeItem('session_data');
-      localStorage.removeItem('session_token');
-      localStorage.removeItem('session_expires');
-      
-      // Redirigir al login
-      window.location.href = '/login';
+    // Mostrar motivo específico si está disponible
+    const urlParams = new URLSearchParams(window.location.search);
+    const reason = urlParams.get('reason');
+    
+    if (reason) {
+      const reasonElement = document.getElementById('specific-reason');
+      reasonElement.textContent = `Motivo: ${reason}`;
+      reasonElement.style.display = 'block';
     }
   </script>
 </body>
