@@ -316,6 +316,25 @@ exports.handler = async (event, context) => {
         
         console.log('[Auth Callback] Sesión configurada correctamente');
         
+        // Verificar que los datos se guardaron correctamente
+        const savedSessionData = localStorage.getItem('session_data');
+        const savedSessionToken = localStorage.getItem('session_token');
+        const savedSessionExpires = localStorage.getItem('session_expires');
+        
+        console.log('[Auth Callback] Verificación de datos guardados:', {
+            sessionData: !!savedSessionData,
+            sessionToken: !!savedSessionToken,
+            sessionExpires: savedSessionExpires
+        });
+        
+        if (!savedSessionData || !savedSessionToken || !savedSessionExpires) {
+            console.error('[Auth Callback] ❌ Error: Los datos no se guardaron correctamente');
+            alert('Error configurando la sesión. Intenta nuevamente.');
+            return;
+        }
+        
+        console.log('[Auth Callback] ✅ Datos guardados correctamente, procediendo con redirección...');
+        
         // Redirigir al diagrama o a la URL guardada
         setTimeout(() => {
             // Usar URL de destino desde el state del servidor
@@ -336,7 +355,7 @@ exports.handler = async (event, context) => {
                 console.log('[Auth Callback] Redirigiendo al dashboard principal:', dashboardUrl);
                 window.location.href = dashboardUrl;
             }
-        }, 2000);
+        }, 3000); // Aumentado de 2000 a 3000ms
     </script>
 </body>
 </html>`;

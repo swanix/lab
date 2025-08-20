@@ -1,5 +1,8 @@
 // ===== FUNCIÓN DE VERIFICACIÓN DE SESIÓN =====
 async function checkAuthentication() {
+  console.log('[Auth] 🔍 INICIANDO VERIFICACIÓN DE AUTENTICACIÓN');
+  console.log('[Auth] URL actual:', window.location.href);
+  
   try {
     console.log('[Auth] Verificando autenticación...');
     
@@ -46,7 +49,7 @@ async function checkAuthentication() {
     
     // Verificar que el token de sesión sea válido
     console.log('[Auth] Llamando a /api/auth/check...');
-    const response = await fetch('/api/auth/check', {
+    const response = await fetch('/.netlify/functions/check-auth', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
