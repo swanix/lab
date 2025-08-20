@@ -330,32 +330,31 @@ exports.handler = async (event, context) => {
         if (!savedSessionData || !savedSessionToken || !savedSessionExpires) {
             console.error('[Auth Callback] ❌ Error: Los datos no se guardaron correctamente');
             alert('Error configurando la sesión. Intenta nuevamente.');
-            return;
-        }
-        
-        console.log('[Auth Callback] ✅ Datos guardados correctamente, procediendo con redirección...');
-        
-        // Redirigir al diagrama o a la URL guardada
-        setTimeout(() => {
-            // Usar URL de destino desde el state del servidor
-            const redirectUrl = ${redirectUrl ? `'${redirectUrl}'` : 'null'};
-            console.log('[Auth Callback] URL de destino desde state:', redirectUrl);
+        } else {
+            console.log('[Auth Callback] ✅ Datos guardados correctamente, procediendo con redirección...');
             
-            if (redirectUrl && redirectUrl !== 'null') {
-                // Construir URL completa correctamente
-                const baseUrl = '${process.env.AUTH0_BASE_URL}';
-                const fullUrl = redirectUrl.startsWith('/') ? 
-                    baseUrl + redirectUrl : 
-                    baseUrl + '/' + redirectUrl;
-                console.log('[Auth Callback] Redirigiendo a URL de destino:', fullUrl);
-                window.location.href = fullUrl;
-            } else {
-                // Redirigir al dashboard principal (raíz)
-                const dashboardUrl = '${process.env.AUTH0_BASE_URL}/';
-                console.log('[Auth Callback] Redirigiendo al dashboard principal:', dashboardUrl);
-                window.location.href = dashboardUrl;
-            }
-        }, 3000); // Aumentado de 2000 a 3000ms
+            // Redirigir al diagrama o a la URL guardada
+            setTimeout(() => {
+                // Usar URL de destino desde el state del servidor
+                const redirectUrl = ${redirectUrl ? `'${redirectUrl}'` : 'null'};
+                console.log('[Auth Callback] URL de destino desde state:', redirectUrl);
+                
+                if (redirectUrl && redirectUrl !== 'null') {
+                    // Construir URL completa correctamente
+                    const baseUrl = '${process.env.AUTH0_BASE_URL}';
+                    const fullUrl = redirectUrl.startsWith('/') ? 
+                        baseUrl + redirectUrl : 
+                        baseUrl + '/' + redirectUrl;
+                    console.log('[Auth Callback] Redirigiendo a URL de destino:', fullUrl);
+                    window.location.href = fullUrl;
+                } else {
+                    // Redirigir al dashboard principal (raíz)
+                    const dashboardUrl = '${process.env.AUTH0_BASE_URL}/';
+                    console.log('[Auth Callback] Redirigiendo al dashboard principal:', dashboardUrl);
+                    window.location.href = dashboardUrl;
+                }
+            }, 3000); // Aumentado de 2000 a 3000ms
+        }
     </script>
 </body>
 </html>`;
