@@ -36,7 +36,8 @@ async function checkAuthentication() {
         'Authorization': `Bearer ${sessionToken}`
       },
       body: JSON.stringify({
-        session_data: sessionData
+        sessionData: sessionData,
+        sessionToken: sessionToken
       })
     });
     
@@ -49,7 +50,7 @@ async function checkAuthentication() {
     
     const result = await response.json();
     
-    if (!result.valid) {
+    if (!result.authenticated) {
       console.error('[Auth] Sesión inválida');
       clearSession();
       redirectToLogin();
