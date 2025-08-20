@@ -124,21 +124,21 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Verificar que el usuario tenga un email de Google
-    if (!parsedSession.user || !parsedSession.user.email || !parsedSession.user.email.endsWith('@gmail.com')) {
-      console.warn(`[Auth Check] Intento de acceso con email no autorizado - IP: ${clientIP}, Email: ${parsedSession.user?.email}`);
+    // Verificar que el usuario tenga un email válido
+    if (!parsedSession.user || !parsedSession.user.email) {
+      console.warn(`[Auth Check] Usuario sin email - IP: ${clientIP}`);
       return {
         statusCode: 403,
         headers,
         body: JSON.stringify({
           error: 'Acceso denegado',
-          message: 'Solo se permiten cuentas de Google (@gmail.com)',
+          message: 'Usuario sin email válido',
           code: 'FORBIDDEN'
         })
       };
     }
     
-    // Acceso autorizado
+    // Acceso autorizado (Auth0 ya verificó el dominio)
     console.log(`[Auth Check] Acceso autorizado - IP: ${clientIP}, Email: ${parsedSession.user.email}`);
     
     return {
