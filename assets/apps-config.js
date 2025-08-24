@@ -83,6 +83,17 @@ class AppsConfig {
     const path = window.location.pathname;
     const pathParts = path.split('/').filter(part => part.length > 0);
     
+    // Si estamos en /app/, buscar el segundo segmento
+    if (pathParts.length > 0 && pathParts[0] === 'app') {
+      if (pathParts.length > 1) {
+        const projectId = pathParts[1];
+        console.log(`[AppsConfig] ProjectId detectado en URL: ${projectId}`);
+        return projectId;
+      }
+      return null; // Estamos en /app/ sin proyecto específico
+    }
+    
+    // Para rutas directas como /project-01/
     if (pathParts.length > 0) {
       const projectId = pathParts[0];
       console.log(`[AppsConfig] ProjectId detectado en URL: ${projectId}`);

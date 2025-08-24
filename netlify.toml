@@ -56,8 +56,19 @@
   to = "/app/index.html"
   status = 200
 
-# Redirección SPA para aplicaciones específicas (después de login)
-# Esta regla debe ir al final para capturar todas las rutas no definidas
+# Redirección para aplicaciones específicas (project-01, project-02, etc.)
+[[redirects]]
+  from = "/project-*"
+  to = "/app/index.html"
+  status = 200
+
+# Redirección para macaw
+[[redirects]]
+  from = "/macaw"
+  to = "/app/index.html"
+  status = 200
+
+# Redirección SPA para el landing público (solo para rutas no definidas)
 [[redirects]]
   from = "/*"
   to = "/index.html"
