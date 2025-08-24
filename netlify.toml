@@ -50,16 +50,22 @@
   to = "/auth/pages/forbidden.html"
   status = 200
 
+# Redirección para el dashboard de aplicaciones
+[[redirects]]
+  from = "/app"
+  to = "/app/index.html"
+  status = 200
+
 # Redirección para aplicaciones específicas (project-01, project-02, etc.)
 [[redirects]]
   from = "/project-*"
-  to = "/dashboard.html"
+  to = "/app/index.html"
   status = 200
 
 # Redirección para macaw
 [[redirects]]
   from = "/macaw"
-  to = "/dashboard.html"
+  to = "/app/index.html"
   status = 200
 
 # Redirección para la ruta principal (landing inteligente)
