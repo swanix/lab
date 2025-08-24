@@ -120,7 +120,7 @@ function redirectToLogin() {
   const landingUrl = currentUrl.startsWith('/app/') 
     ? `/?redirect=${encodeURIComponent(currentUrl)}`
     : `${getAuthConfig('pages.login')}?redirect=${encodeURIComponent(currentUrl)}`;
-  authLog('Redirigiendo a landing:', landingUrl);
+  authLog('Redirigiendo a login:', landingUrl);
   window.location.href = landingUrl;
 }
 

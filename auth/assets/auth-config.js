@@ -21,8 +21,8 @@ window.AUTH_CONFIG = {
   
   // Rutas de las páginas
   pages: {
-    login: '/auth/pages/login.html',
-    forbidden: '/auth/pages/forbidden.html'
+    login: '/login',
+    forbidden: '/forbidden'
   },
   
   // Configuración de la aplicación
