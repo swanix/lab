@@ -2,11 +2,14 @@
   "id": "Macaw",
   "title": "Proyecto XDiagrams - Palettes",
   "description": "Paletas de colores",
-  "url": "https://api.sheetbest.com/sheets/28f15681-b2ab-47a0-bbcb-205d142d9ef7",
-  "clustersPerRow": "5 5 5 5",
-  "showThemeToggle": true,
-  "spacing": 90,
-  "verticalSpacing": 180,
-  "nodeWidth": 110,
-  "nodeHeight": 130
+  "logo": "/app/macaw/img/logo.svg",
+  "xdiagrams": {
+    "url": "https://api.sheetbest.com/sheets/28f15681-b2ab-47a0-bbcb-205d142d9ef7",
+    "clustersPerRow": "5 5 5 5",
+    "showThemeToggle": true,
+    "spacing": 90,
+    "verticalSpacing": 180,
+    "nodeWidth": 110,
+    "nodeHeight": 130
+  }
 }

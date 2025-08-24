@@ -2,11 +2,14 @@
   "id": "project-03",
   "title": "Proyecto XDiagrams - Analytics",
   "description": "Análisis avanzado con métricas y KPIs",
-  "url": "https://api.sheetbest.com/sheets/28f15681-b2ab-47a0-bbcb-205d142d9ef7",
-  "clustersPerRow": "5 5 5 5",
-  "showThemeToggle": true,
-  "spacing": 90,
-  "verticalSpacing": 180,
-  "nodeWidth": 110,
-  "nodeHeight": 130
+  "logo": "/app/project-03/img/logo.svg",
+  "xdiagrams": {
+    "url": "https://api.sheetbest.com/sheets/28f15681-b2ab-47a0-bbcb-205d142d9ef7",
+    "clustersPerRow": "5 5 5 5",
+    "showThemeToggle": true,
+    "spacing": 90,
+    "verticalSpacing": 180,
+    "nodeWidth": 110,
+    "nodeHeight": 130
+  }
 }

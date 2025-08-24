@@ -32,8 +32,9 @@ class AppsConfig {
       }
 
       // Configurar XDiagrams si está disponible
-      if (window.$xDiagrams && config.xdiagrams) {
-        Object.assign(window.$xDiagrams, config.xdiagrams);
+      if (config.xdiagrams) {
+        window.$xDiagrams = config.xdiagrams;
+        console.log('[AppsConfig] XDiagrams configurado:', window.$xDiagrams);
       }
 
       console.log(`[AppsConfig] Aplicación ${projectId} inicializada correctamente`);
