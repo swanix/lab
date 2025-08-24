@@ -45,6 +45,11 @@ ALLOWED_USERS=usuario1@gmail.com,usuario2@gmail.com
 
 # JWT Secret (generar uno aleatorio)
 JWT_SECRET=tu-jwt-secret-super-seguro
+
+# API Proxy (opcional - para acceso a datos protegidos)
+API_PROXY_KEY=tu-api-key
+API_PROXY_ALLOWED_DOMAINS=api.sheetbest.com,api.otroservicio.com
+API_PROXY_SERVICE_NAME=SheetBest
 ```
 
 ### 3. Actualizar `netlify.toml`
@@ -70,6 +75,11 @@ JWT_SECRET=tu-jwt-secret-super-seguro
   status = 200
 
 [[redirects]]
+  from = "/api/proxy"
+  to = "/.netlify/functions/api-proxy"
+  status = 200
+
+[[redirects]]
   from = "/login"
   to = "/auth/pages/login.html"
   status = 200
@@ -78,7 +88,6 @@ JWT_SECRET=tu-jwt-secret-super-seguro
   from = "/forbidden"
   to = "/auth/pages/forbidden.html"
   status = 200
-```
 
 ### 4. Incluir en tu `index.html`
 
@@ -122,6 +131,14 @@ window.AUTH_CONFIG = {
     callback: '/api/auth/callback',
     logout: '/api/logout',
     checkAuth: '/.netlify/functions/check-auth'
+  },
+  
+  // Proxy de API opcional (para acceso a datos protegidos)
+  apiProxy: {
+    enabled: true, // Cambiar a true para habilitar
+    endpoint: '/api/proxy',
+    serviceName: 'SheetBest', // Nombre del servicio
+    allowedDomains: ['api.sheetbest.com'] // Dominios permitidos
   },
   
   // Rutas de las páginas
@@ -174,6 +191,9 @@ const userData = Auth.getUserData()
 
 // Verificar si está autenticado
 const isAuth = Auth.isAuthenticated()
+
+// Acceder a datos protegidos (si el proxy está habilitado)
+const data = await Auth.fetchProtectedData('https://api.sheetbest.com/...')
 ```
 
 ### Ejemplo de Uso
