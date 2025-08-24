@@ -391,9 +391,9 @@
           console.log('[Landing] Resultado del servidor:', result);
           
           if (result.authenticated) {
-            console.log('[Landing] Usuario autenticado, redirigiendo al dashboard');
-            // Redirigir al dashboard
-            window.location.href = '/app/';
+            console.log('[Landing] Usuario autenticado, cargando dashboard');
+            // Cargar el dashboard en lugar de redirigir
+            loadDashboard();
             return;
           } else {
             console.log('[Landing] Usuario no autenticado según servidor');
@@ -435,6 +435,18 @@
         landingContainer.style.zIndex = '1';
         landingContainer.style.position = 'relative';
       }
+    }
+
+    // Función para cargar el dashboard
+    function loadDashboard() {
+      const loadingContainer = document.getElementById('loading-container');
+      
+      if (loadingContainer) {
+        loadingContainer.style.display = 'none';
+      }
+      
+      // Redirigir al dashboard
+      window.location.href = '/dashboard.html';
     }
 
     // Cargar tema guardado
