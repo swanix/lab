@@ -51,6 +51,8 @@ ALLOWED_ORIGIN=https://lab.swanix.org
 - `index.html` - Página principal con configuración de XDiagrams
 - `netlify.toml` - Configuración de Netlify y redirecciones
 - `auth/functions/` - Funciones serverless para autenticación y proxy
+- `app/` - Directorio de aplicaciones con configuraciones
+- `assets/apps-config.js` - Configuración centralizada de aplicaciones
 
 ### Funciones Serverless
 - `auth.js` - Manejo de login
@@ -104,6 +106,12 @@ curl -X GET "https://tu-dominio.netlify.app/.netlify/functions/sheetbest-proxy" 
 - Comprobar que rate limiting funciona
 - Validar que los headers de seguridad están presentes
 
+### Verificar Aplicaciones
+- Confirmar que `/app/apps.json` se carga correctamente
+- Verificar que las aplicaciones se muestran en el grid
+- Comprobar que los logos de las aplicaciones se cargan
+- Validar que la navegación entre aplicaciones funciona
+
 ## Instrucciones para Pull Requests
 
 ### Formato del Título
@@ -125,6 +133,12 @@ curl -X GET "https://tu-dominio.netlify.app/.netlify/functions/sheetbest-proxy" 
 - Verificar que todas las rutas están protegidas apropiadamente
 - Validar que el rate limiting está funcionando
 - Comprobar que los logs de auditoría están activos
+
+### Consideraciones de Aplicaciones
+- **CRÍTICO**: Verificar que las rutas `/app/*` están protegidas
+- Validar que los archivos de configuración JSON son válidos
+- Comprobar que los logos SVG se cargan correctamente
+- Verificar que las URLs de las aplicaciones son válidas
 
 ## Configuración de Desarrollo
 
