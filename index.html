@@ -14,6 +14,8 @@
       background: linear-gradient(135deg, var(--color-bg-primary) 0%, var(--color-bg-secondary) 100%);
       display: flex;
       flex-direction: column;
+      position: relative;
+      z-index: 1;
     }
 
     .hero-section {
@@ -200,7 +202,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      z-index: 9999;
+      z-index: 1000;
     }
 
     .spinner {
@@ -417,6 +419,13 @@
         landingContainer.style.display = 'flex';
         // Asegurar que el body tenga scroll normal
         document.body.style.overflow = 'auto';
+        
+        // Forzar un reflow para asegurar que el contenido sea visible
+        landingContainer.offsetHeight;
+        
+        // Asegurar que el contenido tenga z-index apropiado
+        landingContainer.style.zIndex = '1';
+        landingContainer.style.position = 'relative';
       }
     }
 
