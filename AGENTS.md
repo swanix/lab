@@ -107,7 +107,7 @@ curl -X GET "https://tu-dominio.netlify.app/.netlify/functions/sheetbest-proxy" 
 - Validar que los headers de seguridad están presentes
 
 ### Verificar Aplicaciones
-- Confirmar que `/app/apps.json` se carga correctamente
+- Confirmar que `/app/app.json` se carga correctamente
 - Verificar que las aplicaciones se muestran en el grid
 - Comprobar que los logos de las aplicaciones se cargan
 - Validar que la navegación entre aplicaciones funciona
@@ -139,6 +139,7 @@ curl -X GET "https://tu-dominio.netlify.app/.netlify/functions/sheetbest-proxy" 
 - Validar que los archivos de configuración JSON son válidos
 - Comprobar que los logos SVG se cargan correctamente
 - Verificar que las URLs de las aplicaciones son válidas
+- **IMPORTANTE**: El archivo principal es `/app/app.json` (singular)
 
 ## Configuración de Desarrollo
 

@@ -65,7 +65,7 @@ class AppsConfig {
             <li>Crear archivo: <code>app/${projectId}/config.json</code></li>
             <li>Crear carpeta: <code>app/${projectId}/img/</code></li>
             <li>Crear archivo: <code>app/${projectId}/img/logo.svg</code></li>
-            <li>Agregar entrada en <code>/app/apps.json</code></li>
+            <li>Agregar entrada en <code>/app/app.json</code></li>
           </ol>
         </div>
       `;
@@ -94,10 +94,10 @@ class AppsConfig {
 
   static async getAllApps() {
     try {
-      console.log('[AppsConfig] Cargando lista de aplicaciones desde /app/apps.json...');
-      const response = await fetch('/app/apps.json');
+      console.log('[AppsConfig] Cargando lista de aplicaciones desde /app/app.json...');
+      const response = await fetch('/app/app.json');
       if (!response.ok) {
-        throw new Error(`No se pudo leer /app/apps.json (HTTP ${response.status})`);
+        throw new Error(`No se pudo leer /app/app.json (HTTP ${response.status})`);
       }
       const data = await response.json();
       const apps = Array.isArray(data.apps) ? data.apps : [];
@@ -159,7 +159,7 @@ class AppsConfig {
             <li>Crear archivo: <code>app/nombre-app/config.json</code></li>
             <li>Crear carpeta: <code>app/nombre-app/img/</code></li>
             <li>Crear archivo: <code>app/nombre-app/img/logo.svg</code></li>
-            <li>Agregar entrada en <code>/app/apps.json</code></li>
+            <li>Agregar entrada en <code>/app/app.json</code></li>
           </ol>
         </div>
       `;
@@ -190,6 +190,6 @@ class AppsConfig {
     console.log(`2. Crear archivo: app/${projectId}/config.json`);
     console.log(`3. Crear carpeta: app/${projectId}/img/`);
     console.log(`4. Crear archivo: app/${projectId}/img/logo.svg`);
-    console.log(`5. Agregar entrada en /app/apps.json`);
+    console.log(`5. Agregar entrada en /app/app.json`);
   }
 }
