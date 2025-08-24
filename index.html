@@ -195,6 +195,12 @@
       align-items: center;
       min-height: 100vh;
       background: var(--color-bg-primary);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 9999;
     }
 
     .spinner {
@@ -400,8 +406,18 @@
 
     // Función para mostrar el landing
     function showLanding() {
-      document.getElementById('loading-container').style.display = 'none';
-      document.getElementById('landing-container').style.display = 'flex';
+      const loadingContainer = document.getElementById('loading-container');
+      const landingContainer = document.getElementById('landing-container');
+      
+      if (loadingContainer) {
+        loadingContainer.style.display = 'none';
+      }
+      
+      if (landingContainer) {
+        landingContainer.style.display = 'flex';
+        // Asegurar que el body tenga scroll normal
+        document.body.style.overflow = 'auto';
+      }
     }
 
     // Cargar tema guardado
@@ -409,17 +425,32 @@
       const savedTheme = localStorage.getItem('theme');
       const body = document.body;
       
-      if (savedTheme === 'dark') {
-        body.classList.remove('light-mode');
-      } else {
+      // Remover clase light-mode por defecto
+      body.classList.remove('light-mode');
+      
+      // Aplicar tema guardado
+      if (savedTheme === 'light') {
         body.classList.add('light-mode');
       }
+      // Si no hay tema guardado o es 'dark', mantener dark mode por defecto
     }
 
     // Inicializar cuando la página cargue
     window.addEventListener('load', () => {
+      // Asegurar que el body tenga scroll normal
+      document.body.style.overflow = 'auto';
+      
       loadTheme();
       checkAuthAndRedirect();
+      
+      // Timeout de seguridad para remover loading spinner
+      setTimeout(() => {
+        const loadingContainer = document.getElementById('loading-container');
+        if (loadingContainer && loadingContainer.style.display !== 'none') {
+          console.log('[Landing] Timeout de seguridad, mostrando landing');
+          showLanding();
+        }
+      }, 5000); // 5 segundos de timeout
     });
   </script>
 </body>
