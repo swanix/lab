@@ -68,7 +68,13 @@
   to = "/app/index.html"
   status = 200
 
-# Redirección SPA para el landing público (solo para rutas no definidas)
+# Redirección para la ruta principal (landing inteligente)
+[[redirects]]
+  from = "/"
+  to = "/index.html"
+  status = 200
+
+# Redirección SPA para otras rutas no definidas
 [[redirects]]
   from = "/*"
   to = "/index.html"
