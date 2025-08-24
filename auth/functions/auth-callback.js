@@ -348,9 +348,9 @@ exports.handler = async (event, context) => {
                     console.log('[Auth Callback] Redirigiendo a URL de destino:', fullUrl);
                     window.location.href = fullUrl;
                 } else {
-                    // Redirigir al dashboard principal (raíz)
-                    const dashboardUrl = '${process.env.AUTH0_BASE_URL}/';
-                    console.log('[Auth Callback] Redirigiendo al dashboard principal:', dashboardUrl);
+                    // Redirigir al dashboard de aplicaciones
+                    const dashboardUrl = '${process.env.AUTH0_BASE_URL}/app/';
+                    console.log('[Auth Callback] Redirigiendo al dashboard de aplicaciones:', dashboardUrl);
                     window.location.href = dashboardUrl;
                 }
             }, 3000); // Aumentado de 2000 a 3000ms

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Dashboard de aplicaciones XDiagrams">
+  <title>Dashboard - XDiagrams Template</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link href="/assets/xdiagrams.min.css" rel="stylesheet">
+  <link href="/assets/app.css" rel="stylesheet">
+</head>
+<body class="dashboard-page loading">
+  <div id="app"></div>
+  
+  <div id="header-controls">
+    <button id="apps-btn" title="Listado de Aplicaciones">
+      <svg class="grid-icon" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M3 3v7h7V3H3zm9 0v7h7V3h-7zM3 14v7h7v-7H3zm9 0v7h7v-7h-7z"/>
+      </svg>
+      Aplicaciones
+    </button>
+    
+    <!-- Menú de usuario -->
+    <div class="user-menu-container">
+      <button id="user-menu-trigger" class="user-menu-trigger" title="Menú de usuario">
+        <img id="user-avatar" src="/assets/favicon.svg" alt="Usuario" class="user-avatar">
+      </button>
+      
+      <div id="user-menu" class="user-menu">
+        <div class="user-info">
+          <img id="user-avatar-large" src="/assets/favicon.svg" alt="Usuario" class="user-avatar-large">
+          <div class="user-details">
+            <div id="user-name" class="user-name">Usuario</div>
+            <div id="user-email" class="user-email">usuario@gmail.com</div>
+          </div>
+          <button id="theme-toggle" class="theme-toggle" title="Cambiar tema">
+            <svg class="theme-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"/>
+            </svg>
+          </button>
+        </div>
+        
+        <div class="user-menu-separator"></div>
+        
+        <button id="logout-btn" class="user-menu-logout">
+          <svg class="logout-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M4 12v3a5 5 0 0 0 5 5h6a5 5 0 0 0 5-5v-3"/>
+            <polyline points="16 8 20 12 16 16"/>
+            <line x1="20" y1="12" x2="10" y2="12"/>
+          </svg>
+          Cerrar Sesión
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Cargar configuración de auth primero -->
+  <script src="/auth/assets/auth-config.js"></script>
+  
+  <!-- Cargar sistema de autenticación -->
+  <script src="/auth/assets/auth.js"></script>
+  <script src="/assets/apps-config.js"></script>
+  <script>
+    // Router dinámico de aplicaciones
+    async function initializeRouter() {
+      try {
+        // Verificar autenticación
+        await Auth.checkAuthentication();
+        
+        // Obtener ID del proyecto desde la URL
+        const projectId = AppsConfig.getProjectIdFromPath();
+        
+        if (projectId) {
+          // Cambiar clase del body para pantalla completa
+          document.body.className = 'project-page';
+          
+          // Inicializar aplicación específica ANTES de cargar XDiagrams
+          await AppsConfig.initializeProject(projectId);
+          console.log(`[Router] Aplicación ${projectId} cargada correctamente`);
+          
+          // Ahora cargar XDiagrams después de tener la configuración
+          loadXDiagrams();
+        } else {
+          // Mantener clase dashboard para la lista de aplicaciones
+          document.body.className = 'dashboard-page';
+          // Mostrar página de aplicaciones disponibles
+          await showAppsList();
+        }
+        
+        // Configurar controles de header
+        setupHeaderControls();
+        
+        // Pequeña pausa para asegurar que todo esté listo
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        // Remover clase de loading para mostrar contenido
+        document.body.classList.remove('loading');
+        
+      } catch (error) {
+        console.error('[Router] Error inicializando router:', error);
+        // La autenticación ya maneja la redirección
+        document.body.classList.remove('loading');
+      }
+    }
+
+    function loadXDiagrams() {
+      // Cargar XDiagrams dinámicamente después de tener la configuración
+      const script = document.createElement('script');
+      script.src = '/assets/xdiagrams.min.js';
+      script.onload = function() {
+        console.log('[Router] XDiagrams cargado correctamente');
+      };
+      document.head.appendChild(script);
+    }
+
+    async function showAppsList() {
+      try {
+        // Cargar aplicaciones dinámicamente
+        const apps = await AppsConfig.getAllApps();
+        
+        // Generar HTML del grid (solo el contenido, sin header-controls)
+        const appsHTML = AppsConfig.generateAppsGridContent(apps);
+        
+        // Solo reemplazar el contenido del #app, no todo el body
+        const appContainer = document.getElementById('app');
+        if (appContainer) {
+          appContainer.innerHTML = appsHTML;
+        }
+        
+        console.log('[Router] Grid de aplicaciones generado dinámicamente');
+        
+      } catch (error) {
+        console.error('[Router] Error cargando aplicaciones:', error);
+        // Mostrar mensaje de error
+        const appContainer = document.getElementById('app');
+        if (appContainer) {
+          appContainer.innerHTML = `
+            <div class="dashboard-container">
+              <h1>Error al cargar aplicaciones</h1>
+              <p>No se pudieron cargar las aplicaciones. Intenta recargar la página.</p>
+            </div>
+          `;
+        }
+      }
+    }
+
+    function setupHeaderControls() {
+      // Configurar botón de aplicaciones
+      const appsBtn = document.getElementById('apps-btn');
+      if (appsBtn) {
+        appsBtn.addEventListener('click', () => {
+          window.location.href = '/app/';
+        });
+      }
+      
+      // Configurar menú de usuario
+      setupUserMenu();
+    }
+
+    function setupUserMenu() {
+      const userMenuTrigger = document.getElementById('user-menu-trigger');
+      const userMenu = document.getElementById('user-menu');
+      const themeToggle = document.getElementById('theme-toggle');
+      const logoutBtn = document.getElementById('logout-btn');
+      
+      // Cargar información del usuario
+      loadUserInfo();
+      
+      // Toggle del menú
+      if (userMenuTrigger && userMenu) {
+        userMenuTrigger.addEventListener('click', (e) => {
+          e.stopPropagation();
+          userMenu.classList.toggle('show');
+        });
+        
+        // Cerrar menú al hacer clic fuera
+        document.addEventListener('click', () => {
+          userMenu.classList.remove('show');
+        });
+        
+        // Evitar que se cierre al hacer clic dentro del menú
+        userMenu.addEventListener('click', (e) => {
+          e.stopPropagation();
+        });
+      }
+      
+      // Toggle de tema
+      if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+          toggleTheme();
+        });
+      }
+      
+      // Logout
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', async () => {
+          try {
+            console.log('[Auth] Iniciando logout...');
+            
+            // Limpiar datos de sesión local
+            localStorage.removeItem('session_data');
+            localStorage.removeItem('session_token');
+            localStorage.removeItem('session_expires');
+            
+            // Redirigir a logout del servidor
+            window.location.href = '/api/logout';
+            
+          } catch (error) {
+            console.error('[Auth] Error en logout:', error);
+            // Redirigir de todas formas
+            window.location.href = '/api/logout';
+          }
+        });
+      }
+    }
+
+    function loadUserInfo() {
+      try {
+        const sessionData = localStorage.getItem('session_data');
+        if (sessionData) {
+          const user = JSON.parse(sessionData).user;
+          
+          // Actualizar avatar
+          const userAvatar = document.getElementById('user-avatar');
+          const userAvatarLarge = document.getElementById('user-avatar-large');
+          if (user.picture) {
+            if (userAvatar) userAvatar.src = user.picture;
+            if (userAvatarLarge) userAvatarLarge.src = user.picture;
+          }
+          
+          // Actualizar nombre
+          const userName = document.getElementById('user-name');
+          if (userName && user.name) {
+            userName.textContent = user.name;
+          }
+          
+          // Actualizar email
+          const userEmail = document.getElementById('user-email');
+          if (userEmail && user.email) {
+            userEmail.textContent = user.email;
+          }
+        }
+      } catch (error) {
+        console.error('[UserMenu] Error cargando información del usuario:', error);
+      }
+    }
+
+    function toggleTheme() {
+      const body = document.body;
+      const themeIcon = document.querySelector('.theme-icon');
+      
+      if (body.classList.contains('light-mode')) {
+        // Cambiar a dark mode
+        body.classList.remove('light-mode');
+        localStorage.setItem('theme', 'dark');
+        if (themeIcon) {
+          themeIcon.innerHTML = '<path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"/>';
+        }
+      } else {
+        // Cambiar a light mode
+        body.classList.add('light-mode');
+        localStorage.setItem('theme', 'light');
+        if (themeIcon) {
+          themeIcon.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+        }
+      }
+    }
+
+    // Cargar tema guardado
+    function loadTheme() {
+      const savedTheme = localStorage.getItem('theme');
+      const body = document.body;
+      const themeIcon = document.querySelector('.theme-icon');
+      
+      if (savedTheme === 'light') {
+        body.classList.add('light-mode');
+        if (themeIcon) {
+          themeIcon.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+        }
+      }
+    }
+
+    // Inicializar router cuando la página cargue
+    window.addEventListener('load', () => {
+      loadTheme();
+      initializeRouter();
+    });
+  </script>
+</body>
+</html>

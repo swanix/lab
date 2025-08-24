@@ -116,9 +116,12 @@ function clearSession() {
 // ===== FUNCIÓN PARA REDIRIGIR AL LOGIN =====
 function redirectToLogin() {
   const currentUrl = window.location.pathname + window.location.search;
-  const loginUrl = `${getAuthConfig('pages.login')}?redirect=${encodeURIComponent(currentUrl)}`;
-  authLog('Redirigiendo a login:', loginUrl);
-  window.location.href = loginUrl;
+  // Redirigir al landing público en lugar de directamente al login
+  const landingUrl = currentUrl.startsWith('/app/') 
+    ? `/?redirect=${encodeURIComponent(currentUrl)}`
+    : `${getAuthConfig('pages.login')}?redirect=${encodeURIComponent(currentUrl)}`;
+  authLog('Redirigiendo a landing:', landingUrl);
+  window.location.href = landingUrl;
 }
 
 // ===== FUNCIÓN PARA REDIRIGIR A FORBIDDEN =====

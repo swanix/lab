@@ -3,287 +3,325 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Diagrama interactivo creado con XDiagrams">
-  <title>Router de Proyectos XDiagrams</title>
+  <meta name="description" content="Template XDiagrams - Crea diagramas interactivos con APIs protegidas de forma rápida y segura">
+  <title>XDiagrams Template - Diagramas Interactivos Seguros</title>
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
-  <link href="/assets/xdiagrams.min.css" rel="stylesheet">
   <link href="/assets/app.css" rel="stylesheet">
-</head>
-<body class="dashboard-page loading">
-  <div id="app"></div>
-  
-  <div id="header-controls">
-    <button id="apps-btn" title="Listado de Aplicaciones">
-      <svg class="grid-icon" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M3 3v7h7V3H3zm9 0v7h7V3h-7zM3 14v7h7v-7H3zm9 0v7h7v-7h-7z"/>
-      </svg>
-      Aplicaciones
-    </button>
-    
-    <!-- Menú de usuario -->
-    <div class="user-menu-container">
-      <button id="user-menu-trigger" class="user-menu-trigger" title="Menú de usuario">
-        <img id="user-avatar" src="/assets/favicon.svg" alt="Usuario" class="user-avatar">
-      </button>
+  <style>
+    /* Estilos específicos para el landing */
+    .landing-container {
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--color-bg-primary) 0%, var(--color-bg-secondary) 100%);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .hero-section {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .hero-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .hero-title {
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, var(--color-text-primary) 0%, var(--color-accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: var(--color-text-secondary);
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .cta-primary {
+      background: var(--color-accent);
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all var(--transition-fast);
+      border: none;
+      cursor: pointer;
+      font-size: 1.1rem;
+    }
+
+    .cta-primary:hover {
+      background: var(--color-accent-hover);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .cta-secondary {
+      background: transparent;
+      color: var(--color-text-primary);
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all var(--transition-fast);
+      border: 2px solid var(--color-border-primary);
+      cursor: pointer;
+      font-size: 1.1rem;
+    }
+
+    .cta-secondary:hover {
+      background: var(--color-bg-tertiary);
+      border-color: var(--color-border-secondary);
+      transform: translateY(-2px);
+    }
+
+    .features-section {
+      padding: 4rem 2rem;
+      background: var(--color-bg-secondary);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background: var(--color-bg-card);
+      padding: 2rem;
+      border-radius: 12px;
+      border: 1px solid var(--color-border-primary);
+      text-align: center;
+      transition: all var(--transition-fast);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-xl);
+      border-color: var(--color-border-secondary);
+    }
+
+    .feature-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 1rem;
+      background: var(--color-accent);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+    }
+
+    .feature-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--color-text-primary);
+    }
+
+    .feature-description {
+      color: var(--color-text-secondary);
+      line-height: 1.6;
+    }
+
+    .header {
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--color-border-primary);
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-text-primary);
+      text-decoration: none;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .footer {
+      padding: 2rem;
+      text-align: center;
+      border-top: 1px solid var(--color-border-primary);
+      color: var(--color-text-secondary);
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .footer-link {
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      transition: color var(--transition-fast);
+    }
+
+    .footer-link:hover {
+      color: var(--color-accent);
+    }
+
+    @media (max-width: 768px) {
+      .hero-title {
+        font-size: 2.5rem;
+      }
       
-      <div id="user-menu" class="user-menu">
-        <div class="user-info">
-          <img id="user-avatar-large" src="/assets/favicon.svg" alt="Usuario" class="user-avatar-large">
-          <div class="user-details">
-            <div id="user-name" class="user-name">Usuario</div>
-            <div id="user-email" class="user-email">usuario@gmail.com</div>
-          </div>
-          <button id="theme-toggle" class="theme-toggle" title="Cambiar tema">
-            <svg class="theme-icon" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"/>
-            </svg>
-          </button>
+      .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .footer-links {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+  </style>
+</head>
+<body class="light-mode">
+  <div class="landing-container">
+    <!-- Header -->
+    <header class="header">
+      <a href="/" class="logo">🚀 XDiagrams Template</a>
+      <div class="nav-buttons">
+        <a href="/app/" class="cta-secondary">Dashboard</a>
+        <a href="/auth/pages/login.html" class="cta-primary">Iniciar Sesión</a>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-content">
+        <h1 class="hero-title">Crea Diagramas Interactivos Seguros</h1>
+        <p class="hero-subtitle">
+          Template completo para usar XDiagrams con APIs protegidas. 
+          Autenticación robusta, rate limiting, y seguridad empresarial incluida.
+        </p>
+        <div class="cta-buttons">
+          <a href="/auth/pages/login.html" class="cta-primary">🚀 Comenzar Ahora</a>
+          <a href="#features" class="cta-secondary">📋 Ver Características</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🛡️</div>
+          <h3 class="feature-title">Seguridad Robusta</h3>
+          <p class="feature-description">
+            Autenticación obligatoria con Google, protección escalonada, 
+            rate limiting y API keys protegidas.
+          </p>
         </div>
         
-        <div class="user-menu-separator"></div>
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3 class="feature-title">Implementación Rápida</h3>
+          <p class="feature-description">
+            Template listo para usar con Netlify. 
+            Solo configura las variables de entorno y listo.
+          </p>
+        </div>
         
-        <button id="logout-btn" class="user-menu-logout">
-          <svg class="logout-icon" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M4 12v3a5 5 0 0 0 5 5h6a5 5 0 0 0 5-5v-3"/>
-            <polyline points="16 8 20 12 16 16"/>
-            <line x1="20" y1="12" x2="10" y2="12"/>
-          </svg>
-          Cerrar Sesión
-        </button>
+        <div class="feature-card">
+          <div class="feature-icon">🎨</div>
+          <h3 class="feature-title">Múltiples Aplicaciones</h3>
+          <p class="feature-description">
+            Sistema modular para manejar múltiples diagramas 
+            y aplicaciones desde un solo dashboard.
+          </p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h3 class="feature-title">APIs Protegidas</h3>
+          <p class="feature-description">
+            Proxy serverless para APIs como SheetBest. 
+            Nunca expone claves en el frontend.
+          </p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">🔧</div>
+          <h3 class="feature-title">Fácil Personalización</h3>
+          <p class="feature-description">
+            Código limpio y bien documentado. 
+            AGENTS.md incluido para desarrollo con IA.
+          </p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">🚀</div>
+          <h3 class="feature-title">Deploy Automático</h3>
+          <p class="feature-description">
+            Configuración completa para Netlify. 
+            Deploy automático con cada push.
+          </p>
+        </div>
       </div>
-    </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-links">
+        <a href="https://github.com/swanix/diagrams" class="footer-link">XDiagrams</a>
+        <a href="https://sheet.best/docs" class="footer-link">SheetBest</a>
+        <a href="https://netlify.com" class="footer-link">Netlify</a>
+        <a href="https://auth0.com" class="footer-link">Auth0</a>
+      </div>
+      <p>&copy; 2024 XDiagrams Template. Creado con ❤️ para la comunidad.</p>
+    </footer>
   </div>
-  
-  <!-- Cargar configuración de auth primero -->
-  <script src="/auth/assets/auth-config.js"></script>
-  
-  <!-- Cargar sistema de autenticación -->
-  <script src="/auth/assets/auth.js"></script>
-      <script src="/assets/apps-config.js"></script>
+
   <script>
-    // Router dinámico de proyectos
-    async function initializeRouter() {
-      try {
-        // Verificar autenticación
-        await Auth.checkAuthentication();
-        
-        // Obtener ID del proyecto desde la URL
-        const projectId = AppsConfig.getProjectIdFromPath();
-        
-        if (projectId) {
-          // Cambiar clase del body para pantalla completa
-          document.body.className = 'project-page';
-          
-          // Inicializar aplicación específica ANTES de cargar XDiagrams
-          await AppsConfig.initializeProject(projectId);
-          console.log(`[Router] Aplicación ${projectId} cargada correctamente`);
-          
-          // Ahora cargar XDiagrams después de tener la configuración
-          loadXDiagrams();
-        } else {
-          // Mantener clase dashboard para la lista de aplicaciones
-          document.body.className = 'dashboard-page';
-          // Mostrar página de aplicaciones disponibles
-          await showAppsList();
-        }
-        
-        // Configurar controles de header
-        setupHeaderControls();
-        
-        // Pequeña pausa para asegurar que todo esté listo
-        await new Promise(resolve => setTimeout(resolve, 100));
-        
-        // Remover clase de loading para mostrar contenido
-        document.body.classList.remove('loading');
-        
-      } catch (error) {
-        console.error('[Router] Error inicializando router:', error);
-        // La autenticación ya maneja la redirección
-        document.body.classList.remove('loading');
-      }
-    }
-
-    function loadXDiagrams() {
-      // Cargar XDiagrams dinámicamente después de tener la configuración
-      const script = document.createElement('script');
-      script.src = '/assets/xdiagrams.min.js';
-      script.onload = function() {
-        console.log('[Router] XDiagrams cargado correctamente');
-      };
-      document.head.appendChild(script);
-    }
-
-    async function showAppsList() {
-      try {
-        // Cargar aplicaciones dinámicamente
-        const apps = await AppsConfig.getAllApps();
-        
-        // Generar HTML del grid (solo el contenido, sin header-controls)
-        const appsHTML = AppsConfig.generateAppsGridContent(apps);
-        
-        // Solo reemplazar el contenido del #app, no todo el body
-        const appContainer = document.getElementById('app');
-        if (appContainer) {
-          appContainer.innerHTML = appsHTML;
-        }
-        
-        console.log('[Router] Grid de aplicaciones generado dinámicamente');
-        
-      } catch (error) {
-        console.error('[Router] Error cargando aplicaciones:', error);
-        // Mostrar mensaje de error
-        const appContainer = document.getElementById('app');
-        if (appContainer) {
-          appContainer.innerHTML = `
-            <div class="dashboard-container">
-              <h1>Error al cargar aplicaciones</h1>
-              <p>No se pudieron cargar las aplicaciones. Intenta recargar la página.</p>
-            </div>
-          `;
-        }
-      }
-    }
-
-    function setupHeaderControls() {
-      // Configurar botón de aplicaciones
-      const appsBtn = document.getElementById('apps-btn');
-      if (appsBtn) {
-        appsBtn.addEventListener('click', () => {
-          window.location.href = '/';
-        });
-      }
-      
-      // Configurar menú de usuario
-      setupUserMenu();
-    }
-
-    function setupUserMenu() {
-      const userMenuTrigger = document.getElementById('user-menu-trigger');
-      const userMenu = document.getElementById('user-menu');
-      const themeToggle = document.getElementById('theme-toggle');
-      const logoutBtn = document.getElementById('logout-btn');
-      
-      // Cargar información del usuario
-      loadUserInfo();
-      
-      // Toggle del menú
-      if (userMenuTrigger && userMenu) {
-        userMenuTrigger.addEventListener('click', (e) => {
-          e.stopPropagation();
-          userMenu.classList.toggle('show');
-        });
-        
-        // Cerrar menú al hacer clic fuera
-        document.addEventListener('click', () => {
-          userMenu.classList.remove('show');
-        });
-        
-        // Evitar que se cierre al hacer clic dentro del menú
-        userMenu.addEventListener('click', (e) => {
-          e.stopPropagation();
-        });
-      }
-      
-      // Toggle de tema
-      if (themeToggle) {
-        themeToggle.addEventListener('click', () => {
-          toggleTheme();
-        });
-      }
-      
-      // Logout
-      if (logoutBtn) {
-        logoutBtn.addEventListener('click', async () => {
-          try {
-            console.log('[Auth] Iniciando logout...');
-            
-            // Limpiar datos de sesión local
-            localStorage.removeItem('session_data');
-            localStorage.removeItem('session_token');
-            localStorage.removeItem('session_expires');
-            
-            // Redirigir a logout del servidor
-            window.location.href = '/api/logout';
-            
-          } catch (error) {
-            console.error('[Auth] Error en logout:', error);
-            // Redirigir de todas formas
-            window.location.href = '/api/logout';
-          }
-        });
-      }
-    }
-
-    function loadUserInfo() {
-      try {
-        const sessionData = localStorage.getItem('session_data');
-        if (sessionData) {
-          const user = JSON.parse(sessionData).user;
-          
-          // Actualizar avatar
-          const userAvatar = document.getElementById('user-avatar');
-          const userAvatarLarge = document.getElementById('user-avatar-large');
-          if (user.picture) {
-            if (userAvatar) userAvatar.src = user.picture;
-            if (userAvatarLarge) userAvatarLarge.src = user.picture;
-          }
-          
-          // Actualizar nombre
-          const userName = document.getElementById('user-name');
-          if (userName && user.name) {
-            userName.textContent = user.name;
-          }
-          
-          // Actualizar email
-          const userEmail = document.getElementById('user-email');
-          if (userEmail && user.email) {
-            userEmail.textContent = user.email;
-          }
-        }
-      } catch (error) {
-        console.error('[UserMenu] Error cargando información del usuario:', error);
-      }
-    }
-
-    function toggleTheme() {
-      const body = document.body;
-      const themeIcon = document.querySelector('.theme-icon');
-      
-      if (body.classList.contains('light-mode')) {
-        // Cambiar a dark mode
-        body.classList.remove('light-mode');
-        localStorage.setItem('theme', 'dark');
-        if (themeIcon) {
-          themeIcon.innerHTML = '<path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"/>';
-        }
-      } else {
-        // Cambiar a light mode
-        body.classList.add('light-mode');
-        localStorage.setItem('theme', 'light');
-        if (themeIcon) {
-          themeIcon.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
-        }
-      }
-    }
-
     // Cargar tema guardado
     function loadTheme() {
       const savedTheme = localStorage.getItem('theme');
       const body = document.body;
-      const themeIcon = document.querySelector('.theme-icon');
       
-      if (savedTheme === 'light') {
+      if (savedTheme === 'dark') {
+        body.classList.remove('light-mode');
+      } else {
         body.classList.add('light-mode');
-        if (themeIcon) {
-          themeIcon.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
-        }
       }
     }
 
-    // Inicializar router cuando la página cargue
+    // Inicializar cuando la página cargue
     window.addEventListener('load', () => {
       loadTheme();
-      initializeRouter();
     });
   </script>
 </body>

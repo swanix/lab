@@ -38,12 +38,6 @@
   to = "/.netlify/functions/api-proxy"
   status = 200
 
-# Redirección principal a login (solo para la raíz)
-[[redirects]]
-  from = "/"
-  to = "/login"
-  status = 200
-
 # Redirección para login sin extensión
 [[redirects]]
   from = "/login"
@@ -56,7 +50,13 @@
   to = "/auth/pages/forbidden.html"
   status = 200
 
-# Redirección SPA para proyectos (después de login)
+# Redirección para el dashboard de aplicaciones
+[[redirects]]
+  from = "/app"
+  to = "/app/index.html"
+  status = 200
+
+# Redirección SPA para aplicaciones específicas (después de login)
 # Esta regla debe ir al final para capturar todas las rutas no definidas
 [[redirects]]
   from = "/*"
