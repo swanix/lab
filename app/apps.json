@@ -1,5 +1,5 @@
 {
-  "projects": [
+  "apps": [
     {
       "id": "project-01",
       "title": "XDiagrams",
@@ -13,13 +13,13 @@
       "url": "/project-02/"
     },
     {
-      "id": "project-03",
+      "id": "project-03", 
       "title": "Analytics", 
       "description": "Análisis avanzado con métricas y KPIs",
       "url": "/project-03/"
     },
     {
-      "id": "project-04",
+      "id": "project-04", 
       "title": "Reportes",
       "description": "Sistema de reportes y documentación",
       "url": "/project-04/"

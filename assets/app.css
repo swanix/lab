@@ -526,14 +526,14 @@ body.dashboard-page {
   text-align: center;
 }
 
-.projects-grid {
+.apps-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
   margin: 2rem 0;
 }
 
-.project-card {
+.app-card {
   background: var(--color-bg-card);
   padding: 1.5rem;
   border-radius: 8px;
@@ -542,16 +542,17 @@ body.dashboard-page {
   color: var(--color-text-primary);
   transition: all var(--transition-fast);
   text-align: center;
+  cursor: pointer;
 }
 
-.project-card:hover {
+.app-card:hover {
   background: var(--color-bg-tertiary);
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
   border-color: var(--color-border-secondary);
 }
 
-.project-logo {
+.app-logo {
   margin-bottom: 1rem;
   display: flex;
   justify-content: center;
@@ -559,21 +560,21 @@ body.dashboard-page {
   height: 48px;
 }
 
-.project-logo img {
+.app-logo img {
   width: 32px;
   height: 32px;
   border-radius: 6px;
   box-shadow: var(--shadow-sm);
 }
 
-.project-card h3 {
+.app-card h3 {
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
   color: var(--color-text-primary);
 }
 
-.project-card p {
+.app-card p {
   color: var(--color-text-secondary);
   font-size: 0.9rem;
   margin: 0;
@@ -766,7 +767,7 @@ body.light-mode {
   align-items: center;
 }
 
-#projects-btn {
+#apps-btn {
   background: var(--color-bg-card);
   color: var(--color-text-primary);
   border: 1px solid var(--color-border-primary);
@@ -782,14 +783,14 @@ body.light-mode {
   letter-spacing: 0.025em;
 }
 
-#projects-btn:hover {
+#apps-btn:hover {
   background: var(--color-bg-tertiary);
   border-color: var(--color-border-secondary);
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
 
-#projects-btn:active {
+#apps-btn:active {
   transform: translateY(0);
 }
 
@@ -858,7 +859,7 @@ body.light-mode {
     flex-direction: column;
   }
   
-  .projects-grid {
+  .apps-grid {
     grid-template-columns: 1fr;
   }
   
@@ -868,7 +869,7 @@ body.light-mode {
     gap: 0.5rem;
   }
   
-  #projects-btn,
+  #apps-btn,
   #logout-btn {
     padding: 8px 12px;
     font-size: 12px;

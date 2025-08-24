@@ -13,11 +13,11 @@
   <div id="app"></div>
   
   <div id="header-controls">
-    <button id="projects-btn" title="Listado de Proyectos">
+    <button id="apps-btn" title="Listado de Aplicaciones">
       <svg class="grid-icon" viewBox="0 0 24 24" fill="currentColor">
         <path d="M3 3v7h7V3H3zm9 0v7h7V3h-7zM3 14v7h7v-7H3zm9 0v7h7v-7h-7z"/>
       </svg>
-      Proyectos
+      Aplicaciones
     </button>
     
     <!-- Menú de usuario -->
@@ -59,7 +59,7 @@
   
   <!-- Cargar sistema de autenticación -->
   <script src="/auth/assets/auth.js"></script>
-  <script src="/assets/projects-config.js"></script>
+      <script src="/assets/apps-config.js"></script>
   <script>
     // Router dinámico de proyectos
     async function initializeRouter() {
@@ -68,23 +68,23 @@
         await Auth.checkAuthentication();
         
         // Obtener ID del proyecto desde la URL
-        const projectId = ProjectsConfig.getProjectIdFromPath();
+        const projectId = AppsConfig.getProjectIdFromPath();
         
         if (projectId) {
           // Cambiar clase del body para pantalla completa
           document.body.className = 'project-page';
           
-          // Inicializar proyecto específico ANTES de cargar XDiagrams
-          await ProjectsConfig.initializeProject(projectId);
-          console.log(`[Router] Proyecto ${projectId} cargado correctamente`);
+          // Inicializar aplicación específica ANTES de cargar XDiagrams
+          await AppsConfig.initializeProject(projectId);
+          console.log(`[Router] Aplicación ${projectId} cargada correctamente`);
           
           // Ahora cargar XDiagrams después de tener la configuración
           loadXDiagrams();
         } else {
-          // Mantener clase dashboard para la lista de proyectos
+          // Mantener clase dashboard para la lista de aplicaciones
           document.body.className = 'dashboard-page';
-          // Mostrar página de proyectos disponibles
-          await showProjectsList();
+          // Mostrar página de aplicaciones disponibles
+          await showAppsList();
         }
         
         // Configurar controles de header
@@ -113,31 +113,31 @@
       document.head.appendChild(script);
     }
 
-    async function showProjectsList() {
+    async function showAppsList() {
       try {
-        // Cargar proyectos dinámicamente
-        const projects = await ProjectsConfig.getAllProjects();
+        // Cargar aplicaciones dinámicamente
+        const apps = await AppsConfig.getAllApps();
         
         // Generar HTML del grid (solo el contenido, sin header-controls)
-        const projectsHTML = ProjectsConfig.generateProjectsGridContent(projects);
+        const appsHTML = AppsConfig.generateAppsGridContent(apps);
         
         // Solo reemplazar el contenido del #app, no todo el body
         const appContainer = document.getElementById('app');
         if (appContainer) {
-          appContainer.innerHTML = projectsHTML;
+          appContainer.innerHTML = appsHTML;
         }
         
-        console.log('[Router] Grid de proyectos generado dinámicamente');
+        console.log('[Router] Grid de aplicaciones generado dinámicamente');
         
       } catch (error) {
-        console.error('[Router] Error cargando proyectos:', error);
+        console.error('[Router] Error cargando aplicaciones:', error);
         // Mostrar mensaje de error
         const appContainer = document.getElementById('app');
         if (appContainer) {
           appContainer.innerHTML = `
             <div class="dashboard-container">
-              <h1>Error al cargar proyectos</h1>
-              <p>No se pudieron cargar los proyectos. Intenta recargar la página.</p>
+              <h1>Error al cargar aplicaciones</h1>
+              <p>No se pudieron cargar las aplicaciones. Intenta recargar la página.</p>
             </div>
           `;
         }
@@ -145,10 +145,10 @@
     }
 
     function setupHeaderControls() {
-      // Configurar botón de proyectos
-      const projectsBtn = document.getElementById('projects-btn');
-      if (projectsBtn) {
-        projectsBtn.addEventListener('click', () => {
+      // Configurar botón de aplicaciones
+      const appsBtn = document.getElementById('apps-btn');
+      if (appsBtn) {
+        appsBtn.addEventListener('click', () => {
           window.location.href = '/';
         });
       }
