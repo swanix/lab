@@ -153,8 +153,8 @@ function setupLogout() {
         window.location.href = getAuthConfig('endpoints.logout');
       } catch (error) {
         console.error('[Auth] Error en logout:', error);
-        // Redirigir de todas formas
-        window.location.href = getAuthConfig('pages.login');
+        // Redirigir al landing principal en caso de error
+        window.location.href = '/';
       }
     });
   }

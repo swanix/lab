@@ -20,14 +20,14 @@ exports.handler = async (event, context) => {
   try {
     console.log('[Logout] Procesando logout del usuario');
 
-    // Redirigir al login (los datos de sesión se limpian en el frontend)
-    const loginUrl = `${process.env.AUTH0_BASE_URL}/login`;
+    // Redirigir al landing principal (los datos de sesión se limpian en el frontend)
+    const landingUrl = `${process.env.AUTH0_BASE_URL}/`;
     
     return {
       statusCode: 302,
       headers: {
         ...headers,
-        'Location': loginUrl
+        'Location': landingUrl
       },
       body: ''
     };
@@ -35,14 +35,14 @@ exports.handler = async (event, context) => {
   } catch (error) {
     console.error('[Logout] Error:', error);
     
-    // En caso de error, redirigir al login de todas formas
-    const loginUrl = `${process.env.AUTH0_BASE_URL}/login`;
+    // En caso de error, redirigir al landing principal de todas formas
+    const landingUrl = `${process.env.AUTH0_BASE_URL}/`;
     
     return {
       statusCode: 302,
       headers: {
         ...headers,
-        'Location': loginUrl
+        'Location': landingUrl
       },
       body: ''
     };
