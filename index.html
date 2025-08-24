@@ -334,9 +334,8 @@
     </footer>
   </div>
 
-  <!-- Cargar configuración de auth -->
+  <!-- Cargar solo la configuración de auth (sin el sistema completo) -->
   <script src="/auth/assets/auth-config.js"></script>
-  <script src="/auth/assets/auth.js"></script>
 
   <script>
     // Función para verificar autenticación y decidir qué mostrar
@@ -394,6 +393,7 @@
         
       } catch (error) {
         console.error('[Landing] Error verificando autenticación:', error);
+        // En caso de error, mostrar el landing (no redirigir al login)
         showLanding();
       }
     }
