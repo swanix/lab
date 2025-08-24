@@ -32,6 +32,12 @@
   to = "/.netlify/functions/sheetbest-proxy"
   status = 200
 
+# Redirección para API proxy genérico (opcional)
+[[redirects]]
+  from = "/api/proxy"
+  to = "/.netlify/functions/api-proxy"
+  status = 200
+
 # Redirección principal a login (solo para la raíz)
 [[redirects]]
   from = "/"

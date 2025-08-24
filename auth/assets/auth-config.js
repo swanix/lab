@@ -11,6 +11,14 @@ window.AUTH_CONFIG = {
     checkAuth: '/.netlify/functions/check-auth'
   },
   
+  // Proxy de API opcional (para acceso a datos protegidos)
+  apiProxy: {
+    enabled: false, // Cambiar a true para habilitar
+    endpoint: '/api/proxy',
+    serviceName: 'SheetBest', // Nombre del servicio
+    allowedDomains: ['api.sheetbest.com'] // Dominios permitidos
+  },
+  
   // Rutas de las páginas
   pages: {
     login: '/auth/pages/login.html',

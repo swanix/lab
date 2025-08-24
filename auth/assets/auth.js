@@ -194,6 +194,47 @@ function isAuthenticated() {
   return now < expiresAt;
 }
 
+// ===== FUNCIÓN PARA ACCEDER A DATOS PROTEGIDOS VÍA PROXY =====
+async function fetchProtectedData(url, options = {}) {
+  // Verificar que el proxy esté habilitado
+  if (!getAuthConfig('apiProxy.enabled')) {
+    throw new Error('API Proxy no está habilitado. Configura apiProxy.enabled = true en auth-config.js');
+  }
+  
+  // Verificar que el usuario esté autenticado
+  if (!isAuthenticated()) {
+    throw new Error('Usuario no autenticado');
+  }
+  
+  // Verificar que la URL esté en los dominios permitidos
+  const allowedDomains = getAuthConfig('apiProxy.allowedDomains');
+  const isAllowed = allowedDomains.some(domain => url.includes(domain));
+  
+  if (!isAllowed) {
+    throw new Error(`URL no permitida. Dominios permitidos: ${allowedDomains.join(', ')}`);
+  }
+  
+  // Construir URL del proxy
+  const proxyUrl = `${getAuthConfig('apiProxy.endpoint')}?url=${encodeURIComponent(url)}`;
+  
+  // Realizar petición al proxy
+  const response = await fetch(proxyUrl, {
+    method: options.method || 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers
+    },
+    body: options.body ? JSON.stringify(options.body) : undefined
+  });
+  
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || 'Error en proxy de API');
+  }
+  
+  return response.json();
+}
+
 // ===== EXPORTAR FUNCIONES PARA USO GLOBAL =====
 window.Auth = {
   checkAuthentication,
@@ -203,7 +244,8 @@ window.Auth = {
   setupLogout,
   isAllowedDomain,
   getUserData,
-  isAuthenticated
+  isAuthenticated,
+  fetchProtectedData
 };
 
 // ===== INICIALIZACIÓN AUTOMÁTICA =====
