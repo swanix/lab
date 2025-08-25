@@ -246,21 +246,15 @@ class AppRouter {
     `;
   }
 
-  // Mostrar indicador de carga
+  // Mostrar indicador de carga (simplificado)
   showLoadingIndicator() {
-    if (this.container) {
-      this.container.innerHTML = `
-        <div class="loading-container">
-          <div class="loading-spinner"></div>
-          <p>Cargando...</p>
-        </div>
-      `;
-    }
+    // El diagrama ya tiene su propio indicador de carga
+    // No necesitamos mostrar un spinner adicional
   }
 
   // Ocultar indicador de carga
   hideLoadingIndicator() {
-    // El contenido se reemplazará automáticamente
+    // No es necesario hacer nada aquí
   }
 
   // Cargar XDiagrams dinámicamente
