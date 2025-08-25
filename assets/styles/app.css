@@ -539,28 +539,50 @@ body.dashboard-page {
 .apps-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
+  gap: 2.5rem;
   margin: 2rem auto;
-  max-width: 1000px;
+  max-width: 1200px;
   padding: 0 2rem;
 }
 
 .app-card {
   background: var(--color-bg-card);
-  padding: 2.5rem 2rem;
-  border-radius: 12px;
+  padding: 3rem 2.5rem;
+  border-radius: 16px;
   border: 1px solid var(--color-border-primary);
   text-decoration: none;
   color: var(--color-text-primary);
   transition: all var(--transition-fast);
   text-align: center;
   cursor: pointer;
-  min-height: 200px;
+  min-height: 240px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.6s ease-out forwards;
 }
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animación escalonada para las cards */
+.app-card:nth-child(1) { animation-delay: 0.1s; }
+.app-card:nth-child(2) { animation-delay: 0.2s; }
+.app-card:nth-child(3) { animation-delay: 0.3s; }
+.app-card:nth-child(4) { animation-delay: 0.4s; }
+.app-card:nth-child(5) { animation-delay: 0.5s; }
+.app-card:nth-child(6) { animation-delay: 0.6s; }
 
 .app-card:hover {
   background: var(--color-bg-tertiary);
@@ -1183,13 +1205,14 @@ body.light-mode {
 @media (max-width: 1024px) {
   .apps-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
+    gap: 2rem;
     padding: 0 1.5rem;
+    max-width: 900px;
   }
   
   .app-card {
-    padding: 2rem 1.5rem;
-    min-height: 180px;
+    padding: 2.5rem 2rem;
+    min-height: 220px;
   }
   
   .app-logo {
@@ -1215,14 +1238,14 @@ body.light-mode {
 @media (max-width: 768px) {
   .apps-grid {
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: 1.5rem;
     padding: 0 1rem;
-    max-width: 400px;
+    max-width: 450px;
   }
   
   .app-card {
-    padding: 1.5rem 1rem;
-    min-height: 160px;
+    padding: 2rem 1.5rem;
+    min-height: 200px;
   }
   
   .app-logo {
