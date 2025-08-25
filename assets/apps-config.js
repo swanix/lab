@@ -177,9 +177,19 @@ class AppsConfig {
     }
 
     const appsHTML = apps.map(app => {
-      // Usar ruta relativa desde /app/ para que funcione desde app/index.html
-      const logoPath = `${app.id}/img/logo.svg`;
-      console.log(`[AppsConfig] Generando logo para ${app.id}: ${logoPath}`);
+      // Detectar la ruta base actual para generar la ruta correcta del logo
+      const currentPath = window.location.pathname;
+      let logoPath;
+      
+      if (currentPath.startsWith('/project-') || currentPath.startsWith('/macaw')) {
+        // Si estamos en una página de proyecto específico, usar ruta absoluta
+        logoPath = `/app/${app.id}/img/logo.svg`;
+      } else {
+        // Si estamos en el dashboard (/app/), usar ruta relativa
+        logoPath = `${app.id}/img/logo.svg`;
+      }
+      
+      console.log(`[AppsConfig] Generando logo para ${app.id}: ${logoPath} (desde ${currentPath})`);
       return `
         <div class="app-card" onclick="window.location.href='${app.url}'">
           <div class="app-logo">
