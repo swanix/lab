@@ -519,16 +519,12 @@ body.callback-page {
   background: var(--color-bg-card);
   border: 1px solid var(--color-border-primary);
   border-radius: 12px;
-  padding: 12px;
+  padding: 8px 12px;
   box-shadow: var(--shadow-lg);
-  transition: all var(--transition-fast);
   cursor: pointer;
-}
-
-.floating-app-icon:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-xl);
-  border-color: var(--color-border-secondary);
+  height: 40px;
+  display: flex;
+  align-items: center;
 }
 
 .floating-app-icon-container {
@@ -574,14 +570,10 @@ body.callback-page {
   border-radius: 12px;
   padding: 8px 12px;
   box-shadow: var(--shadow-lg);
-  transition: all var(--transition-fast);
   cursor: pointer;
-}
-
-.floating-project-pill:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-xl);
-  border-color: var(--color-border-secondary);
+  height: 40px;
+  display: flex;
+  align-items: center;
 }
 
 .floating-project-pill-container {
