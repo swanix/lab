@@ -177,7 +177,8 @@ class AppsConfig {
     }
 
     const appsHTML = apps.map(app => {
-      const logoPath = `/app/${app.id}/img/logo.svg`;
+      // Usar ruta relativa desde /app/ para que funcione desde app/index.html
+      const logoPath = `${app.id}/img/logo.svg`;
       console.log(`[AppsConfig] Generando logo para ${app.id}: ${logoPath}`);
       return `
         <div class="app-card" onclick="window.location.href='${app.url}'">
