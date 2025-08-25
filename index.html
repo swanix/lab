@@ -340,67 +340,28 @@
     </footer>
   </div>
 
-  <!-- Cargar configuración de auth y sistema de verificación -->
+  <!-- Cargar configuración de auth y sistemas modulares -->
   <script src="/auth/assets/auth-config.js"></script>
   <script src="/auth/assets/auth-checker.js"></script>
+  <script src="/assets/landing-manager.js"></script>
 
   <script>
-    // Función para mostrar el landing
-    function showLanding() {
-      const loadingContainer = document.getElementById('loading-container');
-      const landingContainer = document.getElementById('landing-container');
-      
-      if (loadingContainer) {
-        loadingContainer.style.display = 'none';
-      }
-      
-      if (landingContainer) {
-        landingContainer.style.display = 'flex';
-        // Asegurar que el body tenga scroll normal
-        document.body.style.overflow = 'auto';
-        
-        // Forzar un reflow para asegurar que el contenido sea visible
-        landingContainer.offsetHeight;
-        
-        // Asegurar que el contenido tenga z-index apropiado
-        landingContainer.style.zIndex = '1';
-        landingContainer.style.position = 'relative';
-      }
-    }
-
-    // Cargar tema guardado
-    function loadTheme() {
-      const savedTheme = localStorage.getItem('theme');
-      const body = document.body;
-      
-      // Remover clase light-mode por defecto
-      body.classList.remove('light-mode');
-      
-      // Aplicar tema guardado
-      if (savedTheme === 'light') {
-        body.classList.add('light-mode');
-      }
-      // Si no hay tema guardado o es 'dark', mantener dark mode por defecto
-    }
+    // Inicializar landing manager global
+    window.landingManager = initLandingManager();
 
     // Inicializar cuando la página cargue
     window.addEventListener('load', () => {
       // Asegurar que el body tenga scroll normal
       document.body.style.overflow = 'auto';
       
+      // Cargar tema usando el manager
       loadTheme();
       
       // Usar el sistema modularizado de verificación de autenticación
       checkAuthForLanding();
       
-      // Timeout de seguridad para remover loading spinner
-      setTimeout(() => {
-        const loadingContainer = document.getElementById('loading-container');
-        if (loadingContainer && loadingContainer.style.display !== 'none') {
-          console.log('[Landing] Timeout de seguridad, mostrando landing');
-          showLanding();
-        }
-      }, 5000); // 5 segundos de timeout
+      // Configurar timeout de seguridad usando el manager
+      setupSafetyTimeout();
     });
   </script>
 </body>
