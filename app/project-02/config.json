@@ -2,7 +2,7 @@
   "id": "project-02",
   "title": "Proyecto XDiagrams - Dashboard",
   "description": "Dashboard con métricas avanzadas y visualizaciones",
-  "logo": "img/logo.svg",
+  "logo": "/app/project-02/img/logo.svg",
   "xdiagrams": {
     "url": "https://api.sheetbest.com/sheets/28f15681-b2ab-47a0-bbcb-205d142d9ef7/tabs/Mobile",
     "clustersPerRow": "4 4 4 4",
