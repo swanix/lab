@@ -126,7 +126,7 @@ class AppRouter {
   // Cargar XDiagrams dinámicamente
   loadXDiagrams() {
     const script = document.createElement('script');
-    script.src = '/assets/xdiagrams.min.js';
+    script.src = '/assets/vendor/xdiagrams.min.js';
     script.onload = function() {
       console.log('[AppRouter] XDiagrams cargado correctamente');
     };
