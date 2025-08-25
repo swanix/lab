@@ -2,6 +2,8 @@
 
 Este template te permite usar **XDiagrams** en cualquier proyecto con **APIs protegidas** de forma rápida y segura.
 
+> **Última actualización**: 2024-12-25 - URLs simplificadas sin `/app/`
+
 ## 🛡️ Seguridad Robusta Implementada
 
 ✅ **Autenticación obligatoria con Google**  
