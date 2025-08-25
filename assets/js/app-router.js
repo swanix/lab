@@ -13,6 +13,8 @@ class AppRouter {
     this.headerControls = null;
     this.appsBtn = null;
     this.userMenu = null;
+    this.currentProjectId = null;
+    this.isNavigating = false;
   }
 
   // Inicializar el router
@@ -45,6 +47,9 @@ class AppRouter {
       // Configurar controles de header
       this.setupHeaderControls();
       
+      // Configurar navegación SPA
+      this.setupSPANavigation();
+      
       // Pequeña pausa para asegurar que todo esté listo
       await new Promise(resolve => setTimeout(resolve, 100));
       
@@ -75,10 +80,51 @@ class AppRouter {
     }
   }
 
+  // Configurar navegación SPA
+  setupSPANavigation() {
+    // Interceptar clicks en app-cards para navegación SPA
+    document.addEventListener('click', async (event) => {
+      const appCard = event.target.closest('.app-card');
+      if (appCard && !this.isNavigating) {
+        event.preventDefault();
+        event.stopPropagation();
+        
+        // Obtener la URL del proyecto desde el onclick o data attribute
+        const projectUrl = appCard.getAttribute('data-project-url') || 
+                          appCard.onclick?.toString().match(/window\.location\.href='([^']+)'/)?.[1];
+        
+        if (projectUrl) {
+          const projectId = this.extractProjectIdFromUrl(projectUrl);
+          if (projectId) {
+            await this.navigateToProjectSPA(projectId);
+          }
+        }
+      }
+    });
+  }
+
+  // Extraer ID del proyecto desde URL
+  extractProjectIdFromUrl(url) {
+    const match = url.match(/\/([^\/]+)\/?$/);
+    return match ? match[1] : null;
+  }
+
   // Cargar proyecto específico
   async loadProject(projectId) {
     try {
       console.log(`[AppRouter] Cargando proyecto: ${projectId}`);
+      
+      // Prevenir navegación múltiple
+      if (this.isNavigating) {
+        console.log('[AppRouter] Navegación en progreso, ignorando...');
+        return;
+      }
+      
+      this.isNavigating = true;
+      this.currentProjectId = projectId;
+      
+      // Mostrar indicador de carga
+      this.showLoadingIndicator();
       
       // Cambiar clase del body para pantalla completa
       document.body.className = 'project-page';
@@ -90,9 +136,19 @@ class AppRouter {
       // Ahora cargar XDiagrams después de tener la configuración
       this.loadXDiagrams();
       
+      // Actualizar URL sin recargar la página
+      this.updateURL(`/${projectId}/`, projectId);
+      
+      // Ocultar indicador de carga
+      this.hideLoadingIndicator();
+      
+      this.isNavigating = false;
+      
     } catch (error) {
       console.error(`[AppRouter] Error cargando proyecto ${projectId}:`, error);
       this.showError(`Error cargando la aplicación ${projectId}`);
+      this.hideLoadingIndicator();
+      this.isNavigating = false;
     }
   }
 
@@ -101,26 +157,110 @@ class AppRouter {
     try {
       console.log('[AppRouter] Mostrando dashboard de aplicaciones');
       
+      // Prevenir navegación múltiple
+      if (this.isNavigating) {
+        console.log('[AppRouter] Navegación en progreso, ignorando...');
+        return;
+      }
+      
+      this.isNavigating = true;
+      this.currentProjectId = null;
+      
+      // Mostrar indicador de carga
+      this.showLoadingIndicator();
+      
       // Mantener clase dashboard para la lista de aplicaciones
       document.body.className = 'dashboard-page';
       
       // Cargar aplicaciones dinámicamente
       const apps = await AppsConfig.getAllApps();
       
-      // Generar HTML del grid (solo el contenido, sin header-controls)
-      const appsHTML = AppsConfig.generateAppsGridContent(apps);
+      // Generar HTML del grid con navegación SPA
+      const appsHTML = this.generateAppsGridWithSPA(apps);
       
       // Solo reemplazar el contenido del contenedor
       if (this.container) {
         this.container.innerHTML = appsHTML;
       }
       
+      // Actualizar URL sin recargar la página
+      this.updateURL('/app/', null);
+      
+      // Ocultar indicador de carga
+      this.hideLoadingIndicator();
+      
       console.log('[AppRouter] Grid de aplicaciones generado dinámicamente');
+      
+      this.isNavigating = false;
       
     } catch (error) {
       console.error('[AppRouter] Error cargando aplicaciones:', error);
       this.showError('Error al cargar aplicaciones');
+      this.hideLoadingIndicator();
+      this.isNavigating = false;
     }
+  }
+
+  // Generar grid de aplicaciones con navegación SPA
+  generateAppsGridWithSPA(apps) {
+    if (!apps || apps.length === 0) {
+      return `
+        <div class="error-container">
+          <h2>❌ No hay aplicaciones disponibles</h2>
+          <p>No se encontraron aplicaciones configuradas.</p>
+          <p>Para agregar una nueva aplicación:</p>
+          <ol>
+            <li>Crear carpeta: <code>app/nombre-app/</code></li>
+            <li>Crear archivo: <code>app/nombre-app/config.json</code></li>
+            <li>Crear carpeta: <code>app/nombre-app/img/</code></li>
+            <li>Crear archivo: <code>app/nombre-app/img/logo.svg</code></li>
+            <li>Agregar entrada en <code>/app/app.json</code></li>
+          </ol>
+        </div>
+      `;
+    }
+
+    const appsHTML = apps.map(app => {
+      const projectId = this.extractProjectIdFromUrl(app.url);
+      const logoPath = `/app/${app.id}/img/logo.svg`;
+      
+      return `
+        <div class="app-card" data-project-url="${app.url}" data-project-id="${projectId}">
+          <div class="app-logo">
+            <img src="${logoPath}" alt="${app.title}" 
+                 onerror="console.error('[AppRouter] Error cargando logo:', this.src); this.style.display='none'"
+                 onload="console.log('[AppRouter] Logo cargado exitosamente:', this.src)">
+          </div>
+          <div class="app-info">
+            <h3>${app.title}</h3>
+            <p>${app.description}</p>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    return `
+      <div class="apps-grid">
+        ${appsHTML}
+      </div>
+    `;
+  }
+
+  // Mostrar indicador de carga
+  showLoadingIndicator() {
+    if (this.container) {
+      this.container.innerHTML = `
+        <div class="loading-container">
+          <div class="loading-spinner"></div>
+          <p>Cargando...</p>
+        </div>
+      `;
+    }
+  }
+
+  // Ocultar indicador de carga
+  hideLoadingIndicator() {
+    // El contenido se reemplazará automáticamente
   }
 
   // Cargar XDiagrams dinámicamente
@@ -138,10 +278,11 @@ class AppRouter {
 
   // Configurar controles de header
   setupHeaderControls() {
-    // Configurar botón de aplicaciones
+    // Configurar botón de aplicaciones con navegación SPA
     if (this.appsBtn) {
-      this.appsBtn.addEventListener('click', () => {
-        window.location.href = '/app/';
+      this.appsBtn.addEventListener('click', async (event) => {
+        event.preventDefault();
+        await this.navigateToDashboardSPA();
       });
     }
     
@@ -152,6 +293,25 @@ class AppRouter {
     } else {
       console.warn('[AppRouter] UserMenu no está disponible');
     }
+  }
+
+  // Navegar a proyecto usando SPA
+  async navigateToProjectSPA(projectId) {
+    console.log(`[AppRouter] Navegando a proyecto: ${projectId}`);
+    await this.loadProject(projectId);
+  }
+
+  // Navegar al dashboard usando SPA
+  async navigateToDashboardSPA() {
+    console.log('[AppRouter] Navegando al dashboard');
+    await this.showDashboard();
+  }
+
+  // Actualizar URL sin recargar la página
+  updateURL(path, projectId) {
+    const newUrl = window.location.origin + path;
+    window.history.pushState({ projectId }, '', newUrl);
+    console.log(`[AppRouter] URL actualizada: ${newUrl}`);
   }
 
   // Mostrar mensaje de error
@@ -167,21 +327,21 @@ class AppRouter {
     }
   }
 
-  // Navegar a una aplicación específica
+  // Navegar a una aplicación específica (método legacy)
   navigateToProject(projectId) {
     if (projectId) {
       window.location.href = `/${projectId}/`;
     }
   }
 
-  // Navegar al dashboard
+  // Navegar al dashboard (método legacy)
   navigateToDashboard() {
     window.location.href = '/app/';
   }
 
   // Obtener información del proyecto actual
   getCurrentProject() {
-    return AppsConfig.getProjectIdFromPath();
+    return this.currentProjectId || AppsConfig.getProjectIdFromPath();
   }
 
   // Verificar si estamos en un proyecto específico
