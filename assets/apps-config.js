@@ -176,17 +176,23 @@ class AppsConfig {
       `;
     }
 
-    const appsHTML = apps.map(app => `
-      <div class="app-card" onclick="window.location.href='${app.url}'">
-        <div class="app-logo">
-          <img src="/app/${app.id}/img/logo.svg" alt="${app.title}" onerror="this.style.display='none'">
+    const appsHTML = apps.map(app => {
+      const logoPath = `/app/${app.id}/img/logo.svg`;
+      console.log(`[AppsConfig] Generando logo para ${app.id}: ${logoPath}`);
+      return `
+        <div class="app-card" onclick="window.location.href='${app.url}'">
+          <div class="app-logo">
+            <img src="${logoPath}" alt="${app.title}" 
+                 onerror="console.error('[AppsConfig] Error cargando logo:', this.src); this.style.display='none'"
+                 onload="console.log('[AppsConfig] Logo cargado exitosamente:', this.src)">
+          </div>
+          <div class="app-info">
+            <h3>${app.title}</h3>
+            <p>${app.description}</p>
+          </div>
         </div>
-        <div class="app-info">
-          <h3>${app.title}</h3>
-          <p>${app.description}</p>
-        </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
 
     return `
       <div class="apps-grid">
