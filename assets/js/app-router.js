@@ -359,9 +359,16 @@ class AppRouter {
         </div>
       `;
 
+      // Agregar evento click para navegar al dashboard
+      floatingAppIcon.addEventListener('click', async (event) => {
+        event.preventDefault();
+        console.log('[AppRouter] Floating app icon clickeado, navegando al dashboard');
+        await this.navigateToDashboardSPA();
+      });
+
       // Agregar al body
       document.body.appendChild(floatingAppIcon);
-      console.log('[AppRouter] Floating app icon creado con logo del lab');
+      console.log('[AppRouter] Floating app icon creado con logo del lab y funcionalidad de click');
     } catch (error) {
       console.warn('[AppRouter] Error creando floating app icon:', error);
     }
