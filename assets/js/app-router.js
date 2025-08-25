@@ -165,6 +165,9 @@ class AppRouter {
       this.isNavigating = true;
       this.currentProjectId = null;
       
+      // Limpiar elementos de XDiagrams ANTES de limpiar el contenedor
+      this.cleanupXDiagramsElements();
+      
       // Limpiar el contenedor ANTES de cargar el nuevo contenido
       if (this.container) {
         this.container.innerHTML = '';
@@ -266,6 +269,50 @@ class AppRouter {
       console.error('[AppRouter] Error cargando XDiagrams');
     };
     document.head.appendChild(script);
+  }
+
+  // Limpiar elementos de XDiagrams
+  cleanupXDiagramsElements() {
+    try {
+      // Limpiar floating-title-pill
+      const floatingTitlePill = document.querySelector('.floating-title-pill');
+      if (floatingTitlePill) {
+        floatingTitlePill.remove();
+        console.log('[AppRouter] Floating title pill removido');
+      }
+
+      // Limpiar controles de zoom
+      const zoomControls = document.querySelector('.zoom-controls');
+      if (zoomControls) {
+        zoomControls.remove();
+        console.log('[AppRouter] Controles de zoom removidos');
+      }
+
+      // Limpiar otros elementos de XDiagrams que puedan quedar
+      const xdiagramsElements = document.querySelectorAll('[class*="xdiagrams"], [class*="floating"], [class*="zoom"]');
+      xdiagramsElements.forEach(element => {
+        if (element.classList.contains('floating-title-pill') || 
+            element.classList.contains('zoom-controls') ||
+            element.classList.contains('zoom-in') ||
+            element.classList.contains('zoom-out') ||
+            element.classList.contains('zoom-reset')) {
+          element.remove();
+        }
+      });
+
+      // Limpiar cualquier script de XDiagrams que se haya agregado dinámicamente
+      const xdiagramsScripts = document.querySelectorAll('script[src*="xdiagrams"]');
+      xdiagramsScripts.forEach(script => {
+        if (script.src.includes('xdiagrams.min.js')) {
+          script.remove();
+          console.log('[AppRouter] Script de XDiagrams removido');
+        }
+      });
+
+      console.log('[AppRouter] Limpieza de elementos XDiagrams completada');
+    } catch (error) {
+      console.warn('[AppRouter] Error limpiando elementos XDiagrams:', error);
+    }
   }
 
   // Configurar controles de header
