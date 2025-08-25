@@ -329,6 +329,20 @@ class AppRouter {
         }
       });
 
+      // Desconectar observer de XDiagrams si existe
+      if (this.xdiagramsObserver) {
+        this.xdiagramsObserver.disconnect();
+        this.xdiagramsObserver = null;
+        console.log('[AppRouter] Observer de XDiagrams desconectado');
+      }
+
+      // Limpiar intervalo de ocultación si existe
+      if (this.xdiagramsHideInterval) {
+        clearInterval(this.xdiagramsHideInterval);
+        this.xdiagramsHideInterval = null;
+        console.log('[AppRouter] Intervalo de ocultación de XDiagrams limpiado');
+      }
+
       console.log('[AppRouter] Limpieza de elementos XDiagrams completada');
     } catch (error) {
       console.warn('[AppRouter] Error limpiando elementos XDiagrams:', error);
@@ -401,16 +415,74 @@ class AppRouter {
     }
   }
 
-  // Ocultar floating-title-pill de XDiagrams
+  // Ocultar floating-title-pill de XDiagrams de forma agresiva
   hideXDiagramsTitlePill() {
     try {
+      // Ocultar inmediatamente si ya existe
       const xdiagramsTitlePill = document.querySelector('.floating-title-pill');
       if (xdiagramsTitlePill) {
         xdiagramsTitlePill.style.display = 'none';
-        console.log('[AppRouter] Floating title pill de XDiagrams ocultado');
+        xdiagramsTitlePill.style.visibility = 'hidden';
+        xdiagramsTitlePill.style.opacity = '0';
+        xdiagramsTitlePill.style.pointerEvents = 'none';
+        console.log('[AppRouter] Floating title pill de XDiagrams ocultado inmediatamente');
       }
+
+      // Configurar observer para detectar cuando XDiagrams crea el pill
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          mutation.addedNodes.forEach((node) => {
+            if (node.nodeType === Node.ELEMENT_NODE) {
+              // Verificar si el nodo agregado es el floating-title-pill
+              if (node.classList && node.classList.contains('floating-title-pill')) {
+                node.style.display = 'none';
+                node.style.visibility = 'hidden';
+                node.style.opacity = '0';
+                node.style.pointerEvents = 'none';
+                console.log('[AppRouter] Floating title pill de XDiagrams interceptado y ocultado');
+              }
+              
+              // También verificar elementos hijos que puedan ser el pill
+              const titlePills = node.querySelectorAll && node.querySelectorAll('.floating-title-pill, [class*="floating-title"], [class*="title-pill"]');
+              titlePills.forEach(pill => {
+                pill.style.display = 'none';
+                pill.style.visibility = 'hidden';
+                pill.style.opacity = '0';
+                pill.style.pointerEvents = 'none';
+                console.log('[AppRouter] Floating title pill hijo interceptado y ocultado');
+              });
+            }
+          });
+        });
+      });
+
+      // Observar cambios en el body para detectar cuando XDiagrams agrega elementos
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+
+      // Guardar el observer para poder desconectarlo más tarde
+      this.xdiagramsObserver = observer;
+      
+      console.log('[AppRouter] Observer configurado para interceptar floating title pills de XDiagrams');
+      
+      // También configurar un intervalo para forzar la ocultación cada 2 segundos
+      this.xdiagramsHideInterval = setInterval(() => {
+        const titlePills = document.querySelectorAll('.floating-title-pill, [class*="floating-title"], [class*="title-pill"]');
+        titlePills.forEach(pill => {
+          if (pill.style.display !== 'none') {
+            pill.style.display = 'none';
+            pill.style.visibility = 'hidden';
+            pill.style.opacity = '0';
+            pill.style.pointerEvents = 'none';
+            console.log('[AppRouter] Floating title pill forzado a ocultarse');
+          }
+        });
+      }, 2000);
+      
     } catch (error) {
-      console.warn('[AppRouter] Error ocultando floating title pill:', error);
+      console.warn('[AppRouter] Error configurando ocultación de floating title pill:', error);
     }
   }
 
