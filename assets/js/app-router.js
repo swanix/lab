@@ -123,8 +123,11 @@ class AppRouter {
       this.isNavigating = true;
       this.currentProjectId = projectId;
       
-      // Mostrar indicador de carga
-      this.showLoadingIndicator();
+      // Limpiar el contenedor ANTES de cargar el nuevo contenido
+      if (this.container) {
+        this.container.innerHTML = '';
+        console.log('[AppRouter] Contenedor limpiado para cargar proyecto');
+      }
       
       // Cambiar clase del body para pantalla completa
       document.body.className = 'project-page';
@@ -139,15 +142,11 @@ class AppRouter {
       // Actualizar URL sin recargar la página
       this.updateURL(`/${projectId}/`, projectId);
       
-      // Ocultar indicador de carga
-      this.hideLoadingIndicator();
-      
       this.isNavigating = false;
       
     } catch (error) {
       console.error(`[AppRouter] Error cargando proyecto ${projectId}:`, error);
       this.showError(`Error cargando la aplicación ${projectId}`);
-      this.hideLoadingIndicator();
       this.isNavigating = false;
     }
   }
@@ -166,8 +165,11 @@ class AppRouter {
       this.isNavigating = true;
       this.currentProjectId = null;
       
-      // Mostrar indicador de carga
-      this.showLoadingIndicator();
+      // Limpiar el contenedor ANTES de cargar el nuevo contenido
+      if (this.container) {
+        this.container.innerHTML = '';
+        console.log('[AppRouter] Contenedor limpiado para cargar dashboard');
+      }
       
       // Mantener clase dashboard para la lista de aplicaciones
       document.body.className = 'dashboard-page';
@@ -186,9 +188,6 @@ class AppRouter {
       // Actualizar URL sin recargar la página
       this.updateURL('/app/', null);
       
-      // Ocultar indicador de carga
-      this.hideLoadingIndicator();
-      
       console.log('[AppRouter] Grid de aplicaciones generado dinámicamente');
       
       this.isNavigating = false;
@@ -196,7 +195,6 @@ class AppRouter {
     } catch (error) {
       console.error('[AppRouter] Error cargando aplicaciones:', error);
       this.showError('Error al cargar aplicaciones');
-      this.hideLoadingIndicator();
       this.isNavigating = false;
     }
   }
