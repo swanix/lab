@@ -181,16 +181,11 @@ class AppsConfig {
       const currentPath = window.location.pathname;
       let logoPath;
       
-      if (currentPath.startsWith('/project-') || currentPath.startsWith('/macaw')) {
-        // Si estamos en una página de proyecto específico, usar ruta absoluta
-        logoPath = `/app/${app.id}/img/logo.svg`;
-      } else {
-        // Si estamos en el dashboard (/app/), usar ruta relativa
-        logoPath = `${app.id}/img/logo.svg`;
-      }
+      // Siempre usar ruta absoluta para asegurar que funcione desde cualquier contexto
+      logoPath = `/app/${app.id}/img/logo.svg`;
       
       console.log(`[AppsConfig] Generando logo para ${app.id}: ${logoPath} (desde ${currentPath})`);
-      console.log(`[AppsConfig] URL completa: ${window.location.origin}${logoPath}`);
+      console.log(`[AppsConfig] URL completa: ${window.location.origin}/${logoPath}`);
       return `
         <div class="app-card" onclick="window.location.href='${app.url}'">
           <div class="app-logo">
