@@ -28,7 +28,7 @@ window.AUTH_CONFIG = {
   // Configuración de la aplicación
   app: {
     name: 'Diagrama Interactivo',
-    logo: '/assets/favicon.svg',
+    logo: '/assets/img/favicon.svg',
     allowedDomains: ['gmail.com'], // Dominios permitidos
     redirectAfterLogin: '/' // Página por defecto después del login
   },

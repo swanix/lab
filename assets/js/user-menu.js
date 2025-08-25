@@ -34,12 +34,12 @@ class UserMenu {
     const userMenuHTML = `
       <div class="user-menu-container">
         <button id="user-menu-trigger" class="user-menu-trigger" title="Menú de usuario">
-          <img id="user-avatar" src="/assets/favicon.svg" alt="Usuario" class="user-avatar">
+          <img id="user-avatar" src="/assets/img/favicon.svg" alt="Usuario" class="user-avatar">
         </button>
         
         <div id="user-menu" class="user-menu">
           <div class="user-info">
-            <img id="user-avatar-large" src="/assets/favicon.svg" alt="Usuario" class="user-avatar-large">
+            <img id="user-avatar-large" src="/assets/img/favicon.svg" alt="Usuario" class="user-avatar-large">
             <div class="user-details">
               <div id="user-name" class="user-name">Usuario</div>
               <div id="user-email" class="user-email">usuario@gmail.com</div>

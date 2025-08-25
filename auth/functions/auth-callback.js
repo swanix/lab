@@ -183,8 +183,8 @@ exports.handler = async (event, context) => {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Configurando sesión...</title>
-    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
-    <link rel="stylesheet" href="/assets/app.css">
+    <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+          <link rel="stylesheet" href="/assets/styles/app.css">
     <style>
         /* Estilos específicos para el callback en dark mode */
         body {
@@ -278,7 +278,7 @@ exports.handler = async (event, context) => {
 <body>
     <div class="callback-container">
         <div class="logo">
-            <img src="/assets/favicon.svg" alt="Logo" class="logo-img">
+            <img src="/assets/img/favicon.svg" alt="Logo" class="logo-img">
         </div>
         <h2>Configurando tu sesión</h2>
         
