@@ -415,7 +415,7 @@ body.callback-page {
 
 .user-info {
   background: var(--color-bg-tertiary);
-  border: 1px solid var(--color-border-secondary);
+  /* border: 1px solid var(--color-border-secondary); */
   padding: 1rem;
   border-radius: 8px;
   color: var(--color-text-secondary);
