@@ -137,7 +137,7 @@ class AppRouter {
       console.log(`[AppRouter] Aplicación ${projectId} cargada correctamente`);
       
       // Crear floating app icon
-      this.createFloatingAppIcon(projectId);
+      this.createFloatingAppIcon();
       
       // Ahora cargar XDiagrams después de tener la configuración
       this.loadXDiagrams();
@@ -190,6 +190,9 @@ class AppRouter {
       if (this.container) {
         this.container.innerHTML = appsHTML;
       }
+      
+      // Crear floating app icon para el dashboard también
+      this.createFloatingAppIcon();
       
       // Actualizar URL sin recargar la página
       this.updateURL('/app/', null);
@@ -327,7 +330,7 @@ class AppRouter {
   }
 
   // Crear floating app icon
-  createFloatingAppIcon(projectId) {
+  createFloatingAppIcon() {
     try {
       // Remover floating app icon existente si hay uno
       const existingIcon = document.querySelector('.floating-app-icon');
@@ -335,22 +338,22 @@ class AppRouter {
         existingIcon.remove();
       }
 
-      // Crear el elemento floating app icon
+      // Crear el elemento floating app icon con el logo del lab
       const floatingAppIcon = document.createElement('div');
       floatingAppIcon.className = 'floating-app-icon';
       floatingAppIcon.innerHTML = `
         <div class="floating-app-icon-container">
-          <img src="/app/${projectId}/img/logo.svg" alt="${projectId}" 
+          <img src="/assets/img/favicon.svg" alt="Lab" 
                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
           <div class="floating-app-icon-fallback" style="display: none;">
-            <span>${projectId.charAt(0).toUpperCase()}</span>
+            <span>L</span>
           </div>
         </div>
       `;
 
       // Agregar al body
       document.body.appendChild(floatingAppIcon);
-      console.log(`[AppRouter] Floating app icon creado para ${projectId}`);
+      console.log('[AppRouter] Floating app icon creado con logo del lab');
     } catch (error) {
       console.warn('[AppRouter] Error creando floating app icon:', error);
     }
