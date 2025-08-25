@@ -14,15 +14,12 @@ class AuthChecker {
   // Verificar autenticación y ejecutar callbacks correspondientes
   async checkAuthAndExecute() {
     try {
-      console.log('[AuthChecker] Verificando autenticación...');
-      
       // Verificar si hay datos de sesión básicos
       const sessionData = localStorage.getItem('session_data');
       const sessionToken = localStorage.getItem('session_token');
       const sessionExpires = localStorage.getItem('session_expires');
       
       if (!sessionData || !sessionToken || !sessionExpires) {
-        console.log('[AuthChecker] No hay sesión');
         this.handleUnauthenticated();
         return false;
       }
@@ -32,13 +29,11 @@ class AuthChecker {
       const expiresAt = parseInt(sessionExpires);
       
       if (now >= expiresAt) {
-        console.log('[AuthChecker] Sesión expirada');
         this.handleUnauthenticated();
         return false;
       }
       
       // Verificar que el token sea válido con el servidor
-      console.log('[AuthChecker] Verificando token con servidor...');
       const response = await fetch('/.netlify/functions/check-auth', {
         method: 'POST',
         headers: {
@@ -51,26 +46,15 @@ class AuthChecker {
         })
       });
       
-      console.log('[AuthChecker] Respuesta del servidor:', response.status, response.statusText);
-      
       if (response.ok) {
         const result = await response.json();
-        console.log('[AuthChecker] Resultado del servidor:', result);
         
         if (result.authenticated) {
-          console.log('[AuthChecker] Usuario autenticado');
           this.handleAuthenticated(result);
           return true;
-        } else {
-          console.log('[AuthChecker] Usuario no autenticado según servidor');
         }
-      } else {
-        console.log('[AuthChecker] Error en respuesta del servidor:', response.status);
-        const errorText = await response.text();
-        console.log('[AuthChecker] Error details:', errorText);
       }
       
-      console.log('[AuthChecker] Token inválido');
       this.handleUnauthenticated();
       return false;
       
@@ -85,8 +69,6 @@ class AuthChecker {
   handleAuthenticated(userData = null) {
     if (this.options.onAuthenticated) {
       this.options.onAuthenticated(userData);
-    } else {
-      console.log('[AuthChecker] Usuario autenticado - no hay callback configurado');
     }
   }
 
@@ -97,8 +79,6 @@ class AuthChecker {
     } else if (this.options.redirectToLogin) {
       // Redirección automática al login
       window.location.href = '/login';
-    } else {
-      console.log('[AuthChecker] Usuario no autenticado - no hay callback configurado');
     }
   }
 
@@ -163,7 +143,6 @@ class AuthChecker {
     localStorage.removeItem('session_data');
     localStorage.removeItem('session_token');
     localStorage.removeItem('session_expires');
-    console.log('[AuthChecker] Sesión limpiada');
   }
 }
 
@@ -173,18 +152,15 @@ class AuthChecker {
 async function checkAuthForLanding() {
   const checker = new AuthChecker({
     onAuthenticated: () => {
-      console.log('[AuthChecker] Usuario autenticado, redirigiendo a dashboard');
       window.location.href = '/app/';
     },
     onUnauthenticated: () => {
-      console.log('[AuthChecker] Usuario no autenticado, mostrando landing');
       // Esta función debe ser implementada en la página que la use
       if (typeof showLanding === 'function') {
         showLanding();
       }
     },
     onError: (error) => {
-      console.error('[AuthChecker] Error en landing, mostrando página por defecto');
       if (typeof showLanding === 'function') {
         showLanding();
       }
@@ -199,7 +175,6 @@ async function checkAuthForProtectedPage() {
   const checker = new AuthChecker({
     redirectToLogin: true,
     onAuthenticated: () => {
-      console.log('[AuthChecker] Usuario autenticado, continuando');
       // Remover loading spinner si existe
       const loadingContainer = document.getElementById('loading-container');
       if (loadingContainer) {

@@ -68,7 +68,6 @@ exports.handler = async (event, context) => {
         sessionData = body.sessionData;
         sessionToken = body.sessionToken;
       } catch (error) {
-        console.warn(`[Auth Check] Error parseando body - IP: ${clientIP}`);
         return {
           statusCode: 400,
           headers,
@@ -81,7 +80,6 @@ exports.handler = async (event, context) => {
     }
     
     if (!sessionData || !sessionToken) {
-      console.warn(`[Auth Check] No hay datos de sesión - IP: ${clientIP}`);
       return {
         statusCode: 401,
         headers,
@@ -98,7 +96,6 @@ exports.handler = async (event, context) => {
     try {
       parsedSession = JSON.parse(sessionData);
     } catch (error) {
-      console.warn(`[Auth Check] Error parseando sesión - IP: ${clientIP}`);
       return {
         statusCode: 401,
         headers,
@@ -112,7 +109,6 @@ exports.handler = async (event, context) => {
 
     // Verificar que la sesión no haya expirado
     if (parsedSession.expires_at && Date.now() > parsedSession.expires_at) {
-      console.warn(`[Auth Check] Sesión expirada - IP: ${clientIP}, Email: ${parsedSession.user?.email}`);
       return {
         statusCode: 401,
         headers,
@@ -126,7 +122,6 @@ exports.handler = async (event, context) => {
 
     // Verificar que el usuario tenga un email válido
     if (!parsedSession.user || !parsedSession.user.email) {
-      console.warn(`[Auth Check] Usuario sin email - IP: ${clientIP}`);
       return {
         statusCode: 403,
         headers,

@@ -9,25 +9,13 @@ if (typeof window.AUTH_CONFIG === 'undefined') {
 
 // ===== FUNCIÓN DE VERIFICACIÓN DE SESIÓN =====
 async function checkAuthentication() {
-  authLog('🔍 INICIANDO VERIFICACIÓN DE AUTENTICACIÓN');
-  authLog('URL actual:', window.location.href);
-  
   try {
-    authLog('Verificando autenticación...');
-    
     // Verificar si hay datos de sesión
     const sessionData = localStorage.getItem(getAuthConfig('storage.sessionDataKey'));
     const sessionToken = localStorage.getItem(getAuthConfig('storage.sessionTokenKey'));
     const sessionExpires = localStorage.getItem(getAuthConfig('storage.sessionExpiresKey'));
     
-    authLog('Datos de sesión encontrados:', {
-      sessionData: !!sessionData,
-      sessionToken: !!sessionToken,
-      sessionExpires: sessionExpires
-    });
-    
     if (!sessionData || !sessionToken || !sessionExpires) {
-      authLog('No hay datos de sesión');
       redirectToLogin();
       return;
     }
@@ -36,14 +24,7 @@ async function checkAuthentication() {
     const now = Date.now();
     const expiresAt = parseInt(sessionExpires);
     
-    authLog('Verificando expiración:', {
-      now: new Date(now).toISOString(),
-      expiresAt: new Date(expiresAt).toISOString(),
-      isExpired: now >= expiresAt
-    });
-    
     if (now >= expiresAt) {
-      authLog('Sesión expirada');
       clearSession();
       redirectToLogin();
       return;
@@ -51,13 +32,8 @@ async function checkAuthentication() {
     
     // Parsear datos de sesión
     const session = JSON.parse(sessionData);
-    authLog('Sesión parseada:', {
-      userEmail: session.user?.email,
-      expiresAt: session.expires_at
-    });
     
     // Verificar que el token de sesión sea válido
-    authLog('Llamando a check-auth...');
     const response = await fetch(getAuthConfig('endpoints.checkAuth'), {
       method: 'POST',
       headers: {
@@ -70,22 +46,14 @@ async function checkAuthentication() {
       })
     });
     
-    authLog('Respuesta de check-auth:', {
-      status: response.status,
-      ok: response.ok
-    });
-    
     if (!response.ok) {
       console.error('[Auth] Error verificando sesión:', response.status);
-      const errorText = await response.text();
-      console.error('[Auth] Error details:', errorText);
       clearSession();
       redirectToLogin();
       return;
     }
     
     const result = await response.json();
-    authLog('Resultado de verificación:', result);
     
     if (!result.authenticated) {
       console.error('[Auth] Sesión inválida');
@@ -94,8 +62,6 @@ async function checkAuthentication() {
       return;
     }
     
-    // Si llegamos aquí, Auth0 ya verificó el dominio y email
-    authLog('✅ Autenticación exitosa');
     return session;
     
   } catch (error) {
@@ -110,7 +76,6 @@ function clearSession() {
   localStorage.removeItem(getAuthConfig('storage.sessionDataKey'));
   localStorage.removeItem(getAuthConfig('storage.sessionTokenKey'));
   localStorage.removeItem(getAuthConfig('storage.sessionExpiresKey'));
-  authLog('Sesión limpiada');
 }
 
 // ===== FUNCIÓN PARA REDIRIGIR AL LOGIN =====
@@ -120,7 +85,6 @@ function redirectToLogin() {
   const landingUrl = currentUrl.startsWith('/app/') 
     ? `/?redirect=${encodeURIComponent(currentUrl)}`
     : `${getAuthConfig('pages.login')}?redirect=${encodeURIComponent(currentUrl)}`;
-  authLog('Redirigiendo a login:', landingUrl);
   window.location.href = landingUrl;
 }
 
@@ -129,7 +93,6 @@ function redirectToForbidden(reason = '') {
   const forbiddenUrl = reason 
     ? `${getAuthConfig('pages.forbidden')}?reason=${encodeURIComponent(reason)}`
     : getAuthConfig('pages.forbidden');
-  authLog('Redirigiendo a forbidden:', forbiddenUrl);
   window.location.href = forbiddenUrl;
 }
 

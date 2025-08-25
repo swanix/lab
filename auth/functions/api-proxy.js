@@ -24,7 +24,6 @@ exports.handler = async (event, context) => {
     const serviceName = process.env.API_PROXY_SERVICE_NAME || 'API';
     
     if (!apiKey) {
-      console.error(`[${serviceName} Proxy] API Key no configurada`);
       return {
         statusCode: 500,
         headers,
@@ -56,7 +55,6 @@ exports.handler = async (event, context) => {
     const isAllowedDomain = allowedDomainsList.some(domain => url.includes(domain));
     
     if (!isAllowedDomain) {
-      console.warn(`[${serviceName} Proxy] Intento de acceso a URL no autorizada:`, url);
       return {
         statusCode: 400,
         headers,
@@ -67,8 +65,6 @@ exports.handler = async (event, context) => {
         })
       };
     }
-
-    console.log(`[${serviceName} Proxy] Petición autorizada a:`, url);
 
     // Configurar headers según el servicio
     const requestHeaders = {
@@ -90,7 +86,6 @@ exports.handler = async (event, context) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`[${serviceName} Proxy] Error from ${serviceName}: ${response.status} - ${errorText}`);
       return {
         statusCode: response.status,
         headers,
@@ -103,8 +98,6 @@ exports.handler = async (event, context) => {
     }
 
     const data = await response.json();
-    
-    console.log(`[${serviceName} Proxy] Petición exitosa`);
     
     return {
       statusCode: 200,

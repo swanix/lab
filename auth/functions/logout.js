@@ -18,8 +18,6 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    console.log('[Logout] Procesando logout del usuario');
-
     // Redirigir al landing principal (los datos de sesión se limpian en el frontend)
     const landingUrl = `${process.env.AUTH0_BASE_URL}/`;
     

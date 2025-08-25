@@ -19,8 +19,6 @@ exports.handler = async (event, context) => {
     const { code, state, error, error_description } = event.queryStringParameters || {};
     
     if (error) {
-      console.error('[Auth Callback] Error:', error, error_description);
-      
       // Si el error es "login_required", redirigir al login con autenticación completa
       if (error === 'login_required') {
         const auth0Domain = process.env.AUTH0_DOMAIN;
@@ -81,7 +79,6 @@ exports.handler = async (event, context) => {
     }
     
     if (!code) {
-      console.error('[Auth Callback] No authorization code provided');
       return {
         statusCode: 400,
         headers,
@@ -107,7 +104,6 @@ exports.handler = async (event, context) => {
     const tokenData = await tokenResponse.json();
     
     if (!tokenResponse.ok) {
-      console.error('[Auth Callback] Error obteniendo token:', tokenData);
       return {
         statusCode: 400,
         headers,
@@ -125,7 +121,6 @@ exports.handler = async (event, context) => {
     const userData = await userResponse.json();
     
     if (!userResponse.ok) {
-      console.error('[Auth Callback] Error obteniendo información del usuario:', userData);
       return {
         statusCode: 400,
         headers,
@@ -139,18 +134,13 @@ exports.handler = async (event, context) => {
       try {
         const stateData = JSON.parse(decodeURIComponent(state));
         redirectUrl = stateData.redirect;
-        console.log('[Auth Callback] URL de destino encontrada en state:', redirectUrl);
       } catch (error) {
-        console.log('[Auth Callback] State no contiene URL de destino, usando index por defecto');
+        // State no contiene URL de destino, usar index por defecto
       }
     }
     
-    console.log('[Auth Callback] URL de destino final:', redirectUrl);
-    
     // Verificar que el usuario tenga un email de Google autorizado
     if (!userData.email || !userData.email.endsWith('@gmail.com')) {
-      console.error('[Auth Callback] Intento de acceso con email no autorizado:', userData.email);
-      
       // Redirigir a la página de forbidden
       const forbiddenUrl = `${process.env.AUTH0_BASE_URL}/forbidden?error=access_denied&error_description=${encodeURIComponent('Solo se permiten cuentas de Google (@gmail.com)')}`;
       
