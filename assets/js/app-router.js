@@ -136,6 +136,9 @@ class AppRouter {
       await AppsConfig.initializeProject(projectId);
       console.log(`[AppRouter] Aplicación ${projectId} cargada correctamente`);
       
+      // Crear floating app icon
+      this.createFloatingAppIcon(projectId);
+      
       // Ahora cargar XDiagrams después de tener la configuración
       this.loadXDiagrams();
       
@@ -281,6 +284,13 @@ class AppRouter {
         console.log('[AppRouter] Floating title pill removido');
       }
 
+      // Limpiar floating app icon
+      const floatingAppIcon = document.querySelector('.floating-app-icon');
+      if (floatingAppIcon) {
+        floatingAppIcon.remove();
+        console.log('[AppRouter] Floating app icon removido');
+      }
+
       // Limpiar controles de zoom
       const zoomControls = document.querySelector('.zoom-controls');
       if (zoomControls) {
@@ -292,6 +302,7 @@ class AppRouter {
       const xdiagramsElements = document.querySelectorAll('[class*="xdiagrams"], [class*="floating"], [class*="zoom"]');
       xdiagramsElements.forEach(element => {
         if (element.classList.contains('floating-title-pill') || 
+            element.classList.contains('floating-app-icon') ||
             element.classList.contains('zoom-controls') ||
             element.classList.contains('zoom-in') ||
             element.classList.contains('zoom-out') ||
@@ -312,6 +323,36 @@ class AppRouter {
       console.log('[AppRouter] Limpieza de elementos XDiagrams completada');
     } catch (error) {
       console.warn('[AppRouter] Error limpiando elementos XDiagrams:', error);
+    }
+  }
+
+  // Crear floating app icon
+  createFloatingAppIcon(projectId) {
+    try {
+      // Remover floating app icon existente si hay uno
+      const existingIcon = document.querySelector('.floating-app-icon');
+      if (existingIcon) {
+        existingIcon.remove();
+      }
+
+      // Crear el elemento floating app icon
+      const floatingAppIcon = document.createElement('div');
+      floatingAppIcon.className = 'floating-app-icon';
+      floatingAppIcon.innerHTML = `
+        <div class="floating-app-icon-container">
+          <img src="/app/${projectId}/img/logo.svg" alt="${projectId}" 
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+          <div class="floating-app-icon-fallback" style="display: none;">
+            <span>${projectId.charAt(0).toUpperCase()}</span>
+          </div>
+        </div>
+      `;
+
+      // Agregar al body
+      document.body.appendChild(floatingAppIcon);
+      console.log(`[AppRouter] Floating app icon creado para ${projectId}`);
+    } catch (error) {
+      console.warn('[AppRouter] Error creando floating app icon:', error);
     }
   }
 
