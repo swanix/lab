@@ -628,24 +628,11 @@ body.callback-page {
   white-space: nowrap;
 }
 
-/* ===== FORZAR OCULTACIÓN DEL FLOATING TITLE PILL DE XDIAGRAMS ===== */
+/* ===== OCULTACIÓN CONDICIONAL DEL FLOATING TITLE PILL DE XDIAGRAMS ===== */
 
-/* Ocultar floating-title-pill de XDiagrams de forma agresiva */
-.floating-title-pill {
+/* Ocultar floating-title-pill solo cuando se especifica en la configuración */
+.xdiagrams-hide-title-pill .floating-title-pill {
   display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-}
-
-/* También ocultar cualquier variación del nombre */
-[class*="floating-title"],
-[class*="floating-title-pill"],
-[class*="title-pill"] {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
 }
 
 /* ===== ESTILOS PARA DASHBOARD ===== */

@@ -10,6 +10,7 @@
     "spacing": 80,
     "verticalSpacing": 170,
     "nodeWidth": 100,
-    "nodeHeight": 125
+    "nodeHeight": 125,
+    "hideTitlePill": true
   }
 }

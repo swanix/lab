@@ -33,6 +33,12 @@ class AppsConfig {
 
       // Configurar XDiagrams si está disponible
       if (config.xdiagrams) {
+        // Agregar configuración para ocultar title pill si se especifica
+        if (config.xdiagrams.hideTitlePill) {
+          document.body.classList.add('xdiagrams-hide-title-pill');
+          console.log('[AppsConfig] Title pill de XDiagrams configurado para ocultarse');
+        }
+        
         window.$xDiagrams = config.xdiagrams;
         console.log('[AppsConfig] XDiagrams configurado:', window.$xDiagrams);
       }
