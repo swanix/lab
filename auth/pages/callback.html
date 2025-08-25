@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurando sesión...</title>
+    <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+    <link rel="stylesheet" href="/assets/styles/app.css">
+    <style>
+        /* Estilos específicos para el callback en dark mode */
+        body {
+            background: #0f0f0f !important;
+            color: #ffffff !important;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .callback-container {
+            background: #1f1f1f;
+            border: 1px solid #404040;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+        }
+        
+        .logo {
+            margin-bottom: 1.5rem;
+        }
+        
+        .logo-img {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            background: #2a2a2a;
+            padding: 8px;
+        }
+        
+        h2 {
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .progress-container {
+            margin: 1.5rem 0;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #404040;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #3b82f6;
+            border-radius: 2px;
+            animation: progress 2s ease-in-out infinite;
+        }
+        
+        @keyframes progress {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+        
+        .status {
+            color: #e5e5e5;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .user-info {
+            background: #2a2a2a;
+            border: 1px solid #525252;
+            padding: 1rem;
+            border-radius: 8px;
+            color: #e5e5e5;
+            font-size: 0.9rem;
+        }
+        
+        .user-email {
+            color: #3b82f6;
+            font-weight: 600;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            color: #ef4444;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            display: none;
+        }
+
+        .success-message {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+            color: #10b981;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="callback-container">
+        <div class="logo">
+            <img src="/assets/img/favicon.svg" alt="Logo" class="logo-img">
+        </div>
+        <h2>Configurando tu sesión</h2>
+        
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+        </div>
+        
+        <div class="status" id="status">Inicializando...</div>
+        
+        <div class="user-info" id="user-info" style="display: none;">
+            <div>Bienvenido, <span class="user-email" id="user-email"></span></div>
+        </div>
+
+        <div class="error-message" id="error-message">
+            <strong>Error:</strong> <span id="error-text"></span>
+        </div>
+
+        <div class="success-message" id="success-message">
+            <strong>Éxito:</strong> <span id="success-text"></span>
+        </div>
+    </div>
+    
+    <script>
+        // Función para mostrar mensajes
+        function showMessage(type, text) {
+            const statusEl = document.getElementById('status');
+            const errorEl = document.getElementById('error-message');
+            const successEl = document.getElementById('success-message');
+            const errorTextEl = document.getElementById('error-text');
+            const successTextEl = document.getElementById('success-text');
+
+            statusEl.style.display = 'none';
+            errorEl.style.display = 'none';
+            successEl.style.display = 'none';
+
+            if (type === 'error') {
+                errorTextEl.textContent = text;
+                errorEl.style.display = 'block';
+            } else if (type === 'success') {
+                successTextEl.textContent = text;
+                successEl.style.display = 'block';
+            } else {
+                statusEl.textContent = text;
+                statusEl.style.display = 'block';
+            }
+        }
+
+        // Función para mostrar información del usuario
+        function showUserInfo(email) {
+            const userInfoEl = document.getElementById('user-info');
+            const userEmailEl = document.getElementById('user-email');
+            
+            userEmailEl.textContent = email;
+            userInfoEl.style.display = 'block';
+        }
+
+        // Función para configurar sesión
+        function configureSession(sessionData, sessionToken, expiresAt) {
+            try {
+                localStorage.setItem('session_data', JSON.stringify(sessionData));
+                localStorage.setItem('session_token', sessionToken);
+                localStorage.setItem('session_expires', expiresAt);
+                
+                console.log('[Auth Callback] Sesión configurada correctamente');
+                return true;
+            } catch (error) {
+                console.error('[Auth Callback] Error configurando sesión:', error);
+                return false;
+            }
+        }
+
+        // Función para verificar datos guardados
+        function verifyStoredData() {
+            const savedSessionData = localStorage.getItem('session_data');
+            const savedSessionToken = localStorage.getItem('session_token');
+            const savedSessionExpires = localStorage.getItem('session_expires');
+            
+            return !!(savedSessionData && savedSessionToken && savedSessionExpires);
+        }
+
+        // Función para redirigir
+        function redirectToDestination(redirectUrl, baseUrl) {
+            if (redirectUrl && redirectUrl !== 'null') {
+                const fullUrl = redirectUrl.startsWith('/') ? 
+                    baseUrl + redirectUrl : 
+                    baseUrl + '/' + redirectUrl;
+                console.log('[Auth Callback] Redirigiendo a URL de destino:', fullUrl);
+                window.location.href = fullUrl;
+            } else {
+                const dashboardUrl = baseUrl + '/app/';
+                console.log('[Auth Callback] Redirigiendo al dashboard:', dashboardUrl);
+                window.location.href = dashboardUrl;
+            }
+        }
+
+        // Función principal de inicialización
+        function initializeCallback() {
+            // Obtener datos de la URL (serán pasados por el servidor)
+            const urlParams = new URLSearchParams(window.location.search);
+            const sessionDataParam = urlParams.get('sessionData');
+            const sessionTokenParam = urlParams.get('sessionToken');
+            const expiresAtParam = urlParams.get('expiresAt');
+            const userEmailParam = urlParams.get('userEmail');
+            const redirectUrlParam = urlParams.get('redirectUrl');
+            const baseUrlParam = urlParams.get('baseUrl');
+
+            showMessage('status', 'Configurando sesión...');
+
+            if (!sessionDataParam || !sessionTokenParam || !expiresAtParam) {
+                showMessage('error', 'Datos de sesión incompletos');
+                return;
+            }
+
+            try {
+                const sessionData = JSON.parse(decodeURIComponent(sessionDataParam));
+                
+                // Configurar sesión
+                if (configureSession(sessionData, sessionTokenParam, expiresAtParam)) {
+                    showMessage('status', 'Sesión configurada correctamente');
+                    
+                    // Mostrar información del usuario si está disponible
+                    if (userEmailParam) {
+                        showUserInfo(decodeURIComponent(userEmailParam));
+                    }
+                    
+                    // Verificar que los datos se guardaron
+                    setTimeout(() => {
+                        if (verifyStoredData()) {
+                            showMessage('success', 'Datos verificados, redirigiendo...');
+                            
+                            // Redirigir después de un breve delay
+                            setTimeout(() => {
+                                redirectToDestination(redirectUrlParam, baseUrlParam || window.location.origin);
+                            }, 1000);
+                        } else {
+                            showMessage('error', 'Error verificando datos guardados');
+                        }
+                    }, 500);
+                } else {
+                    showMessage('error', 'Error configurando la sesión');
+                }
+            } catch (error) {
+                console.error('[Auth Callback] Error procesando datos:', error);
+                showMessage('error', 'Error procesando datos de sesión');
+            }
+        }
+
+        // Inicializar cuando la página cargue
+        document.addEventListener('DOMContentLoaded', initializeCallback);
+    </script>
+</body>
+</html>

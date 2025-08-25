@@ -175,187 +175,22 @@ exports.handler = async (event, context) => {
     const crypto = require('crypto');
     const sessionToken = crypto.randomBytes(32).toString('hex');
     
-    // Crear página HTML que configure localStorage y redirija
-    const html = `
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Configurando sesión...</title>
-    <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
-          <link rel="stylesheet" href="/assets/styles/app.css">
-    <style>
-        /* Estilos específicos para el callback en dark mode */
-        body {
-            background: #0f0f0f !important;
-            color: #ffffff !important;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .callback-container {
-            background: #1f1f1f;
-            border: 1px solid #404040;
-            border-radius: 12px;
-            padding: 2rem;
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
-        }
-        
-        .logo {
-            margin-bottom: 1.5rem;
-        }
-        
-        .logo-img {
-            width: 48px;
-            height: 48px;
-            border-radius: 8px;
-            background: #2a2a2a;
-            padding: 8px;
-        }
-        
-        h2 {
-            color: #ffffff;
-            margin-bottom: 1.5rem;
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-        
-        .progress-container {
-            margin: 1.5rem 0;
-        }
-        
-        .progress-bar {
-            width: 100%;
-            height: 4px;
-            background: #404040;
-            border-radius: 2px;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: #3b82f6;
-            border-radius: 2px;
-            animation: progress 2s ease-in-out infinite;
-        }
-        
-        @keyframes progress {
-            0% { width: 0%; }
-            50% { width: 70%; }
-            100% { width: 100%; }
-        }
-        
-        .status {
-            color: #e5e5e5;
-            font-size: 0.9rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .user-info {
-            background: #2a2a2a;
-            border: 1px solid #525252;
-            padding: 1rem;
-            border-radius: 8px;
-            color: #e5e5e5;
-            font-size: 0.9rem;
-        }
-        
-        .user-email {
-            color: #3b82f6;
-            font-weight: 600;
-        }
-    </style>
-</head>
-<body>
-    <div class="callback-container">
-        <div class="logo">
-            <img src="/assets/img/favicon.svg" alt="Logo" class="logo-img">
-        </div>
-        <h2>Configurando tu sesión</h2>
-        
-        <div class="progress-container">
-            <div class="progress-bar">
-                <div class="progress-fill"></div>
-            </div>
-        </div>
-        
-        <div class="status">Redirigiendo al diagrama...</div>
-        
-        <div class="user-info">
-            <div>Bienvenido, <span class="user-email">${userData.email}</span></div>
-        </div>
-    </div>
-    
-    <script>
-        // Configurar sesión en localStorage
-        const sessionData = ${JSON.stringify(session)};
-        const sessionToken = '${sessionToken}';
-        
-        localStorage.setItem('session_data', JSON.stringify(sessionData));
-        localStorage.setItem('session_token', sessionToken);
-        localStorage.setItem('session_expires', '${session.expires_at}');
-        
-        console.log('[Auth Callback] Sesión configurada correctamente');
-        
-        // Verificar que los datos se guardaron correctamente
-        const savedSessionData = localStorage.getItem('session_data');
-        const savedSessionToken = localStorage.getItem('session_token');
-        const savedSessionExpires = localStorage.getItem('session_expires');
-        
-        console.log('[Auth Callback] Verificación de datos guardados:', {
-            sessionData: !!savedSessionData,
-            sessionToken: !!savedSessionToken,
-            sessionExpires: savedSessionExpires
-        });
-        
-        if (!savedSessionData || !savedSessionToken || !savedSessionExpires) {
-            console.error('[Auth Callback] ❌ Error: Los datos no se guardaron correctamente');
-            alert('Error configurando la sesión. Intenta nuevamente.');
-        } else {
-            console.log('[Auth Callback] ✅ Datos guardados correctamente, procediendo con redirección...');
-            
-            // Redirigir al diagrama o a la URL guardada
-            setTimeout(() => {
-                // Usar URL de destino desde el state del servidor
-                const redirectUrl = ${redirectUrl ? `'${redirectUrl}'` : 'null'};
-                console.log('[Auth Callback] URL de destino desde state:', redirectUrl);
-                
-                if (redirectUrl && redirectUrl !== 'null') {
-                    // Construir URL completa correctamente
-                    const baseUrl = '${process.env.AUTH0_BASE_URL}';
-                    const fullUrl = redirectUrl.startsWith('/') ? 
-                        baseUrl + redirectUrl : 
-                        baseUrl + '/' + redirectUrl;
-                    console.log('[Auth Callback] Redirigiendo a URL de destino:', fullUrl);
-                    window.location.href = fullUrl;
-                } else {
-                    // Redirigir al dashboard de aplicaciones
-                    const dashboardUrl = '${process.env.AUTH0_BASE_URL}/app/';
-                    console.log('[Auth Callback] Redirigiendo al dashboard de aplicaciones:', dashboardUrl);
-                    window.location.href = dashboardUrl;
-                }
-            }, 3000); // Aumentado de 2000 a 3000ms
-        }
-    </script>
-</body>
-</html>`;
+    // Redirigir a la página de callback con los datos necesarios
+    const callbackUrl = `${process.env.AUTH0_BASE_URL}/auth/pages/callback.html?` +
+      `sessionData=${encodeURIComponent(JSON.stringify(session))}&` +
+      `sessionToken=${encodeURIComponent(sessionToken)}&` +
+      `expiresAt=${encodeURIComponent(session.expires_at)}&` +
+      `userEmail=${encodeURIComponent(userData.email)}&` +
+      `redirectUrl=${encodeURIComponent(redirectUrl || '')}&` +
+      `baseUrl=${encodeURIComponent(process.env.AUTH0_BASE_URL)}`;
     
     return {
-      statusCode: 200,
+      statusCode: 302,
       headers: {
         ...headers,
-        'Content-Type': 'text/html'
+        'Location': callbackUrl
       },
-      body: html
+      body: ''
     };
 
   } catch (error) {
