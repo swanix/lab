@@ -340,80 +340,11 @@
     </footer>
   </div>
 
-  <!-- Cargar solo la configuración de auth (sin el sistema completo) -->
+  <!-- Cargar configuración de auth y sistema de verificación -->
   <script src="/auth/assets/auth-config.js"></script>
+  <script src="/auth/assets/auth-checker.js"></script>
 
   <script>
-    // Función para verificar autenticación y decidir qué mostrar
-    async function checkAuthAndRedirect() {
-      try {
-        console.log('[Landing] Verificando autenticación...');
-        
-        // Verificar si hay datos de sesión básicos
-        const sessionData = localStorage.getItem('session_data');
-        const sessionToken = localStorage.getItem('session_token');
-        const sessionExpires = localStorage.getItem('session_expires');
-        
-        if (!sessionData || !sessionToken || !sessionExpires) {
-          console.log('[Landing] No hay sesión, mostrando landing');
-          showLanding();
-          return;
-        }
-        
-        // Verificar si la sesión ha expirado
-        const now = Date.now();
-        const expiresAt = parseInt(sessionExpires);
-        
-        if (now >= expiresAt) {
-          console.log('[Landing] Sesión expirada, mostrando landing');
-          showLanding();
-          return;
-        }
-        
-        // Verificar que el token sea válido con el servidor
-        console.log('[Landing] Verificando token con servidor...');
-        const response = await fetch('/.netlify/functions/check-auth', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionToken}`
-          },
-          body: JSON.stringify({
-            sessionData: sessionData,
-            sessionToken: sessionToken
-          })
-        });
-        
-        console.log('[Landing] Respuesta del servidor:', response.status, response.statusText);
-        
-        if (response.ok) {
-          const result = await response.json();
-          console.log('[Landing] Resultado del servidor:', result);
-          
-          if (result.authenticated) {
-            console.log('[Landing] Usuario autenticado, cargando dashboard');
-            // Cargar el dashboard en lugar de redirigir
-            loadDashboard();
-            return;
-          } else {
-            console.log('[Landing] Usuario no autenticado según servidor');
-          }
-        } else {
-          console.log('[Landing] Error en respuesta del servidor:', response.status);
-          const errorText = await response.text();
-          console.log('[Landing] Error details:', errorText);
-        }
-        
-        console.log('[Landing] Token inválido, mostrando landing');
-        showLanding();
-        
-      } catch (error) {
-        console.error('[Landing] Error verificando autenticación:', error);
-        // En caso de error, mostrar el landing (no redirigir al login)
-        showLanding();
-      }
-    }
-
     // Función para mostrar el landing
     function showLanding() {
       const loadingContainer = document.getElementById('loading-container');
@@ -437,18 +368,6 @@
       }
     }
 
-    // Función para cargar el dashboard
-    function loadDashboard() {
-      const loadingContainer = document.getElementById('loading-container');
-      
-      if (loadingContainer) {
-        loadingContainer.style.display = 'none';
-      }
-      
-      // Redirigir al dashboard
-      window.location.href = '/app/';
-    }
-
     // Cargar tema guardado
     function loadTheme() {
       const savedTheme = localStorage.getItem('theme');
@@ -470,7 +389,9 @@
       document.body.style.overflow = 'auto';
       
       loadTheme();
-      checkAuthAndRedirect();
+      
+      // Usar el sistema modularizado de verificación de autenticación
+      checkAuthForLanding();
       
       // Timeout de seguridad para remover loading spinner
       setTimeout(() => {

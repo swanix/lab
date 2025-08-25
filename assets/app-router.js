@@ -20,8 +20,13 @@ class AppRouter {
     try {
       console.log('[AppRouter] Inicializando router...');
       
-      // Verificar autenticación
-      await Auth.checkAuthentication();
+      // Verificar autenticación usando el nuevo sistema
+      const isAuthenticated = await checkAuthForProtectedPage();
+      
+      if (!isAuthenticated) {
+        console.log('[AppRouter] Usuario no autenticado, redirigiendo...');
+        return; // La redirección ya se maneja en checkAuthForProtectedPage
+      }
       
       // Configurar elementos del DOM
       this.setupDOMElements();
