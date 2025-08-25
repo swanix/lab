@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Íconos</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-icon { margin: 10px; padding: 10px; border: 1px solid #ccc; }
+        .test-icon img { width: 32px; height: 32px; border: 1px solid red; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Test de Íconos</h1>
+    
+    <div class="test-icon">
+        <h3>Test 1: /app/project-01/img/logo.svg</h3>
+        <img src="/app/project-01/img/logo.svg" alt="Test 1" 
+             onload="this.parentElement.innerHTML += '<p class=\"success\">✅ Cargado exitosamente</p>'"
+             onerror="this.parentElement.innerHTML += '<p class=\"error\">❌ Error cargando</p>'">
+    </div>
+    
+    <div class="test-icon">
+        <h3>Test 2: /app/project-02/img/logo.svg</h3>
+        <img src="/app/project-02/img/logo.svg" alt="Test 2"
+             onload="this.parentElement.innerHTML += '<p class=\"success\">✅ Cargado exitosamente</p>'"
+             onerror="this.parentElement.innerHTML += '<p class=\"error\">❌ Error cargando</p>'">
+    </div>
+    
+    <div class="test-icon">
+        <h3>Test 3: /app/project-03/img/logo.svg</h3>
+        <img src="/app/project-03/img/logo.svg" alt="Test 3"
+             onload="this.parentElement.innerHTML += '<p class=\"success\">✅ Cargado exitosamente</p>'"
+             onerror="this.parentElement.innerHTML += '<p class=\"error\">❌ Error cargando</p>'">
+    </div>
+    
+    <div class="test-icon">
+        <h3>Test 4: /app/macaw/img/logo.svg</h3>
+        <img src="/app/macaw/img/logo.svg" alt="Test 4"
+             onload="this.parentElement.innerHTML += '<p class=\"success\">✅ Cargado exitosamente</p>'"
+             onerror="this.parentElement.innerHTML += '<p class=\"error\">❌ Error cargando</p>'">
+    </div>
+    
+    <div class="test-icon">
+        <h3>Test 5: project-01/img/logo.svg (relativa)</h3>
+        <img src="project-01/img/logo.svg" alt="Test 5"
+             onload="this.parentElement.innerHTML += '<p class=\"success\">✅ Cargado exitosamente</p>'"
+             onerror="this.parentElement.innerHTML += '<p class=\"error\">❌ Error cargando</p>'">
+    </div>
+    
+    <div class="test-icon">
+        <h3>Test 6: project-02/img/logo.svg (relativa)</h3>
+        <img src="project-02/img/logo.svg" alt="Test 6"
+             onload="this.parentElement.innerHTML += '<p class=\"success\">✅ Cargado exitosamente</p>'"
+             onerror="this.parentElement.innerHTML += '<p class=\"error\">❌ Error cargando</p>'">
+    </div>
+</body>
+</html>
