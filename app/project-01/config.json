@@ -2,7 +2,7 @@
   "id": "project-01",
   "title": "Mi Proyecto XDiagrams",
   "description": "Diagrama interactivo básico con datos de ejemplo",
-  "logo": "/app/project-01/img/logo.svg",
+  "logo": "img/logo.svg",
   "xdiagrams": {
     "url": "https://api.sheetbest.com/sheets/28f15681-b2ab-47a0-bbcb-205d142d9ef7/tabs/All",
     "clustersPerRow": "6 3 7 6 3",
