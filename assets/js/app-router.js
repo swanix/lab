@@ -139,6 +139,12 @@ class AppRouter {
       // Crear floating app icon
       this.createFloatingAppIcon();
       
+      // Crear floating project pill
+      this.createFloatingProjectPill(projectId);
+      
+      // Ocultar floating-title-pill de XDiagrams
+      this.hideXDiagramsTitlePill();
+      
       // Ahora cargar XDiagrams después de tener la configuración
       this.loadXDiagrams();
       
@@ -287,6 +293,13 @@ class AppRouter {
         console.log('[AppRouter] Floating title pill removido');
       }
 
+      // Limpiar floating project pill
+      const floatingProjectPill = document.querySelector('.floating-project-pill');
+      if (floatingProjectPill) {
+        floatingProjectPill.remove();
+        console.log('[AppRouter] Floating project pill removido');
+      }
+
       // Limpiar controles de zoom
       const zoomControls = document.querySelector('.zoom-controls');
       if (zoomControls) {
@@ -298,6 +311,7 @@ class AppRouter {
       const xdiagramsElements = document.querySelectorAll('[class*="xdiagrams"], [class*="floating"], [class*="zoom"]');
       xdiagramsElements.forEach(element => {
         if (element.classList.contains('floating-title-pill') || 
+            element.classList.contains('floating-project-pill') ||
             element.classList.contains('zoom-controls') ||
             element.classList.contains('zoom-in') ||
             element.classList.contains('zoom-out') ||
@@ -349,6 +363,54 @@ class AppRouter {
       console.log('[AppRouter] Floating app icon creado con logo del lab');
     } catch (error) {
       console.warn('[AppRouter] Error creando floating app icon:', error);
+    }
+  }
+
+  // Crear floating project pill
+  createFloatingProjectPill(projectId) {
+    try {
+      // Remover floating project pill existente si hay uno
+      const existingPill = document.querySelector('.floating-project-pill');
+      if (existingPill) {
+        existingPill.remove();
+      }
+
+      // Crear el elemento floating project pill
+      const floatingProjectPill = document.createElement('div');
+      floatingProjectPill.className = 'floating-project-pill';
+      floatingProjectPill.innerHTML = `
+        <div class="floating-project-pill-container">
+          <div class="project-icon">
+            <img src="/app/${projectId}/img/logo.svg" alt="${projectId}" 
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <div class="project-icon-fallback" style="display: none;">
+              <span>${projectId.charAt(0).toUpperCase()}</span>
+            </div>
+          </div>
+          <div class="project-name">
+            <span>${projectId.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
+          </div>
+        </div>
+      `;
+
+      // Agregar al body
+      document.body.appendChild(floatingProjectPill);
+      console.log(`[AppRouter] Floating project pill creado para ${projectId}`);
+    } catch (error) {
+      console.warn('[AppRouter] Error creando floating project pill:', error);
+    }
+  }
+
+  // Ocultar floating-title-pill de XDiagrams
+  hideXDiagramsTitlePill() {
+    try {
+      const xdiagramsTitlePill = document.querySelector('.floating-title-pill');
+      if (xdiagramsTitlePill) {
+        xdiagramsTitlePill.style.display = 'none';
+        console.log('[AppRouter] Floating title pill de XDiagrams ocultado');
+      }
+    } catch (error) {
+      console.warn('[AppRouter] Error ocultando floating title pill:', error);
     }
   }
 
