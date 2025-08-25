@@ -190,6 +190,7 @@ class AppsConfig {
       }
       
       console.log(`[AppsConfig] Generando logo para ${app.id}: ${logoPath} (desde ${currentPath})`);
+      console.log(`[AppsConfig] URL completa: ${window.location.origin}${logoPath}`);
       return `
         <div class="app-card" onclick="window.location.href='${app.url}'">
           <div class="app-logo">
