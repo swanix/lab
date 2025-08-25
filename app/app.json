@@ -2,31 +2,31 @@
   "apps": [
     {
       "id": "project-01",
-      "title": "XDiagrams",
+      "title": "Project 01",
       "description": "Diagrama interactivo básico con datos de ejemplo",
       "url": "/project-01/"
     },
     {
       "id": "project-02", 
-      "title": "Dashboard",
+      "title": "Project 02",
       "description": "Dashboard con métricas avanzadas y visualizaciones",
       "url": "/project-02/"
     },
     {
       "id": "project-03", 
-      "title": "Analytics", 
+      "title": "Project 03", 
       "description": "Análisis avanzado con métricas y KPIs",
       "url": "/project-03/"
     },
     {
       "id": "project-04", 
-      "title": "Reportes",
+      "title": "Project 04",
       "description": "Sistema de reportes y documentación",
       "url": "/project-04/"
     },
     {
       "id": "macaw",
-      "title": "Palettes",
+      "title": "Macaw",
       "description": "Paletas de colores",
       "url": "/macaw/"
     }
