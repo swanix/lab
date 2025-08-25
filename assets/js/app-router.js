@@ -287,13 +287,6 @@ class AppRouter {
         console.log('[AppRouter] Floating title pill removido');
       }
 
-      // Limpiar floating app icon
-      const floatingAppIcon = document.querySelector('.floating-app-icon');
-      if (floatingAppIcon) {
-        floatingAppIcon.remove();
-        console.log('[AppRouter] Floating app icon removido');
-      }
-
       // Limpiar controles de zoom
       const zoomControls = document.querySelector('.zoom-controls');
       if (zoomControls) {
@@ -305,7 +298,6 @@ class AppRouter {
       const xdiagramsElements = document.querySelectorAll('[class*="xdiagrams"], [class*="floating"], [class*="zoom"]');
       xdiagramsElements.forEach(element => {
         if (element.classList.contains('floating-title-pill') || 
-            element.classList.contains('floating-app-icon') ||
             element.classList.contains('zoom-controls') ||
             element.classList.contains('zoom-in') ||
             element.classList.contains('zoom-out') ||
@@ -329,13 +321,14 @@ class AppRouter {
     }
   }
 
-  // Crear floating app icon
+  // Crear floating app icon (solo si no existe)
   createFloatingAppIcon() {
     try {
-      // Remover floating app icon existente si hay uno
+      // Verificar si ya existe el floating app icon
       const existingIcon = document.querySelector('.floating-app-icon');
       if (existingIcon) {
-        existingIcon.remove();
+        console.log('[AppRouter] Floating app icon ya existe, no se crea uno nuevo');
+        return;
       }
 
       // Crear el elemento floating app icon con el logo del lab
